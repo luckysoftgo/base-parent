@@ -1,0 +1,5 @@
+
+1. 使用 maven 导出jar文件 , 放在工程的 web 项目下就可以访问。
+
+2. 使用方式 : 在 application.xml 文件中,注入下列应用就好!
+<bean id = "sourcePoolService" class="com.application.base.auth.check.impl.CheckSourcePoolServiceImpl"/>
