@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+   		http://www.springframework.org/schema/context
+   		http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--codis配置(没有zookeeper的情况下,就不要使用这个设置)-->
+    <bean name="codisConfig" class="com.application.base.cache.codis.architecture.cache.CacheConfig">
+        <property name="maxTotal" value="${codis.pool.maxTotal}"/>
+        <property name="maxIdle" value="${codis.pool.maxIdle}"/>
+        <property name="minIdle" value="${codis.pool.minIdle}"/>
+        <property name="maxWaitMillis" value="${codis.pool.maxWaitMillis}"/>
+        <property name="zkAddressAndPort" value="${codis.zk.zkAddressAndPort}"/>
+        <property name="zkSessionTimeOutMs" value="${codis.zk.zkSessionTimeOutMs}"/>
+        <property name="zkProxyDir" value="${codis.zk.zkProxyDir}"/>
+        <property name="debug" value="${codis.debug}"/>
+        <property name="envrionment" value="${codis.envrionment}"/>
+    </bean>
+    <bean name="cacheClinet" class="com.application.base.cache.codis.architecture.cache.CacheClient">
+        <constructor-arg  ref="codisConfig" />
+    </bean>
+
+    <!-- codis single setting  -->
+    <bean id="singleCodisFactory" class="com.application.base.cache.codis.factory.SingleCodisSessionFactory">
+        <property name="client" ref="cacheClinet"/>
+        <property name="pool" ref="jedisPool"/>
+    </bean>
+    <bean id="distributedLock" class="com.application.base.cache.redis.jedis.lock.DelegateDistributedLock">
+        <property name="factory" ref="singleCodisFactory"/>
+    </bean>
+
+
+   <!-- codis mutil setting  -->
+   <!--
+   <bean id="mutilCodisFactory" class="com.application.base.cache.codis.factory.MutilCodisSessionFactory">
+       <property name="client" ref="cacheClinet"/>
+       <property name="pool" ref="jedisPool"/>
+   </bean>
+   <bean id="distributedLock" class="com.application.base.cache.redis.jedis.lock.DelegateDistributedLock">
+       <property name="factory" ref="mutilCodisFactory"/>
+   </bean>
+   -->
+
+</beans>

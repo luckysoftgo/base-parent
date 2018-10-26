@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:redisson="http://redisson.org/schema/redisson"
+       xsi:schemaLocation="
+   http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans.xsd
+   http://www.springframework.org/schema/context
+   http://www.springframework.org/schema/context/spring-context.xsd
+   http://redisson.org/schema/redisson
+   http://redisson.org/schema/redisson/redisson.xsd">
+
+
+    <!-- 加密方式. -->
+    <bean id="stringCodec" class="org.redisson.client.codec.StringCodec"/>
+
+    <!-- 单节点部署应用 -->
+    <redisson:client
+            id="standalone"
+            name="simpleClient"
+            codec-ref="stringCodec">
+        <redisson:single-server
+                address="redis://101.201.177.32:16339"
+                connection-pool-size="500"
+                idle-connection-timeout="10000"
+                connect-timeout="10000"
+                timeout="3000"
+                ping-timeout="30000"
+                reconnection-timeout="30000"
+                password="02681330-d47f-4e34-a0fc-4a2f8931c523"
+        />
+    </redisson:client>
+    <bean id="redissonFactory" class="com.application.base.cache.redisson.redisson.factory.RedissonSimpleSessionFactory">
+        <property name="simpleClient" ref="standalone"/>
+    </bean>
+    <bean id="redissonDistLock" class="com.application.base.cache.redisson.redisson.lock.JDelegateDistributedLock">
+        <property name="lockFactory" ref="redissonFactory"/>
+    </bean>
+
+
+
+
+    <!-- 哨兵部署应用 -->
+    <!--
+    <redisson:client
+            id="sentinel"
+            codec-ref="stringCodec">
+        <redisson:sentinel-servers
+                master-name="my-sentinel-name"
+                idle-connection-timeout="10000"
+                connect-timeout="10000"
+                timeout="3000"
+                ping-timeout="1000"
+                reconnection-timeout="3000"
+        >
+            <redisson:sentinel-address value="redis://127.0.0.1:26379" />
+            <redisson:sentinel-address value="redis://127.0.0.1:26389" />
+            <redisson:sentinel-address value="redis://127.0.0.1:26399" />
+        </redisson:sentinel-servers>
+    </redisson:client>
+    <bean id="redissonFactory" class="com.application.base.cache.redisson.redisson.factory.RedissonSentinelSessionFactory">
+        <property name="sentinelClient" ref="sentinel"/>
+    </bean>
+    <bean id="redissonDistLock" class="com.application.base.cache.redisson.redisson.lock.JDelegateDistributedLock">
+        <property name="lockFactory" ref="redissonFactory"/>
+    </bean>
+    -->
+
+
+
+
+
+    <!-- 集群部署应用 -->
+    <!--
+    <redisson:client
+            id="cluster"
+            codec-ref="stringCodec">
+        <redisson:cluster-servers
+                idle-connection-timeout="10000"
+                connect-timeout="10000"
+                timeout="3000"
+                ping-timeout="1000"
+                reconnection-timeout="3000"
+        >
+            <redisson:node-address value="redis://101.201.177.32:16339" />
+            <redisson:node-address value="redis://127.0.0.1:6380" />
+            <redisson:node-address value="redis://127.0.0.1:6381" />
+            <redisson:node-address value="redis://127.0.0.1:6382" />
+            <redisson:node-address value="redis://127.0.0.1:6383" />
+            <redisson:node-address value="redis://127.0.0.1:6384" />
+        </redisson:cluster-servers>
+    </redisson:client>
+    <bean id="redissonFactory" class="com.application.base.cache.redisson.redisson.factory.RedissonClusterSessionFactory">
+        <property name="clusterClient" ref="cluster"/>
+    </bean>
+    <bean id="redissonDistLock" class="com.application.base.cache.redisson.redisson.lock.JDelegateDistributedLock">
+        <property name="lockFactory" ref="redissonFactory"/>
+    </bean>
+    -->
+
+
+
+
+
+    <!-- 主从部署应用 -->
+    <!--
+    <redisson:client
+            id="masterSlave"
+            codec-ref="stringCodec">
+        <redisson:master-slave-servers
+                master-address="redis://101.201.177.32:16339"
+                idle-connection-timeout="10000"
+                connect-timeout="10000"
+                timeout="3000"
+                ping-timeout="1000"
+                reconnection-timeout="3000"
+        >
+            <redisson:slave-address value="redis://127.0.0.1:6380" />
+            <redisson:slave-address value="redis://127.0.0.1:6381" />
+        </redisson:master-slave-servers>
+    </redisson:client>
+    <bean id="redissonFactory" class="com.application.base.cache.redisson.redisson.factory.RedissonMasterSlaveSessionFactory">
+        <property name="masterSlaveClient" ref="masterSlave"/>
+    </bean>
+    <bean id="redissonDistLock" class="com.application.base.cache.redisson.redisson.lock.JDelegateDistributedLock">
+        <property name="lockFactory" ref="redissonFactory"/>
+    </bean>
+    -->
+
+
+</beans>
+

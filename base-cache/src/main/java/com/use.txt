@@ -1,0 +1,3 @@
+
+把对应的 codis.xml , redis.xml , redisson.xml 加载到 WEB 容器中去,
+就可以完成对应的使用缓存的操作。
