@@ -1,0 +1,220 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.application.base</groupId>
+    <artifactId>base-parent</artifactId>
+    <version>1.0.0-RELEASE</version>
+  </parent>
+  <name>base-message</name>
+  <artifactId>base-message</artifactId>
+  <packaging>jar</packaging>
+  
+  <properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- utils -->
+		<base-utils.version>1.0.0-RELEASE</base-utils.version>
+        <!-- 下载需要的 jar  -->
+        <xbean-spring.version>4.5</xbean-spring.version>
+		<activemq.version>5.10.0</activemq.version>
+		<activemq-core.version>5.7.0</activemq-core.version>
+		<!-- spring rabbitmq 消息 -->
+		<amqp-client.version>3.6.5</amqp-client.version>
+		<spring-rabbit.version>1.6.1.RELEASE</spring-rabbit.version>
+		<spring-amqp.version>1.6.1.RELEASE</spring-amqp.version>
+		<spring-retry.version>1.1.2.RELEASE</spring-retry.version>
+		<commons-pool.version>1.6</commons-pool.version>
+	  	<rocketmq.version>3.5.8</rocketmq.version>
+
+		<downloadSources>true</downloadSources>
+	</properties>
+	
+  <!-- 项目依赖 -->
+  <dependencies>
+  	<dependency>
+		<groupId>com.application.base</groupId>
+		<artifactId>base-utils</artifactId>
+		<version>${base-utils.version}</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.apache.xbean</groupId>
+	    <artifactId>xbean-spring</artifactId>
+	    <version>${xbean-spring.version}</version>
+	</dependency>
+	
+	<!-- activemq setting start -->
+	<dependency>
+	    <groupId>org.apache.activemq</groupId>
+	    <artifactId>activemq-pool</artifactId>
+	    <version>${activemq.version}</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.apache.activemq</groupId>
+	    <artifactId>activemq-client</artifactId>
+	    <version>${activemq.version}</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.apache.activemq</groupId>
+	    <artifactId>activemq-jms-pool</artifactId>
+	    <version>${activemq.version}</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.apache.activemq</groupId>
+	    <artifactId>activemq-core</artifactId>
+	    <version>${activemq-core.version}</version>
+	</dependency>
+	<!-- activemq setting end -->
+
+	  <dependency>
+		  <groupId>com.alibaba.rocketmq</groupId>
+		  <artifactId>rocketmq-client</artifactId>
+		  <version>${rocketmq.version}</version>
+	  </dependency>
+	  <dependency>
+		  <groupId>com.alibaba.rocketmq</groupId>
+		  <artifactId>rocketmq-common</artifactId>
+		  <version>${rocketmq.version}</version>
+	  </dependency>
+	  <dependency>
+		  <groupId>com.alibaba.rocketmq</groupId>
+		  <artifactId>rocketmq-all</artifactId>
+		  <version>${rocketmq.version}</version>
+		  <type>pom</type>
+	  </dependency>
+
+
+	<dependency>
+	    <groupId>commons-pool</groupId>
+	    <artifactId>commons-pool</artifactId>
+	    <version>${commons-pool.version}</version>
+		</dependency>
+		
+		<!-- spring rabbitmq 消息 -->
+		<dependency>
+		    <groupId>com.rabbitmq</groupId>
+		    <artifactId>amqp-client</artifactId>
+		    <version>${amqp-client.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework.amqp</groupId>
+		    <artifactId>spring-amqp</artifactId>
+		    <version>${spring-amqp.version}</version>
+		</dependency>
+		<dependency>
+	    <groupId>org.springframework.amqp</groupId>
+		    <artifactId>spring-rabbit</artifactId>
+		    <version>${spring-rabbit.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework.retry</groupId>
+		    <artifactId>spring-retry</artifactId>
+		    <version>${spring-retry.version}</version>
+		</dependency>
+		
+		<!-- Spring的核心工具包 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- Spring提供在基础IoC功能上的扩展服务，此外还提供许多企业级服务的支持，如邮件服务、任务调度、JNDI定位、EJB集成、远程访问、缓存以及各种视图层框架的封装等 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- Spring-context的扩展支持,用于MVC方面 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- Spring为简化JMS API的使用而作的简单封装 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jms</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- Spring对Junit等测试框架的简单封装 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+	  	<!--腾讯信鸽 -->
+	    <dependency>
+		  	<groupId>com.github.xingePush</groupId>
+		  	<artifactId>xinge</artifactId>
+		  	<version>1.1.8</version>
+		 </dependency>
+	
+	<!--Spring end -->
+	</dependencies>
+	
+	 <!-- 全局环境变量 -->
+	<profiles>
+		<profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<repositories>
+				<repository>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+					<id>maven-snapshot</id>
+					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+					<id>maven-snapshot</id>
+					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+				</pluginRepository>
+			</pluginRepositories>
+		</profile>
+		<!-- jdk setting -->
+		<profile>
+			<id>jdk8</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<jdk>1.8</jdk>
+			</activation>
+			<properties>
+				<maven.compiler.source>1.8</maven.compiler.source>
+				<maven.compiler.target>1.8</maven.compiler.target>
+				<maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+			</properties>
+		</profile>
+	</profiles>
+
+	<repositories>
+		<repository>
+			<id>aliyun-repos</id>
+			<url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>aliyun-plugin</id>
+			<url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+    
+</project>

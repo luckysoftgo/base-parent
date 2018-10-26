@@ -1,0 +1,18 @@
+
+使用前提:拥有activeMQ的服务器.
+
+理解:
+这个可以导出一个jar,可以单独用来使用
+
+地址:
+http://www.cnblogs.com/super-d2/p/4249768.html
+
+启动: ./activemq start 
+停止: ./activemq stop
+URL:http://localhost:8161/admin/
+
+
+介绍:
+http://blog.csdn.net/jwdstef/article/details/17380471
+http://www.cnblogs.com/zhuxiaojie/p/5564187.html
+
