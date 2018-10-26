@@ -1,0 +1,17 @@
+
+理解:
+1. com.javabase.demo 是对本框架体系的使用情况,详细使用的情况,可以通过具体的代码实现去理解。
+
+代码生成器的使用:
+2. 代码生成:执行 com.application.base.generate.javabase.CodeProductorUtil.java 去执行。
+a. com.application.base.generate.javabase.constant.CommonConstant.java 做好相应的配置生成代码的相关信息。
+b. /config/java_generate.properties 代码生成的最终顶级包结构,系统名称,包结构等。
+
+3.系统文件的配置工作:
+a. /spring/* 下的文件:applicationContext-dataSource.xml 需要根据实际情况进行修改。
+b. /spring/* 下的文件:applicationContext-servlet.xml 自动扫描的包名,需要修改对应的包名称。
+c. /spring/* 下的文件:applicationContext.xml 全包扫描,需要修改对应的包名称。
+
+注意:
+在对应文件夹下的list.jsp 中,循环展示页面信息的要添加: ${} 来筐视,否则会报错的!
+
