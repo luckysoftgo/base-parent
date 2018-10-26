@@ -1,0 +1,158 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.application.base</groupId>
+	<modules>
+		<!-- 基础工具 -->
+		<module>base-utils</module>
+		<!-- 核心工具 -->
+		<module>base-core</module>
+		<!-- 代码生成:复杂 -->
+		<module>base-generate</module>
+		<!-- 缓存处理 -->
+		<module>base-cache</module>
+		<!-- mongo处理 -->
+		<module>base-mongo</module>
+		<!-- 消息 -->
+		<module>base-message</module>
+		<!-- 索引查询 -->
+		<module>base-es</module>
+		<!-- 登录的认证处理 -->
+		<module>base-auth</module>
+		<!-- 支付模块. -->
+		<module>base-pay</module>
+		<!-- 代码生成:简单 -->
+		<module>base-codes</module>
+		<!-- 专门服务springboot -->
+		<module>base-boot</module>
+		<!-- dubbo 监控 -->
+		<module>base-monitor</module>
+
+	</modules>
+	<artifactId>base-parent</artifactId>
+    <!-- 模块设置. -->
+    <version>1.0.0-RELEASE</version>
+    <name>base-parent</name>
+    
+    <!-- pom文件定义 -->
+    <packaging>pom</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<spring.version>5.0.9.RELEASE</spring.version>
+        <downloadSources>true</downloadSources>
+    </properties>
+
+    <build>
+        <defaultGoal>compile</defaultGoal>
+        <pluginManagement>
+            <plugins>
+	            <plugin>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>3.2.0</version>
+					<configuration>
+						<warSourceDirectory>webapp</warSourceDirectory>
+						<failOnMissingWebXml>false</failOnMissingWebXml>
+					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.6</version>
+					<configuration>
+						<encoding>UTF-8</encoding>
+					</configuration>
+				</plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.5</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                        <encoding>UTF-8</encoding>
+                        <optimize>true</optimize>
+                        <debug>true</debug>
+                        <showDeprecation>true</showDeprecation>
+                        <showWarnings>false</showWarnings>
+                        <compilerArguments>
+                            <verbose/>
+                             <!-- mac os -->
+                             <!-- 
+                            <bootclasspath>${java.home}/lib/rt.jar:${java.home}/lib/jce.jar</bootclasspath>
+                              -->
+                            <!-- win os -->
+                            <bootclasspath>${java.home}/lib/rt.jar;${java.home}/lib/jce.jar</bootclasspath>
+                        </compilerArguments>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    
+	<profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                    <id>maven-snapshot</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                    <id>maven-snapshot</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+		<!-- jdk setting -->
+      	<profile>    
+	        <id>jdk8</id>    
+	        <activation>    
+	            <activeByDefault>true</activeByDefault>    
+	            <jdk>1.8</jdk>    
+	        </activation>    
+	        <properties>    
+	            <maven.compiler.source>1.8</maven.compiler.source>    
+	            <maven.compiler.target>1.8</maven.compiler.target>    
+	            <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>    
+	        </properties>     
+    	</profile>  
+    </profiles>
+
+    <repositories>
+        <repository>
+            <id>aliyun-repos</id>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>aliyun-plugin</id>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+    
+</project>
