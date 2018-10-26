@@ -142,12 +142,6 @@
 			<artifactId>spring-instrument</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-		<!-- Spring对Tomcat的连接池的集成 -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-instrument-tomcat</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
 		<!--  aop 包含的四个模块 end -->
 		
 		
@@ -195,12 +189,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<!-- Spring基于protlet的MVC实现 -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc-portlet</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
 		<!--  Web 部分包含三个模块(struts支持不推荐是用)  end -->
