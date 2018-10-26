@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<resultMessages>
+
+	<!-- .系统消息设置. -->
+	<resultMessage code="100" key="SYSTEM_AUTH_LOST_MSG" message="登录超时"/>
+    <resultMessage code="200" key="SYSTEM_SUCCESS_MSG" message="操作成功"/>
+    <resultMessage code="500" key="SYSTEM_ERROR_MSG"  message="服务器内部错误"/>
+    <resultMessage code="404" key="INTERFACE_IS_NULL_MSG"  message="请求接口不存在"/>
+    <resultMessage code="525" key="DATA_ACCESS_EXCEPTION_MSG"  message="数据访问异常"/>
+    <resultMessage code="535" key="DATA_OPERATE_EXCEPTION_MSG"  message="数据操作异常"/>
+    
+	
+	<!-- .通用消息设置. -->
+    <resultMessage code="100001" key="PARAMS_MISSING_MSG" message="参数输入不完整,请检查输入参数"/>
+    <resultMessage code="100002" key="VALIDATED_PARAMS_MSG"  message="参数格式不符合要求,请检查参数"/>
+	<resultMessage code="100003" key="COPY_BEAN_PROP_MSG" message="对象之间属性拷贝异常"/>
+	<resultMessage code="100004" key="CONVERT_BEAN_TO_MAP_MSG" message="Bean对象转换Map异常"/>
+	<resultMessage code="100005" key="CONVERT_MAP_TO_BEAN_MSG" message="Map转换Bean对象异常"/>
+	<resultMessage code="100006" key="REMOTE_CALL_FAILED_MSG" message="远程调用失败"/>
+	<resultMessage code="100007" key="REMOTE_CALL_TIMEOUT_MSG" message="远程调用超时"/>
+	<resultMessage code="100008" key="RESULT_OBJECT_CONVERT_FAILED_MSG" message="结果对象转换异常"/>
+	
+	<!-- 增删改提示信息 -->
+	<resultMessage code="200001" key="ADD_DATA_TO_DB_FAIL_MSG" message="保存对象操作失败"/>
+    <resultMessage code="200002" key="ADD_DATA_TO_DB_SUCCESS_MSG"  message="保存对象操作成功"/>
+	<resultMessage code="200003" key="UPDATE_DATA_TO_DB_FAIL_MSG" message="修改数据对象操作失败"/>
+	<resultMessage code="200004" key="UPDATE_DATA_TO_DB_SUCCESS_MSG" message="修改数据对象操作成功"/>
+	<resultMessage code="200005" key="DELETE_DATA_TO_DB_FAIL_MSG" message="删除数据对象操作失败"/>
+	<resultMessage code="200006" key="DELETE_DATA_TO_DB_SUCCESS_MSG" message="删除数据对象操作成功"/>
+	
+	<!-- 查询提示信息 -->
+	<resultMessage code="200007" key="DATA_ALREADY_EXIST_MSG" message="操作数据已经存在"/>
+	<resultMessage code="200008" key="SELECT_DATA_FROM_DB_FAIL_MSG" message="查询数据失败"/>
+	<resultMessage code="200009" key="SELECT_DATA_FROM_DB_SUCCESS_MSG" message="查询数据成功"/>
+	<resultMessage code="200010" key="QUERY_DB_NO_DATA_MSG" message="没有找到符合条件的结果"/>
+	<resultMessage code="200011" key="QUERY_PAGE_DATA_FAIL_MSG" message="分页查询失败"/>
+	<resultMessage code="200012" key="QUERY_PAGE_DATA_SUCCESS_MSG" message="分页查询成功"/>
+	<resultMessage code="200013" key="QUERY_TOTAL_DATA_FAIL_MSG" message="查询总条数失败"/>
+	<resultMessage code="200014" key="QUERY_TOTAL_DATA_SUCCESS_MSG" message="查询总条数成功"/>
+	
+</resultMessages>

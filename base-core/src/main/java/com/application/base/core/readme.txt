@@ -1,0 +1,7 @@
+本API可以支持:
+BaseService:是单数据源的接口
+MutilBaseService:是多数据源的接口
+
+MutilDefaultReadAndWriteDataSessionFactory:多数据源读写实现的SessionFactory
+MutilDefaultCacheReadAndWriteDataSessionFactory:多数据源带Cache的读写实现的SessionFactory
+

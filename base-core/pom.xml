@@ -1,0 +1,406 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.application.base</groupId>
+		<artifactId>base-parent</artifactId>
+		<version>1.0.0-RELEASE</version>
+	</parent>
+	<name>base-core</name>
+	<artifactId>base-core</artifactId>
+	<packaging>jar</packaging>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<!--  页面标签控制按钮,不好操作.
+		<spring-security.verion>4.2.1.RELEASE</spring-security.verion>
+		-->
+		<spring-security.verion>3.1.3.RELEASE</spring-security.verion>
+		<mysql-connector-java.version>5.1.38</mysql-connector-java.version>
+		<druid.version>1.0.20</druid.version>
+		<junit.version>4.12</junit.version>
+		
+		<mybatis.version>3.4.0</mybatis.version>
+		<mybatis-spring.version>1.3.0</mybatis-spring.version>
+		<mybatis-generator-core.version>1.3.2</mybatis-generator-core.version>
+		
+		<servlet-api.version>3.1.0</servlet-api.version>
+		<cglib-nodep.version>3.1</cglib-nodep.version>
+		<asm.version>3.3.1</asm.version>
+		<morphia.version>1.0.1</morphia.version>
+		<jstl.version>1.2</jstl.version>
+		
+        <jackson.version>2.8.1</jackson.version>
+        <dom4j.version>1.6.1</dom4j.version>
+        
+        <!-- 下载需要的 jar  -->
+		<downloadSources>true</downloadSources>
+		
+	</properties>
+
+	<dependencies>
+
+		<!--内部工具引用 start -->
+		<!-- utils -->
+		<dependency>
+			<groupId>com.application.base</groupId>
+			<artifactId>base-utils</artifactId>
+			<version>1.0.0-RELEASE</version>
+		</dependency>
+		<!-- redis -->
+		<dependency>
+			<groupId>com.application.base</groupId>
+			<artifactId>base-cache</artifactId>
+			<version>1.0.0-RELEASE</version>
+		</dependency>
+		<!--内部工具引用 end -->
+		
+		<!-- jackson setting start -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-core</artifactId>
+		    <version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-databind</artifactId>
+		    <version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-annotations</artifactId>
+		    <version>${jackson.version}</version>
+		</dependency>
+		<!-- jackson setting end -->
+
+		<!-- jstl 取值设置 -->
+		<dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>${jstl.version}</version>
+        </dependency>
+
+
+	<!-- Spring的核心工具包  start -->
+		
+		<!-- core 包的四个模块 start -->
+		<!-- Spring core 的引入 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- SpringIoC(依赖注入)的基础实现 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- Spring提供在基础IoC功能上的扩展服务，此外还提供许多企业级服务的支持，如邮件服务、任务调度、JNDI定位、EJB集成、远程访问、缓存以及各种视图层框架的封装等 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- Spring-context的扩展支持,用于MVC方面 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- Spring表达式语言 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-expression</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- core 包的四个模块 end -->
+		
+		
+		<!--  aop 包含的四个模块 start -->
+		<!-- Spring的面向切面编程,提供AOP(面向切面编程)实现 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- Spring提供对AspectJ框架的整合 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-aspects</artifactId>
+			<version>${spring-security.verion}</version>
+		</dependency>
+		<!-- Spring对服务器的代理接口 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-instrument</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- Spring对Tomcat的连接池的集成 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-instrument-tomcat</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!--  aop 包含的四个模块 end -->
+		
+		
+		<!-- data access 的五个模块 start  -->
+		<!-- Spring对JDBC的简单封装 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- Spring为JDBC、Hibernate、JDO、JPA等提供的一致的声明式和编程式事务管理 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- Spring整合第三方的ORM框架，如hibernate,ibatis,jdo，以及 spring的JPA实现 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- Spring 对Object/XMl的映射支持,可以让Java与XML之间来回切换 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-oxm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- Spring为简化JMS API的使用而作的简单封装 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jms</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- data access 的五个模块 end  -->
+		
+		
+		<!--  Web 部分包含三个模块(struts支持不推荐是用)  start -->
+		<!-- Spring web 支持 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- Spring基于protlet的MVC实现 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc-portlet</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!--  Web 部分包含三个模块(struts支持不推荐是用)  end -->
+		
+		
+		<!-- test 的模块 start -->
+		<!-- Spring对Junit等测试框架的简单封装 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- test 的两个模块 end -->
+		
+		
+		<!-- spring 用于构建基于消息的应用程序 start -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-messaging</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- spring 用于构建基于消息的应用程序 end -->
+		
+		<!-- spring websocket 为web应用提供的高效通信工具 start -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-websocket</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- spring websocket 为web应用提供的高效通信工具 end -->
+
+
+		<!-- spring-security 4 使用 start -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-core</artifactId>
+		    <version>${spring-security.verion}</version>
+		</dependency>		
+		<!-- web设置 -->
+		<dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${spring-security.verion}</version>
+        </dependency>
+        <!-- config配置 -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${spring-security.verion}</version>
+        </dependency>
+        <!-- tag标签 -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-taglibs</artifactId>
+		    <version>${spring-security.verion}</version>
+		</dependency>	
+		<!-- ldap认证 -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-ldap</artifactId>
+		    <version>${spring-security.verion}</version>
+		</dependency>	
+		<!-- 加密 -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-crypto</artifactId>
+		    <version>${spring-security.verion}</version>
+		</dependency>
+		<!-- 访问控制表 -->		
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-acl</artifactId>
+		    <version>${spring-security.verion}</version>
+		</dependency>	
+		<!-- spring-security 4 使用 end -->
+
+<!-- Spring的核心工具包  start -->
+
+		<!--DataSource start -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql-connector-java.version}</version>
+		</dependency>
+		<!-- 阿里数据连接池 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>${druid.version}</version>
+		</dependency>
+		<!--DataSource end -->
+		
+		<!--mybatis start -->
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>${mybatis.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>${mybatis-spring.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.mybatis.generator</groupId>
+		    <artifactId>mybatis-generator-core</artifactId>
+		    <version>${mybatis-generator-core.version}</version>
+		</dependency>
+		<!--mybatis end -->
+		
+		<!-- cglib代理 实现AOP的一种方式 -->
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+			<version>${cglib-nodep.version}</version>
+		</dependency>
+		<!-- ASM是一个java字节码操纵框架 -->
+		<dependency>
+			<groupId>asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>${asm.version}</version>
+		</dependency>
+		<!--utils end -->
+
+		<!-- junit test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+		</dependency>
+		
+		<!--web start -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${servlet-api.version}</version>
+		</dependency>
+		<!--web end -->
+		
+	</dependencies>
+
+	 <!-- 全局环境变量 -->
+	<profiles>
+		<profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<repositories>
+				<repository>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+					<id>maven-snapshot</id>
+					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+					<id>maven-snapshot</id>
+					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+				</pluginRepository>
+			</pluginRepositories>
+		</profile>
+		<!-- jdk setting -->
+		<profile>
+			<id>jdk8</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<jdk>1.8</jdk>
+			</activation>
+			<properties>
+				<maven.compiler.source>1.8</maven.compiler.source>
+				<maven.compiler.target>1.8</maven.compiler.target>
+				<maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+			</properties>
+		</profile>
+	</profiles>
+
+	<repositories>
+		<repository>
+			<id>aliyun-repos</id>
+			<url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>aliyun-plugin</id>
+			<url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+</project>

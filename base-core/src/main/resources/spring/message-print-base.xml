@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 获得Spring Application -->
+	<bean class="com.application.base.core.utils.SpringContextHolder"/>
+
+	<!-- 多库的读写操作 -->
+	<bean id="sqlSessionFactorySupport" class="com.application.base.core.datasource.impl.common.DefaultSpringSqlSessionFacotrySupport" />
+
+	<!-- 消息加载 -->
+	<bean id="resultMessageContext" class="com.application.base.core.result.ResultMessageContext" init-method="init">
+		<property name="paths" value="message/baseMessage.xml" />
+	</bean>
+
+</beans>
