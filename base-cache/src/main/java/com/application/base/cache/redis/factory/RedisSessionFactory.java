@@ -1,5 +1,6 @@
 package com.application.base.cache.redis.factory;
 
+import com.application.base.cache.redis.api.DistributedSession;
 import com.application.base.cache.redis.api.RedisSession;
 import com.application.base.cache.redis.exception.RedisException;
 
@@ -16,5 +17,12 @@ public interface RedisSessionFactory {
 	 * @throws RedisException
 	 */
 	RedisSession getRedisSession() throws RedisException;
+	
+	/**
+	 * 获取分布式的redis会话,
+	 * @return
+	 * @throws RedisException
+	 */
+	DistributedSession getDistributedSession() throws RedisException;
 
 }

@@ -3,30 +3,33 @@ package com.application.base.cache.redis.jedis.factory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import redis.clients.jedis.*;
+import redis.clients.jedis.JedisCluster;
+import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.JedisShardInfo;
+import redis.clients.jedis.ShardedJedisPool;
 import redis.clients.util.Hashing;
 import redis.clients.util.Sharded;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * @desc 集群设置pool 模仿 : JedisClusterFactory.java
+ * @desc 集群设置 ShardedJedisPool 模仿 : JedisDistributedFactory.java
  * @author 孤狼
  */
-public class JedisClusterFactory {
+public class JedisDistributedFactory {
 	
 	protected Logger logger = LoggerFactory.getLogger(getClass().getName());
 	
 	/**
 	 * 集群实例
 	 */
-	private JedisCluster jedisCluster;
+	private ShardedJedisPool jedisPool;
 	
 	/**
 	 * redis结点列表
 	 */
-	private Set<HostAndPort> clusterNodes = new HashSet<HostAndPort>();
+	private List<JedisShardInfo> clusterNodes = new ArrayList<JedisShardInfo>();
 	
 	/**
 	 * 连接池参数 spring 注入
@@ -44,6 +47,7 @@ public class JedisClusterFactory {
 	 * 最大尝试次数
 	 */
 	private int maxattempts = 10;
+	
 	/**
 	 * 存放 ip 和 port 的 Str
 	 */
@@ -51,7 +55,7 @@ public class JedisClusterFactory {
 	/**
 	 * 密码
 	 */
-	private String passWord="";
+	private String passWords="";
 	
 	/**
 	 * 密码分割符号(和 hostInfos 是一一对应的)
@@ -61,12 +65,12 @@ public class JedisClusterFactory {
 	/**
 	 * 构造方法
 	 */
-	public JedisClusterFactory() {}
+	public JedisDistributedFactory() {}
 	
 	/**
 	 * 构造方法
 	 */
-	public JedisClusterFactory(JedisPoolConfig poolConfig,int timeout,int sotimeout,int maxattempts,String hostInfos) {
+	public JedisDistributedFactory(JedisPoolConfig poolConfig, int timeout, int sotimeout, int maxattempts, String hostInfos) {
 		this.poolConfig =poolConfig;
 		this.timeout = timeout;
 		this.sotimeout = sotimeout;
@@ -78,12 +82,12 @@ public class JedisClusterFactory {
 	/**
 	 * 构造方法
 	 */
-	public JedisClusterFactory(JedisPoolConfig poolConfig,int timeout,int sotimeout,int maxattempts,String passWord,String hostInfos) {
+	public JedisDistributedFactory(JedisPoolConfig poolConfig, int timeout, int sotimeout, int maxattempts, String passWords, String hostInfos) {
 		this.poolConfig =poolConfig;
 		this.timeout = timeout;
 		this.sotimeout = sotimeout;
 		this.maxattempts = maxattempts;
-		this.passWord = passWord;
+		this.passWords = passWords;
 		this.hostInfos = hostInfos;
 		initFactory();
 	}
@@ -95,17 +99,26 @@ public class JedisClusterFactory {
 				logger.info("初始化 Redis 集群的IP和端口,没有传入IP和端口的字符串.");
 				return;
 			}
+			boolean isAuth=false;
+			String[] authPassWord=null;
+			if (!StringUtils.isNotBlank(passWords)) {
+				isAuth=true;
+				authPassWord=passWords.split(passSplit);
+			}
 			// 以";"分割成"ip:post"
 			String[] ipAndPorts = hostInfos.split(passSplit);
-			HostAndPort instance = null ;
+			JedisShardInfo instance = null ;
 			for (int i = 0; i <ipAndPorts.length ; i++) {
 				String[] ipAndPortArray = ipAndPorts[i].split(":");
-				instance=new HostAndPort(ipAndPortArray[0],Integer.parseInt(ipAndPortArray[1]));
+				instance=new JedisShardInfo(ipAndPortArray[0],Integer.parseInt(ipAndPortArray[1]));
+				String tmpAuth=authPassWord[i];
+				if (isAuth && StringUtils.isNotBlank(tmpAuth)){
+					instance.setPassword(tmpAuth);
+				}
 				clusterNodes.add(instance);
 			}
 			//得到实例.
-			jedisCluster = new JedisCluster(clusterNodes, timeout, sotimeout, maxattempts,poolConfig);
-			jedisCluster.auth(passWord);
+			jedisPool=new ShardedJedisPool(poolConfig, clusterNodes, Hashing.MURMUR_HASH,Sharded.DEFAULT_KEY_TAG_PATTERN);
 		}
 		catch (Exception ex) {
 			logger.error("格式化传入的ip端口异常了,请检查出传入的字符串信息,error:{}" , ex.getMessage());
@@ -116,52 +129,63 @@ public class JedisClusterFactory {
 	 * 获得对象实例
 	 * @return
 	 */
-	public JedisCluster getResource() {
-		if (null==jedisCluster) {
+	public ShardedJedisPool getJedisPool() {
+		if (null==jedisPool) {
 			initFactory();
 		}
-		return jedisCluster;
+		return jedisPool;
+	}
+	
+	public void setJedisPool(ShardedJedisPool jedisPool) {
+		this.jedisPool = jedisPool;
+	}
+	
+	public List<JedisShardInfo> getClusterNodes() {
+		return clusterNodes;
+	}
+	
+	public void setClusterNodes(List<JedisShardInfo> clusterNodes) {
+		this.clusterNodes = clusterNodes;
 	}
 	
 	public JedisPoolConfig getPoolConfig() {
 		return poolConfig;
 	}
-
+	
 	public void setPoolConfig(JedisPoolConfig poolConfig) {
 		this.poolConfig = poolConfig;
 	}
-
+	
 	public int getTimeout() {
 		return timeout;
 	}
-
+	
 	public void setTimeout(int timeout) {
 		this.timeout = timeout;
 	}
-
+	
 	public int getSotimeout() {
 		return sotimeout;
 	}
-
+	
 	public void setSotimeout(int sotimeout) {
 		this.sotimeout = sotimeout;
 	}
-
+	
 	public int getMaxattempts() {
 		return maxattempts;
 	}
-
+	
 	public void setMaxattempts(int maxattempts) {
 		this.maxattempts = maxattempts;
 	}
 	
-	
-	public String getPassWord() {
-		return passWord;
+	public String getPassWords() {
+		return passWords;
 	}
 	
-	public void setPassWord(String passWord) {
-		this.passWord = passWord;
+	public void setPassWords(String passWords) {
+		this.passWords = passWords;
 	}
 	
 	public String getHostInfos() {

@@ -1,8 +1,10 @@
 package com.application.base.cache.redis.jedis.factory;
 
+import com.application.base.cache.redis.api.DistributedSession;
 import com.application.base.cache.redis.api.RedisSession;
 import com.application.base.cache.redis.exception.RedisException;
 import com.application.base.cache.redis.factory.RedisSessionFactory;
+import com.application.base.cache.redis.jedis.session.JedisDistributedSession;
 import com.application.base.cache.redis.jedis.session.JedisSimpleSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,11 +38,16 @@ public class JedisSimpleSessionFactory implements RedisSessionFactory {
         try {
             session = (RedisSession) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{RedisSession.class}, new JedisSimpleSessionProxy(new JedisSimpleSession()));
         } catch (Exception e) {
-            logger.error("{}", e);
+	        logger.error("错误信息是:{}", e);
         }
         return session;
     }
-
+	
+	@Override
+	public DistributedSession getDistributedSession() throws RedisException {
+		return null;
+	}
+	
 	public Pool<Jedis> getPool() {
 		return pool;
 	}

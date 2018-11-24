@@ -30,18 +30,18 @@ public class JedisClusterSession implements RedisSession {
     /**
      *  被 装配到  Spring 工厂
      */
-	private JedisCluster jedis;
+	private JedisCluster jedisCluster;
 
 	public JedisCluster getClusterJedis() {
-        if (null==jedis){
+        if (null== jedisCluster){
             logger.error("[redis错误:{}]","获得redis集群实例对象为空");
             throw new RedisException("获得redis集群实例对象为空");
         }
-		return jedis;
+		return jedisCluster;
 	}
 
 	public void setClusterJedis(JedisCluster jedis) {
-		this.jedis = jedis;
+		this.jedisCluster = jedis;
 	}
 	  
     @Override
