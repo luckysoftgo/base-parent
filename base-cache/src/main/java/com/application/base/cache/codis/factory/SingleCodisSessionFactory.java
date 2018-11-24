@@ -2,6 +2,7 @@ package com.application.base.cache.codis.factory;
 
 import com.application.base.cache.codis.architecture.cache.CacheClient;
 import com.application.base.cache.codis.session.SingleCodisSession;
+import com.application.base.cache.redis.api.DistributedSession;
 import com.application.base.cache.redis.api.RedisSession;
 import com.application.base.cache.redis.exception.RedisException;
 import com.application.base.cache.redis.factory.RedisSessionFactory;
@@ -52,7 +53,12 @@ public class SingleCodisSessionFactory implements RedisSessionFactory {
         }
         return session;
     }
-
+    
+    @Override
+    public DistributedSession getDistributedSession() throws RedisException {
+        return null;
+    }
+    
     private class CodisSimpleSessionProxy implements InvocationHandler {
         private SingleCodisSession codisSession;
 
