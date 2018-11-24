@@ -3,10 +3,7 @@ package com.application.base.cache.redis.jedis.factory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.JedisShardInfo;
-import redis.clients.jedis.ShardedJedisPool;
+import redis.clients.jedis.*;
 import redis.clients.util.Hashing;
 import redis.clients.util.Sharded;
 
@@ -129,11 +126,11 @@ public class JedisDistributedFactory {
 	 * 获得对象实例
 	 * @return
 	 */
-	public ShardedJedisPool getJedisPool() {
+	public ShardedJedis getResource() {
 		if (null==jedisPool) {
 			initFactory();
 		}
-		return jedisPool;
+		return jedisPool.getResource();
 	}
 	
 	public void setJedisPool(ShardedJedisPool jedisPool) {

@@ -72,7 +72,7 @@ public class JedisDistributedSessionFactory implements RedisSessionFactory {
 			logger.debug("获取redis链接");
 			ShardedJedis jedis = null;
 			try {
-				jedis = JedisDistributedSessionFactory.this.pool.getJedisPool().getResource();
+				jedis = JedisDistributedSessionFactory.this.pool.getResource();
 			}
 			catch (Exception e) {
 				logger.error("获取redis链接错误,{}", e);
