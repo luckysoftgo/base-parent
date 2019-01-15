@@ -28,7 +28,7 @@ public class GuavaBloomFilterUtil implements Serializable {
 	/**
 	 * 当前实例下的可以被用作拦截 BloomFilter 的集合.
 	 */
-	public static Map<String,BloomFilter> bloomFiltersMap = new ConcurrentHashMap<String,BloomFilter>(16);
+	public static final Map<String,BloomFilter> bloomFiltersMap = new ConcurrentHashMap<String,BloomFilter>(16);
 	
 	/**
 	 * 测试数据.
