@@ -15,7 +15,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- *@desc codis 缓存
+ *@desc codis 多实例缓存.
+ *
  *@author 孤狼
  */
 public class MutilCodisSession extends JedisClusterSession implements RedisSession {

@@ -1,46 +1,40 @@
 package com.application.base.cache.redis.jedis.session;
 
-import com.application.base.cache.redis.api.DistributedSession;
+import com.application.base.cache.redis.api.ShardedSession;
 import com.application.base.cache.redis.exception.RedisException;
 import com.application.base.cache.redis.jedis.JedisUtil;
 import com.application.base.utils.json.JsonConvertUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import redis.clients.jedis.JedisPubSub;
 import redis.clients.jedis.ShardedJedis;
 
 import java.util.List;
 import java.util.Set;
 
 /**
- * @desc :redis 分布式集群配置.
- * @author 孤狼.
+ * @desc :redis 分片 session 客户端.
+ * @author 孤狼
  */
-public class JedisDistributedSession implements DistributedSession {
+public class JedisShardedSession implements ShardedSession {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
     
-    /**
-     * 默认时间设置,一天时间
-     */
-	protected static final int DEFAULT_TIMEOUT = 60 * 60 * 24;
-
 	/** 默认的 {@code JSON} 完整日期/时间字段的格式化模式。 */
     /**
      *  被 装配到  Spring 工厂
      */
-	private ShardedJedis distributedJedis;
+	private ShardedJedis shardedJedis;
 
-	public ShardedJedis getDistributedJedis() {
-        if (null== distributedJedis){
-            logger.error("[redis错误:{}]","获得redis集群实例对象为空");
-            throw new RedisException("获得redis集群实例对象为空");
+	public ShardedJedis getShardedJedis() {
+        if (null== shardedJedis){
+            logger.error("[redis错误:{}]","获得redis分片实例对象为空");
+            throw new RedisException("获得redis分片实例对象为空");
         }
-		return distributedJedis;
+		return shardedJedis;
 	}
 
-	public void setDistributedJedis(ShardedJedis distributedJedis) {
-		this.distributedJedis = distributedJedis;
+	public void setShardedJedis(ShardedJedis shardedJedis) {
+		this.shardedJedis = shardedJedis;
 	}
 	  
     @Override
@@ -63,7 +57,7 @@ public class JedisDistributedSession implements DistributedSession {
         String objStr;
         try {
             JedisUtil.redisValidated(logger,key);
-            Object o = getDistributedJedis().get(key);
+            Object o = getShardedClient().get(key);
             if(isEmpty(o)) {
 				return null;
 			}
@@ -95,7 +89,7 @@ public class JedisDistributedSession implements DistributedSession {
             if (timeout == 0) {
 				timeout = DEFAULT_TIMEOUT;
 			}
-            getDistributedJedis().setex(key, timeout,stringValue(value));
+            getShardedClient().setex(key, timeout,stringValue(value));
             logger.info("[存入key:{},value:{}]" ,key,stringValue(value));
         } catch (Exception e) {
             logger.error("[redis错误:{}]",e);
@@ -107,7 +101,7 @@ public class JedisDistributedSession implements DistributedSession {
     public boolean contains(String key) throws RedisException {
         try {
             JedisUtil.redisValidated(logger,key);
-            return getDistributedJedis().exists(key);
+            return getShardedClient().exists(key);
         } catch (Exception e) {
             logger.error("[redis错误:{}]",e);
             throw new RedisException(e);
@@ -118,7 +112,7 @@ public class JedisDistributedSession implements DistributedSession {
     public long getKeyLastTime(String key)  throws RedisException {
         try {
             JedisUtil.redisValidated(logger,key);
-            long timeout = getDistributedJedis().ttl(key);
+            long timeout = getShardedClient().ttl(key);
             logger.info("key:{},剩余超时时间为：{}",key,timeout);
             return timeout;
         } catch (Exception e) {
@@ -131,18 +125,18 @@ public class JedisDistributedSession implements DistributedSession {
     public long delete(String key)  throws RedisException {
         try {
             JedisUtil.redisValidated(logger,key);
-            return this.getDistributedJedis().del(key);
+            return this.getShardedClient().del(key);
         } catch (Exception e) {
             logger.error("[redis错误:{}]",e);
             throw new RedisException(e);
         }
     }
-
+    
     @Override
     public String set(String key, String value) throws RedisException {
         try {
             JedisUtil.redisValidated(logger,key,value);
-            return this.getDistributedJedis().set(key,value);
+            return this.getShardedClient().set(key,value);
         } catch (Exception e) {
             logger.error("[redis错误:{}]",e);
             throw new RedisException(e);
@@ -160,7 +154,7 @@ public class JedisDistributedSession implements DistributedSession {
             if (isEmpty(expx)) {
                 nxxx = SET_WITH_EXPIRE_TIME;
             }
-            return this.getDistributedJedis().set(key,value,nxxx,expx,expireTime);
+            return this.getShardedClient().set(key,value,nxxx,expx,expireTime);
         } catch (Exception e) {
             logger.error("[redis错误:{}]",e);
             throw new RedisException(e);
@@ -172,7 +166,7 @@ public class JedisDistributedSession implements DistributedSession {
     public long setnx(String key, Object value) throws RedisException {
         try {
             JedisUtil.redisValidated(logger,key,value);
-            long result = getDistributedJedis().setnx(key,value.toString());
+            long result = getShardedClient().setnx(key,value.toString());
             return result;
         } catch (Exception e) {
             logger.error("[redis错误:{}]",e);
@@ -184,7 +178,7 @@ public class JedisDistributedSession implements DistributedSession {
     public long rpush(String key, String... value) throws RedisException {
         try {
             JedisUtil.redisValidated(logger,key,value);
-            long result =  getDistributedJedis().rpush(key,value);
+            long result =  getShardedClient().rpush(key,value);
             logger.debug("[存入队列key:{},value:{}]" ,key,stringValue(value));
             return result;
         } catch (Exception e) {
@@ -197,7 +191,7 @@ public class JedisDistributedSession implements DistributedSession {
     public String rpop(String key) throws RedisException {
         try {
             JedisUtil.redisValidated(logger,key);
-            String o = getDistributedJedis().rpop(key);
+            String o = getShardedClient().rpop(key);
             if(isEmpty(o)) {
                 return null;
             }
@@ -213,7 +207,7 @@ public class JedisDistributedSession implements DistributedSession {
     public long lpush(String key, String... value) throws RedisException {
         try {
             JedisUtil.redisValidated(logger,key,value);
-            long result = getDistributedJedis().lpush(key,value);
+            long result =  getShardedClient().lpush(key,value);
             logger.debug("[存入队列key:{},value:{}]" ,key,stringValue(value));
             return result;
         } catch (Exception e) {
@@ -226,7 +220,7 @@ public class JedisDistributedSession implements DistributedSession {
     public String lpop(String key) throws RedisException {
         try {
             JedisUtil.redisValidated(logger,key);
-            String o = getDistributedJedis().lpop(key);
+            String o = getShardedClient().lpop(key);
             if(isEmpty(o)) {
                 return null;
             }
@@ -245,84 +239,106 @@ public class JedisDistributedSession implements DistributedSession {
             logger.info("[超时时间应为大于零的整数,输入值为{}！]", seconds);
             throw new RedisException("存入值为空!");
         }
-        return getDistributedJedis().expire(key, seconds);
+        return getShardedClient().expire(key, seconds);
+    }
+    
+    /**
+     * 发布消息
+     */
+    @Override
+    public void publish(String chanel, Object msg) {
+    	if (isEmpty(chanel)) {
+            logger.info("[chanel:{}为空！]", chanel);
+            throw new RedisException("chanel为空!");
+        }
+    	if (isEmpty(msg)) {
+            logger.info("[msg:{}为空！]", msg);
+            throw new RedisException("发送msg为空!");
+        }
+        String msgJson =null;
+        try {
+        	msgJson = JsonConvertUtils.toJson(msg);
+		}
+		catch (Exception e) {
+            logger.error("[ Object 转换成 Json 失败！]", msg);
+		}
+        publish(chanel,msgJson);
     }
     
     @Override
 	public long incrNum(String key) throws RedisException {
         JedisUtil.redisValidated(logger,key);
-        return getDistributedJedis().incr(key);
+        return getShardedClient().incr(key);
 	}
 
 	@Override
 	public long incrByNum(String key, long index) throws RedisException {
         JedisUtil.redisValidated(logger,key);
-        return getDistributedJedis().incrBy(key, index);
+        return getShardedClient().incrBy(key, index);
 	}
 
 	@Override
 	public long decrNum(String key) throws RedisException {
         JedisUtil.redisValidated(logger,key);
-        return getDistributedJedis().decr(key);
+        return getShardedClient().decr(key);
 	}
 
 	@Override
 	public long decrByNum(String key, long index) throws RedisException {
         JedisUtil.redisValidated(logger,key);
-        return getDistributedJedis().decrBy(key, index);
+        return getShardedClient().decrBy(key, index);
 	}
     
     @Override
     public List<String> betweenRange(String key, long start, long end) throws RedisException {
         JedisUtil.redisValidated(logger,key);
-        return getDistributedJedis().lrange(key, start,end);
+        return getShardedClient().lrange(key, start,end);
     }
     
     @Override
     public long addSet(String key, String... value) throws RedisException {
         JedisUtil.redisValidated(logger, key, value);
-        return getDistributedJedis().sadd(key, value);
+        return getShardedClient().sadd(key, value);
     }
     
     @Override
     public long removeSet(String key, String... value) throws RedisException {
         JedisUtil.redisValidated(logger, key, value);
-        return getDistributedJedis().srem(key, value);
+        return getShardedClient().srem(key, value);
     }
     
     @Override
     public Set<String> getSets(String key) throws RedisException {
         JedisUtil.redisValidated(logger, key);
-        return getDistributedJedis().smembers(key);
+        return getShardedClient().smembers(key);
     }
     
     @Override
     public long addHash(String key, String field, String value) throws RedisException {
         JedisUtil.redisValidated(logger, key, field);
-        return getDistributedJedis().hset(key, field, value);
+        return getShardedClient().hset(key, field, value);
     }
     
     @Override
     public long removeHash(String key, String field) throws RedisException {
         JedisUtil.redisValidated(logger, key, field);
-        return getDistributedJedis().hdel(key, field);
+        return getShardedClient().hdel(key, field);
     }
     
     @Override
     public String getHash(String key, String field) throws RedisException {
         JedisUtil.redisValidated(logger, key, field);
-        return getDistributedJedis().hget(key, field);
+        return getShardedClient().hget(key, field);
     }
     
     @Override
     public List<String> getHashs(String key) throws RedisException {
         JedisUtil.redisValidated(logger, key);
-        return getDistributedJedis().hvals(key);
+        return getShardedClient().hvals(key);
     }
     
     @Override
-    public ShardedJedis getClient() throws RedisException {
-        return getDistributedJedis();
+    public ShardedJedis getShardedClient() throws RedisException {
+        return getShardedJedis();
     }
-    
 }

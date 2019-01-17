@@ -1,42 +1,42 @@
 package com.application.base.cache.redis.jedis.factory;
 
-import com.application.base.cache.redis.api.DistributedSession;
 import com.application.base.cache.redis.api.RedisSession;
+import com.application.base.cache.redis.api.ShardedSession;
 import com.application.base.cache.redis.exception.RedisException;
 import com.application.base.cache.redis.factory.RedisSessionFactory;
-import com.application.base.cache.redis.jedis.session.JedisDistributedSession;
 import com.application.base.cache.redis.jedis.session.JedisSimpleSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
-import redis.clients.util.Pool;
+import redis.clients.jedis.JedisPool;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
- * @desc 简单工厂
+ * @desc 简单工厂,适用于单机版的 redis 配置.
  * @author 孤狼.
  */
 public class JedisSimpleSessionFactory implements RedisSessionFactory {
 	
 	Logger logger = LoggerFactory.getLogger(getClass());
 
-	private Pool<Jedis> pool;
+	private JedisPool jedisPool;
 
 	public JedisSimpleSessionFactory() {
 	}
 	
-	public JedisSimpleSessionFactory(Pool<Jedis> pool) {
-		this.pool = pool;
+	public JedisSimpleSessionFactory(JedisPool pool) {
+		this.jedisPool = pool;
 	}
 
     @Override
-    public RedisSession getRedisSession() {
+    public RedisSession getRedisSession() throws RedisException {
         RedisSession session = null;
         try {
-            session = (RedisSession) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{RedisSession.class}, new JedisSimpleSessionProxy(new JedisSimpleSession()));
+            session = (RedisSession) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+		            new Class[]{RedisSession.class}, new JedisSimpleSessionProxy(new JedisSimpleSession()));
         } catch (Exception e) {
 	        logger.error("错误信息是:{}", e);
         }
@@ -44,16 +44,16 @@ public class JedisSimpleSessionFactory implements RedisSessionFactory {
     }
 	
 	@Override
-	public DistributedSession getDistributedSession() throws RedisException {
+	public ShardedSession getShardedSession() throws RedisException {
 		return null;
 	}
 	
-	public Pool<Jedis> getPool() {
-		return pool;
+	public JedisPool getJedisPool() {
+		return jedisPool;
 	}
 
-	public void setPool(Pool<Jedis> pool) {
-		this.pool = pool;
+	public void setJedisPool(JedisPool jedisPool) {
+		this.jedisPool = jedisPool;
 	}
 
 	private class JedisSimpleSessionProxy implements InvocationHandler {
@@ -74,7 +74,7 @@ public class JedisSimpleSessionFactory implements RedisSessionFactory {
 			logger.debug("获取redis链接");
 			Jedis jedis = null;
 			try {
-				jedis = JedisSimpleSessionFactory.this.pool.getResource();
+				jedis = JedisSimpleSessionFactory.this.jedisPool.getResource();
 			}
 			catch (Exception e) {
 				logger.error("获取redis链接错误,{}", e);
@@ -101,7 +101,7 @@ public class JedisSimpleSessionFactory implements RedisSessionFactory {
 			Jedis jedis = null;
 			boolean success = true;
 			try {
-				if (pool == null) {
+				if (jedisPool == null) {
 					logger.error("获取Jedi连接池失败");
 					throw new RedisException("获取Jedi连接池失败");
 				}

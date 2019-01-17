@@ -14,15 +14,15 @@ public interface DistributedLock {
     /**
      * 返回的标识
      */
-    final String LOCK_SUCCESS = "OK";
+    String LOCK_SUCCESS = "OK";
     /**
      * 这个参数我们填的是NX，意思是SET IF NOT EXIST,即当key不存在时,我们进行set操作;若key已经存在,则不做任何操作.
      */
-    final String SET_IF_NOT_EXIST = "NX";
+    String SET_IF_NOT_EXIST = "NX";
     /**
      * 这个参数我们传的是PX，意思是我们要给这个key加一个过期的设置，具体时间由第五个参数决定
      */
-    final String SET_WITH_EXPIRE_TIME = "PX";
+    String SET_WITH_EXPIRE_TIME = "PX";
     
     /**
      * 默认超时时间
@@ -32,7 +32,7 @@ public interface DistributedLock {
     /**
      * 获取锁成功
      */
-    int SUCCESS = 1;
+    long SUCCESS = 1;
     
     /**
      * 根据uniqueKey构建分布式锁,对key进行锁定,循环获取锁,直到获取到锁为止

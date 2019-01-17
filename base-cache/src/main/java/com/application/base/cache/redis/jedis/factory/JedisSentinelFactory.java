@@ -4,34 +4,38 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.*;
-import redis.clients.util.Hashing;
-import redis.clients.util.Sharded;
+import redis.clients.util.Pool;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * @desc 集群设置 ShardedJedisPool 模仿 : JedisDistributedFactory.java
+ * @desc 哨兵设置JedisSentinelPool.
  * @author 孤狼
  */
-public class JedisDistributedFactory {
+public class JedisSentinelFactory extends Pool<Jedis> {
 	
 	protected Logger logger = LoggerFactory.getLogger(getClass().getName());
 	
 	/**
-	 * 集群实例
+	 * 哨兵模式
 	 */
-	private ShardedJedisPool jedisPool;
+	private JedisSentinelPool jedisPool;
 	
 	/**
-	 * redis结点列表
+	 * redis结点列表127.0.0.1:16379;127.0.0.1:26379;
 	 */
-	private List<JedisShardInfo> clusterNodes = new ArrayList<JedisShardInfo>();
+	private Set<String> sentinels = new HashSet<>();
 	
 	/**
 	 * 连接池参数 spring 注入
 	 */
 	private JedisPoolConfig poolConfig;
+	
+	/**
+	 * 哨兵的名称
+	 */
+	private String masterName="masterName";
 	/**
 	 * 连接时间.
 	 */
@@ -62,12 +66,13 @@ public class JedisDistributedFactory {
 	/**
 	 * 构造方法
 	 */
-	public JedisDistributedFactory() {}
+	public JedisSentinelFactory() {}
 	
 	/**
 	 * 构造方法
 	 */
-	public JedisDistributedFactory(JedisPoolConfig poolConfig, int timeout, int sotimeout, int maxattempts, String hostInfos) {
+	public JedisSentinelFactory(String masterName, JedisPoolConfig poolConfig, int timeout, int sotimeout, int maxattempts, String hostInfos) {
+		this.masterName=masterName;
 		this.poolConfig =poolConfig;
 		this.timeout = timeout;
 		this.sotimeout = sotimeout;
@@ -79,7 +84,8 @@ public class JedisDistributedFactory {
 	/**
 	 * 构造方法
 	 */
-	public JedisDistributedFactory(JedisPoolConfig poolConfig, int timeout, int sotimeout, int maxattempts, String passWords, String hostInfos) {
+	public JedisSentinelFactory(String masterName, JedisPoolConfig poolConfig, int timeout, int sotimeout, int maxattempts, String passWords, String hostInfos) {
+		this.masterName=masterName;
 		this.poolConfig =poolConfig;
 		this.timeout = timeout;
 		this.sotimeout = sotimeout;
@@ -93,29 +99,26 @@ public class JedisDistributedFactory {
 	public void initFactory() {
 		try {
 			if (!StringUtils.isNotBlank(hostInfos)) {
-				logger.info("初始化 Redis 集群的IP和端口,没有传入IP和端口的字符串.");
+				logger.info("初始化 Redis 哨兵的IP和端口,没有传入IP和端口的字符串.");
 				return;
 			}
 			boolean isAuth=false;
-			String[] authPassWord=null;
-			if (!StringUtils.isNotBlank(passWords)) {
+			if (StringUtils.isNotBlank(getPassWords())) {
 				isAuth=true;
-				authPassWord=passWords.split(passSplit);
 			}
 			// 以";"分割成"ip:post"
 			String[] ipAndPorts = hostInfos.split(passSplit);
-			JedisShardInfo instance = null ;
 			for (int i = 0; i <ipAndPorts.length ; i++) {
-				String[] ipAndPortArray = ipAndPorts[i].split(":");
-				instance=new JedisShardInfo(ipAndPortArray[0],Integer.parseInt(ipAndPortArray[1]));
-				String tmpAuth=authPassWord[i];
-				if (isAuth && StringUtils.isNotBlank(tmpAuth)){
-					instance.setPassword(tmpAuth);
-				}
-				clusterNodes.add(instance);
+				sentinels.add(ipAndPorts[i]);
 			}
+			//设置内容.
+			setSentinels(sentinels);
 			//得到实例.
-			jedisPool=new ShardedJedisPool(poolConfig, clusterNodes, Hashing.MURMUR_HASH,Sharded.DEFAULT_KEY_TAG_PATTERN);
+			if (isAuth) {
+				jedisPool=new JedisSentinelPool(getMasterName(),getSentinels(),getPoolConfig(),getPassWords());
+			} else {
+				jedisPool=new JedisSentinelPool(getMasterName(),getSentinels(),getPoolConfig());
+			}
 		}
 		catch (Exception ex) {
 			logger.error("格式化传入的ip端口异常了,请检查出传入的字符串信息,error:{}" , ex.getMessage());
@@ -126,23 +129,12 @@ public class JedisDistributedFactory {
 	 * 获得对象实例
 	 * @return
 	 */
-	public ShardedJedis getResource() {
+	@Override
+	public Jedis getResource() {
 		if (null==jedisPool) {
 			initFactory();
 		}
 		return jedisPool.getResource();
-	}
-	
-	public void setJedisPool(ShardedJedisPool jedisPool) {
-		this.jedisPool = jedisPool;
-	}
-	
-	public List<JedisShardInfo> getClusterNodes() {
-		return clusterNodes;
-	}
-	
-	public void setClusterNodes(List<JedisShardInfo> clusterNodes) {
-		this.clusterNodes = clusterNodes;
 	}
 	
 	public JedisPoolConfig getPoolConfig() {
@@ -151,6 +143,22 @@ public class JedisDistributedFactory {
 	
 	public void setPoolConfig(JedisPoolConfig poolConfig) {
 		this.poolConfig = poolConfig;
+	}
+	
+	public String getMasterName() {
+		return masterName;
+	}
+	
+	public void setMasterName(String masterName) {
+		this.masterName = masterName;
+	}
+	
+	public Set<String> getSentinels() {
+		return sentinels;
+	}
+	
+	public void setSentinels(Set<String> sentinels) {
+		this.sentinels = sentinels;
 	}
 	
 	public int getTimeout() {

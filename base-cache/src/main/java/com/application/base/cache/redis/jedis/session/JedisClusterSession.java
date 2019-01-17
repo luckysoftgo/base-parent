@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPubSub;
+import redis.clients.jedis.ShardedJedis;
 
 import java.util.List;
 import java.util.Set;
@@ -21,11 +22,6 @@ public class JedisClusterSession implements RedisSession {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
     
-    /**
-     * 默认时间设置,一天时间
-     */
-	protected static final int DEFAULT_TIMEOUT = 60 * 60 * 24;
-
 	/** 默认的 {@code JSON} 完整日期/时间字段的格式化模式。 */
     /**
      *  被 装配到  Spring 工厂
@@ -64,7 +60,7 @@ public class JedisClusterSession implements RedisSession {
         String objStr;
         try {
             JedisUtil.redisValidated(logger,key);
-            Object o = getClusterJedis().get(key);
+            Object o = getClusterClient().get(key);
             if(isEmpty(o)) {
 				return null;
 			}
@@ -80,7 +76,7 @@ public class JedisClusterSession implements RedisSession {
     @Override
     public List<String> getData(String... keys) throws RedisException {
         JedisUtil.redisValidated(logger,keys);
-        return getClusterJedis().mget(keys);
+        return getClusterClient().mget(keys);
     }
     
     @Override
@@ -102,7 +98,7 @@ public class JedisClusterSession implements RedisSession {
             if (timeout == 0) {
 				timeout = DEFAULT_TIMEOUT;
 			}
-            getClusterJedis().setex(key, timeout,stringValue(value));
+            getClusterClient().setex(key, timeout,stringValue(value));
             logger.info("[存入key:{},value:{}]" ,key,stringValue(value));
         } catch (Exception e) {
             logger.error("[redis错误:{}]",e);
@@ -114,7 +110,7 @@ public class JedisClusterSession implements RedisSession {
     public boolean contains(String key) throws RedisException {
         try {
             JedisUtil.redisValidated(logger,key);
-            return getClusterJedis().exists(key);
+            return getClusterClient().exists(key);
         } catch (Exception e) {
             logger.error("[redis错误:{}]",e);
             throw new RedisException(e);
@@ -125,7 +121,7 @@ public class JedisClusterSession implements RedisSession {
     public long getKeyLastTime(String key)  throws RedisException {
         try {
             JedisUtil.redisValidated(logger,key);
-            long timeout = getClusterJedis().ttl(key);
+            long timeout = getClusterClient().ttl(key);
             logger.info("key:{},剩余超时时间为：{}",key,timeout);
             return timeout;
         } catch (Exception e) {
@@ -138,7 +134,7 @@ public class JedisClusterSession implements RedisSession {
     public long delete(String key)  throws RedisException {
         try {
             JedisUtil.redisValidated(logger,key);
-            return this.getClusterJedis().del(key);
+            return this.getClusterClient().del(key);
         } catch (Exception e) {
             logger.error("[redis错误:{}]",e);
             throw new RedisException(e);
@@ -150,9 +146,9 @@ public class JedisClusterSession implements RedisSession {
     public void flushAll() throws RedisException {
         try {
             //Delete currently selected DB ...
-        	this.getClusterJedis().flushDB();
+        	this.getClusterClient().flushDB();
             //Delete all the keys of all the existing databases ...
-            this.getClusterJedis().flushAll();
+            this.getClusterClient().flushAll();
         } catch (Exception e) {
             logger.error("[redis错误:{}]",e);
             throw new RedisException(e);
@@ -163,7 +159,7 @@ public class JedisClusterSession implements RedisSession {
     public String set(String key, String value) throws RedisException {
         try {
             JedisUtil.redisValidated(logger,key,value);
-            return this.getClusterJedis().set(key,value);
+            return this.getClusterClient().set(key,value);
         } catch (Exception e) {
             logger.error("[redis错误:{}]",e);
             throw new RedisException(e);
@@ -181,7 +177,7 @@ public class JedisClusterSession implements RedisSession {
             if (isEmpty(expx)) {
                 nxxx = SET_WITH_EXPIRE_TIME;
             }
-            return this.getClusterJedis().set(key,value,nxxx,expx,expireTime);
+            return this.getClusterClient().set(key,value,nxxx,expx,expireTime);
         } catch (Exception e) {
             logger.error("[redis错误:{}]",e);
             throw new RedisException(e);
@@ -193,7 +189,7 @@ public class JedisClusterSession implements RedisSession {
     public long setnx(String key, Object value) throws RedisException {
         try {
             JedisUtil.redisValidated(logger,key,value);
-            long result = getClusterJedis().setnx(key,value.toString());
+            long result = getClusterClient().setnx(key,value.toString());
             return result;
         } catch (Exception e) {
             logger.error("[redis错误:{}]",e);
@@ -205,7 +201,7 @@ public class JedisClusterSession implements RedisSession {
     public long rpush(String key, String... value) throws RedisException {
         try {
             JedisUtil.redisValidated(logger,key,value);
-            long result =  getClusterJedis().rpush(key,value);
+            long result =  getClusterClient().rpush(key,value);
             logger.debug("[存入队列key:{},value:{}]" ,key,stringValue(value));
             return result;
         } catch (Exception e) {
@@ -218,7 +214,7 @@ public class JedisClusterSession implements RedisSession {
     public String rpop(String key) throws RedisException {
         try {
             JedisUtil.redisValidated(logger,key);
-            String o = getClusterJedis().rpop(key);
+            String o = getClusterClient().rpop(key);
             if(isEmpty(o)) {
                 return null;
             }
@@ -234,7 +230,7 @@ public class JedisClusterSession implements RedisSession {
     public long lpush(String key, String... value) throws RedisException {
         try {
             JedisUtil.redisValidated(logger,key,value);
-            long result =  getClusterJedis().lpush(key,value);
+            long result =  getClusterClient().lpush(key,value);
             logger.debug("[存入队列key:{},value:{}]" ,key,stringValue(value));
             return result;
         } catch (Exception e) {
@@ -247,7 +243,7 @@ public class JedisClusterSession implements RedisSession {
     public String lpop(String key) throws RedisException {
         try {
             JedisUtil.redisValidated(logger,key);
-            String o = getClusterJedis().lpop(key);
+            String o = getClusterClient().lpop(key);
             if(isEmpty(o)) {
                 return null;
             }
@@ -266,7 +262,7 @@ public class JedisClusterSession implements RedisSession {
             logger.info("[超时时间应为大于零的整数,输入值为{}！]", seconds);
             throw new RedisException("存入值为空!");
         }
-        return getClusterJedis().expire(key, seconds);
+        return getClusterClient().expire(key, seconds);
     }
     
     /**
@@ -305,7 +301,7 @@ public class JedisClusterSession implements RedisSession {
             logger.info("[msgJson:{}为空！]", msgJson);
             throw new RedisException("发送msgJson为空!");
         }
-    	getClusterJedis().publish(chanel, msgJson);
+    	getClusterClient().publish(chanel, msgJson);
     }
 
     /**
@@ -321,7 +317,7 @@ public class JedisClusterSession implements RedisSession {
             logger.info("[channels:{}为空！]", channels+"");
             throw new RedisException("发送channels为空!");
         }
-    	getClusterJedis().subscribe(jedisPubSub, channels);
+    	getClusterClient().subscribe(jedisPubSub, channels);
     }
     
     @Override
@@ -334,82 +330,83 @@ public class JedisClusterSession implements RedisSession {
             logger.info("[channels:{}为空！]", patterns+"");
             throw new RedisException("发送channels为空!");
         }
-        getClusterJedis().psubscribe(jedisPubSub, patterns);
+        getClusterClient().psubscribe(jedisPubSub, patterns);
     }
     
     @Override
 	public long incrNum(String key) throws RedisException {
         JedisUtil.redisValidated(logger,key);
-        return getClusterJedis().incr(key);
+        return getClusterClient().incr(key);
 	}
 
 	@Override
 	public long incrByNum(String key, long index) throws RedisException {
         JedisUtil.redisValidated(logger,key);
-        return getClusterJedis().incrBy(key, index);
+        return getClusterClient().incrBy(key, index);
 	}
 
 	@Override
 	public long decrNum(String key) throws RedisException {
         JedisUtil.redisValidated(logger,key);
-        return getClusterJedis().decr(key);
+        return getClusterClient().decr(key);
 	}
 
 	@Override
 	public long decrByNum(String key, long index) throws RedisException {
         JedisUtil.redisValidated(logger,key);
-        return getClusterJedis().decrBy(key, index);
+        return getClusterClient().decrBy(key, index);
 	}
     
     @Override
     public List<String> betweenRange(String key, long start, long end) throws RedisException {
         JedisUtil.redisValidated(logger,key);
-        return getClusterJedis().lrange(key, start,end);
+        return getClusterClient().lrange(key, start,end);
     }
     
     @Override
     public long addSet(String key, String... value) throws RedisException {
         JedisUtil.redisValidated(logger, key, value);
-        return getClusterJedis().sadd(key, value);
+        return getClusterClient().sadd(key, value);
     }
     
     @Override
     public long removeSet(String key, String... value) throws RedisException {
         JedisUtil.redisValidated(logger, key, value);
-        return getClusterJedis().srem(key, value);
+        return getClusterClient().srem(key, value);
     }
     
     @Override
     public Set<String> getSets(String key) throws RedisException {
         JedisUtil.redisValidated(logger, key);
-        return getClusterJedis().smembers(key);
+        return getClusterClient().smembers(key);
     }
     
     @Override
     public long addHash(String key, String field, String value) throws RedisException {
         JedisUtil.redisValidated(logger, key, field);
-        return getClusterJedis().hset(key, field, value);
+        return getClusterClient().hset(key, field, value);
     }
     
     @Override
     public long removeHash(String key, String field) throws RedisException {
         JedisUtil.redisValidated(logger, key, field);
-        return getClusterJedis().hdel(key, field);
+        return getClusterClient().hdel(key, field);
     }
     
     @Override
     public String getHash(String key, String field) throws RedisException {
         JedisUtil.redisValidated(logger, key, field);
-        return getClusterJedis().hget(key, field);
+        return getClusterClient().hget(key, field);
     }
     
     @Override
     public List<String> getHashs(String key) throws RedisException {
         JedisUtil.redisValidated(logger, key);
-        return getClusterJedis().hvals(key);
+        return getClusterClient().hvals(key);
     }
     
     @Override
+    @Deprecated
     public Jedis getJedisClient() throws RedisException {
         return null;
     }
@@ -429,7 +426,7 @@ public class JedisClusterSession implements RedisSession {
      */
     private synchronized void changeDB(int dbIndex) {
         try {
-            getClusterJedis().select(dbIndex);
+            getClusterClient().select(dbIndex);
         } catch (Exception e) {
             logger.error("[redis错误:{}]", e);
             throw new RedisException(e);

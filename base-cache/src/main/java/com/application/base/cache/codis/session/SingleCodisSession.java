@@ -15,7 +15,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * @desccodis 缓存
+ * @desccodis 单实例缓存
+ *
  * @author 孤狼
  */
 public class SingleCodisSession extends JedisSimpleSession implements RedisSession {

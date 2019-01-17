@@ -3,3 +3,6 @@
 
 使用时:使用对应的服务注入 , 就可以完成对应的缓存使用..
 
+
+##:Spring 实现方式(可参考使用) .
+https://blog.csdn.net/wo18237095579/article/details/80925586

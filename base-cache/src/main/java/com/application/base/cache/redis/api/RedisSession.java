@@ -4,13 +4,14 @@ import com.application.base.cache.redis.exception.RedisException;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPubSub;
+import redis.clients.jedis.ShardedJedis;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 /**
- * @desc Redis访问会话
+ * @desc Redis单机或集群的访问会话.
  * @author 孤狼
  */
 public interface RedisSession {
@@ -18,7 +19,7 @@ public interface RedisSession {
     /**
      * 返回的标识
      */
-    String LOCK_SUCCESS = "OK";
+    long LOCK_SUCCESS = 1;
     /**
      * 这个参数我们填的是NX，意思是SET IF NOT EXIST,即当key不存在时,我们进行set操作;若key已经存在,则不做任何操作.
      */
@@ -27,6 +28,11 @@ public interface RedisSession {
      * 这个参数我们传的是PX，意思是我们要给这个key加一个过期的设置，具体时间由第五个参数决定
      */
     String SET_WITH_EXPIRE_TIME = "PX";
+    
+    /**
+     * 默认时间设置,一天时间
+     */
+    int DEFAULT_TIMEOUT = 60 * 60 * 24;
     
     /**
      * 是否为空.
@@ -351,7 +357,7 @@ public interface RedisSession {
     Jedis getJedisClient() throws RedisException;
     
     /**
-     * 获得 jedis 的客户端
+     * 获得 jedis 的集群客户端
      * @return
      * @throws RedisException
      */

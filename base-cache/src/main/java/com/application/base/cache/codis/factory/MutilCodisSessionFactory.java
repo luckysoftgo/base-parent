@@ -2,8 +2,8 @@ package com.application.base.cache.codis.factory;
 
 import com.application.base.cache.codis.architecture.cache.CacheClient;
 import com.application.base.cache.codis.session.MutilCodisSession;
-import com.application.base.cache.redis.api.DistributedSession;
 import com.application.base.cache.redis.api.RedisSession;
+import com.application.base.cache.redis.api.ShardedSession;
 import com.application.base.cache.redis.exception.RedisException;
 import com.application.base.cache.redis.factory.RedisSessionFactory;
 import com.application.base.cache.redis.jedis.factory.JedisClusterFactory;
@@ -23,7 +23,7 @@ public class MutilCodisSessionFactory implements RedisSessionFactory {
 	
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    private JedisClusterFactory pool;
+    private JedisClusterFactory clusterPool;
 
     private CacheClient client;
     
@@ -34,11 +34,11 @@ public class MutilCodisSessionFactory implements RedisSessionFactory {
         this.client = client;
     }
     
-    public JedisClusterFactory getPool() {
-        return pool;
+    public JedisClusterFactory getClusterPool() {
+        return clusterPool;
     }
-    public void setPool(JedisClusterFactory pool) {
-        this.pool = pool;
+    public void setClusterPool(JedisClusterFactory pool) {
+        this.clusterPool = pool;
     }
     
     @Override
@@ -55,7 +55,7 @@ public class MutilCodisSessionFactory implements RedisSessionFactory {
     }
     
     @Override
-    public DistributedSession getDistributedSession() throws RedisException {
+    public ShardedSession getShardedSession() throws RedisException {
         return null;
     }
     
@@ -74,7 +74,7 @@ public class MutilCodisSessionFactory implements RedisSessionFactory {
             logger.debug("获取redis链接");
             JedisCluster jedis = null;
             try {
-                jedis = MutilCodisSessionFactory.this.pool.getResource();
+                jedis = MutilCodisSessionFactory.this.getClusterPool().getClusterResource();
             } catch (Exception e) {
                 logger.error("获取redis链接错误,{}", e);
                 throw new RedisException(e);
@@ -100,7 +100,7 @@ public class MutilCodisSessionFactory implements RedisSessionFactory {
             JedisCluster jedis = null;
             boolean success = true;
             try {
-                if (pool == null) {
+                if (getClusterPool() == null) {
                     logger.error("获取Jedi连接池失败");
                     throw new RedisException("获取Jedi连接池失败");
                 }

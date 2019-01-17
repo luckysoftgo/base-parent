@@ -22,11 +22,6 @@ public class JedisSimpleSession implements RedisSession {
     
     private Logger logger = LoggerFactory.getLogger(getClass());
     
-    /**
-     * 默认时间设置,一天时间
-     */
-    protected static final int DEFAULT_TIMEOUT = 60 * 60 * 24;
-    
     /**默认的 {@code JSON} 完整日期/时间字段的格式化模式*/
     /**
      * 被 装配到 Spring 工厂
@@ -65,7 +60,7 @@ public class JedisSimpleSession implements RedisSession {
         String objStr;
         try {
             JedisUtil.redisValidated(logger, key);
-            Object o = getJedis().get(key);
+            Object o = getJedisClient().get(key);
             if (isEmpty(o)) {
                 return null;
             }
@@ -81,7 +76,7 @@ public class JedisSimpleSession implements RedisSession {
     @Override
     public List<String> getData(String... keys) throws RedisException {
         JedisUtil.redisValidated(logger, keys);
-        return getJedis().mget(keys);
+        return getJedisClient().mget(keys);
     }
     
     @Override
@@ -103,7 +98,7 @@ public class JedisSimpleSession implements RedisSession {
             if (timeout == 0) {
                 timeout = DEFAULT_TIMEOUT;
             }
-            getJedis().setex(key, timeout, stringValue(value));
+            getJedisClient().setex(key, timeout, stringValue(value));
             logger.info("[存入key:{},value:{}]", key, stringValue(value));
         } catch (Exception e) {
             logger.error("[redis错误:{}]", e);
@@ -115,7 +110,7 @@ public class JedisSimpleSession implements RedisSession {
     public boolean contains(String key) throws RedisException {
         try {
             JedisUtil.redisValidated(logger, key);
-            return getJedis().exists(key);
+            return getJedisClient().exists(key);
         } catch (Exception e) {
             logger.error("[redis错误:{}]", e);
             throw new RedisException(e);
@@ -126,7 +121,7 @@ public class JedisSimpleSession implements RedisSession {
     public long getKeyLastTime(String key) throws RedisException {
         try {
             JedisUtil.redisValidated(logger, key);
-            long timeout = getJedis().ttl(key);
+            long timeout = getJedisClient().ttl(key);
             logger.info("key:{},剩余超时时间为：{}", key, timeout);
             return timeout;
         } catch (Exception e) {
@@ -139,7 +134,7 @@ public class JedisSimpleSession implements RedisSession {
     public long delete(String key) throws RedisException {
         try {
             JedisUtil.redisValidated(logger, key);
-            return this.getJedis().del(key);
+            return this.getJedisClient().del(key);
         } catch (Exception e) {
             logger.error("[redis错误:{}]", e);
             throw new RedisException(e);
@@ -151,9 +146,9 @@ public class JedisSimpleSession implements RedisSession {
     public void flushAll() throws RedisException {
         try {
             //Delete currently selected DB ...
-            this.getJedis().flushDB();
+            this.getJedisClient().flushDB();
             //Delete all the keys of all the existing databases ...
-            this.getJedis().flushAll();
+            this.getJedisClient().flushAll();
         } catch (Exception e) {
             logger.error("[redis错误:{}]", e);
             throw new RedisException(e);
@@ -164,7 +159,7 @@ public class JedisSimpleSession implements RedisSession {
     public String set(String key, String value) throws RedisException {
         try {
             JedisUtil.redisValidated(logger, key, value);
-            return this.getJedis().set(key, value);
+            return this.getJedisClient().set(key, value);
         } catch (Exception e) {
             logger.error("[redis错误:{}]", e);
             throw new RedisException(e);
@@ -182,7 +177,7 @@ public class JedisSimpleSession implements RedisSession {
             if (isEmpty(expx)) {
                 nxxx = SET_WITH_EXPIRE_TIME;
             }
-            return this.getJedis().set(key, value, nxxx, expx, expireTime);
+            return this.getJedisClient().set(key, value, nxxx, expx, expireTime);
         } catch (Exception e) {
             logger.error("[redis错误:{}]", e);
             throw new RedisException(e);
@@ -193,7 +188,7 @@ public class JedisSimpleSession implements RedisSession {
     public long setnx(String key, Object value) throws RedisException {
         try {
             JedisUtil.redisValidated(logger, key, value);
-            return getJedis().setnx(key, stringValue(value));
+            return getJedisClient().setnx(key, stringValue(value));
         } catch (Exception e) {
             logger.error("[redis错误:{}]", e);
             throw new RedisException(e);
@@ -204,7 +199,7 @@ public class JedisSimpleSession implements RedisSession {
     public long rpush(String key, String... value) throws RedisException {
         try {
             JedisUtil.redisValidated(logger, key, value);
-            long result = getJedis().rpush(key, value);
+            long result = getJedisClient().rpush(key, value);
             logger.debug("[存入队列key:{},value:{}]", key, stringValue(value));
             return result;
         } catch (Exception e) {
@@ -217,7 +212,7 @@ public class JedisSimpleSession implements RedisSession {
     public String rpop(String key) throws RedisException {
         try {
             JedisUtil.redisValidated(logger, key);
-            String o = getJedis().rpop(key);
+            String o = getJedisClient().rpop(key);
             if (isEmpty(o)) {
                 return null;
             }
@@ -233,7 +228,7 @@ public class JedisSimpleSession implements RedisSession {
     public long lpush(String key, String... value) throws RedisException {
         try {
             JedisUtil.redisValidated(logger, key, value);
-            long result = getJedis().lpush(key, value);
+            long result = getJedisClient().lpush(key, value);
             logger.debug("[存入队列key:{},value:{}]", key, stringValue(value));
             return result;
         } catch (Exception e) {
@@ -246,7 +241,7 @@ public class JedisSimpleSession implements RedisSession {
     public String lpop(String key) throws RedisException {
         try {
             JedisUtil.redisValidated(logger, key);
-            String o = getJedis().lpop(key);
+            String o = getJedisClient().lpop(key);
             if (isEmpty(o)) {
                 return null;
             }
@@ -265,7 +260,7 @@ public class JedisSimpleSession implements RedisSession {
             logger.info("[超时时间应为大于零的整数,输入值为{}！]", seconds);
             throw new RedisException("存入值为空!");
         }
-        return getJedis().expire(key, seconds);
+        return getJedisClient().expire(key, seconds);
     }
     
     /**
@@ -304,7 +299,7 @@ public class JedisSimpleSession implements RedisSession {
             logger.info("[msgJson:{}为空！]", msgJson);
             throw new RedisException("发送msgJson为空!");
         }
-        getJedis().publish(chanel, msgJson);
+        getJedisClient().publish(chanel, msgJson);
     }
     
     /**
@@ -320,7 +315,7 @@ public class JedisSimpleSession implements RedisSession {
             logger.info("[channels:{}为空！]", channels + "");
             throw new RedisException("发送channels为空!");
         }
-        getJedis().subscribe(jedisPubSub, channels);
+        getJedisClient().subscribe(jedisPubSub, channels);
     }
     
     /**
@@ -336,80 +331,80 @@ public class JedisSimpleSession implements RedisSession {
             logger.info("[patterns:{}为空！]", patterns + "");
             throw new RedisException("发送channels为空!");
         }
-        getJedis().psubscribe(jedisPubSub, patterns);
+        getJedisClient().psubscribe(jedisPubSub, patterns);
     }
     
     
     @Override
     public long incrNum(String key) throws RedisException {
         JedisUtil.redisValidated(logger, key);
-        return getJedis().incr(key);
+        return getJedisClient().incr(key);
     }
     
     @Override
     public long incrByNum(String key, long index) throws RedisException {
         JedisUtil.redisValidated(logger, key);
-        return getJedis().incrBy(key, index);
+        return getJedisClient().incrBy(key, index);
     }
     
     @Override
     public long decrNum(String key) throws RedisException {
         JedisUtil.redisValidated(logger, key);
-        return getJedis().decr(key);
+        return getJedisClient().decr(key);
     }
     
     @Override
     public long decrByNum(String key, long index) throws RedisException {
         JedisUtil.redisValidated(logger, key);
-        return getJedis().decrBy(key, index);
+        return getJedisClient().decrBy(key, index);
     }
     
     @Override
     public List<String> betweenRange(String key, long start, long end) throws RedisException {
         JedisUtil.redisValidated(logger, key);
-        return getJedis().lrange(key, start, end);
+        return getJedisClient().lrange(key, start, end);
     }
     
     @Override
     public long addSet(String key, String... value) throws RedisException {
         JedisUtil.redisValidated(logger, key, value);
-        return getJedis().sadd(key, value);
+        return getJedisClient().sadd(key, value);
     }
     
     @Override
     public long removeSet(String key, String... value) throws RedisException {
         JedisUtil.redisValidated(logger, key, value);
-        return getJedis().srem(key, value);
+        return getJedisClient().srem(key, value);
     }
     
     @Override
     public Set<String> getSets(String key) throws RedisException {
         JedisUtil.redisValidated(logger, key);
-        return getJedis().smembers(key);
+        return getJedisClient().smembers(key);
     }
     
     @Override
     public long addHash(String key, String field, String value) throws RedisException {
         JedisUtil.redisValidated(logger, key, field);
-        return getJedis().hset(key, field, value);
+        return getJedisClient().hset(key, field, value);
     }
     
     @Override
     public long removeHash(String key, String field) throws RedisException {
         JedisUtil.redisValidated(logger, key, field);
-        return getJedis().hdel(key, field);
+        return getJedisClient().hdel(key, field);
     }
     
     @Override
     public String getHash(String key, String field) throws RedisException {
         JedisUtil.redisValidated(logger, key, field);
-        return getJedis().hget(key, field);
+        return getJedisClient().hget(key, field);
     }
     
     @Override
     public List<String> getHashs(String key) throws RedisException {
         JedisUtil.redisValidated(logger, key);
-        return getJedis().hvals(key);
+        return getJedisClient().hvals(key);
     }
     
     @Override
@@ -418,6 +413,7 @@ public class JedisSimpleSession implements RedisSession {
     }
     
     @Override
+    @Deprecated
     public JedisCluster getClusterClient() throws RedisException {
         return null;
     }
@@ -433,7 +429,7 @@ public class JedisSimpleSession implements RedisSession {
      */
     private synchronized void changeDB(int dbIndex) {
         try {
-            getJedis().select(dbIndex);
+            getJedisClient().select(dbIndex);
         } catch (Exception e) {
             logger.error("[redis错误:{}]", e);
             throw new RedisException(e);

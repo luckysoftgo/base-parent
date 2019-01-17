@@ -2,8 +2,8 @@ package com.application.base.cache.codis.factory;
 
 import com.application.base.cache.codis.architecture.cache.CacheClient;
 import com.application.base.cache.codis.session.SingleCodisSession;
-import com.application.base.cache.redis.api.DistributedSession;
 import com.application.base.cache.redis.api.RedisSession;
+import com.application.base.cache.redis.api.ShardedSession;
 import com.application.base.cache.redis.exception.RedisException;
 import com.application.base.cache.redis.factory.RedisSessionFactory;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class SingleCodisSessionFactory implements RedisSessionFactory {
 	
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    private Pool<Jedis> pool;
+    private Pool<Jedis> jedisPool;
 
     private CacheClient client;
     
@@ -34,11 +34,11 @@ public class SingleCodisSessionFactory implements RedisSessionFactory {
         this.client = client;
     }
     
-    public Pool<Jedis> getPool() {
-        return pool;
+    public Pool<Jedis> getJedisPool() {
+        return jedisPool;
     }
-    public void setPool(Pool<Jedis> pool) {
-        this.pool = pool;
+    public void setJedisPool(Pool<Jedis> pool) {
+        this.jedisPool = pool;
     }
     
     @Override
@@ -55,11 +55,12 @@ public class SingleCodisSessionFactory implements RedisSessionFactory {
     }
     
     @Override
-    public DistributedSession getDistributedSession() throws RedisException {
+    public ShardedSession getShardedSession() throws RedisException {
         return null;
     }
     
     private class CodisSimpleSessionProxy implements InvocationHandler {
+        
         private SingleCodisSession codisSession;
 
         public CodisSimpleSessionProxy(SingleCodisSession codisSession) {
@@ -74,7 +75,7 @@ public class SingleCodisSessionFactory implements RedisSessionFactory {
             logger.debug("获取redis链接");
             Jedis jedis = null;
             try {
-                jedis = SingleCodisSessionFactory.this.pool.getResource();
+                jedis = SingleCodisSessionFactory.this.getJedisPool().getResource();
             } catch (Exception e) {
                 logger.error("获取redis链接错误,{}", e);
                 throw new RedisException(e);
@@ -99,7 +100,7 @@ public class SingleCodisSessionFactory implements RedisSessionFactory {
             Jedis jedis = null;
             boolean success = true;
             try {
-                if (pool == null) {
+                if (getJedisPool() == null) {
                     logger.error("获取Jedi连接池失败");
                     throw new RedisException("获取Jedi连接池失败");
                 }

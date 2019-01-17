@@ -4,41 +4,46 @@ import com.application.base.cache.redis.api.RedisSession;
 import com.application.base.cache.redis.api.ShardedSession;
 import com.application.base.cache.redis.exception.RedisException;
 import com.application.base.cache.redis.factory.RedisSessionFactory;
-import com.application.base.cache.redis.jedis.session.JedisClusterSession;
+import com.application.base.cache.redis.jedis.session.JedisShardedSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import redis.clients.jedis.JedisCluster;
+import redis.clients.jedis.ShardedJedis;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
- * @desc redis 集群工厂 session 设置
+ * @desc redis 分片工厂 session 设置
  * @author 孤狼
  */
-public class JedisClusterSessionFactory implements RedisSessionFactory {
+public class JedisShardedSessionFactory implements RedisSessionFactory {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	/**
 	 * 集群工厂对象.
 	 */
-	private JedisClusterFactory jedisCluster;
+	private JedisShardedFactory shardedPool;
 
-	public JedisClusterFactory getClusterPool() {
-		return jedisCluster;
+	public JedisShardedFactory getShardedPool() {
+		return shardedPool;
 	}
-	public void setClusterPool(JedisClusterFactory jedisCluster) {
-		this.jedisCluster = jedisCluster;
+	public void setShardedPool(JedisShardedFactory shardedPool) {
+		this.shardedPool = shardedPool;
 	}
 
 	@Override
-	public RedisSession getRedisSession() {
-		RedisSession session = null;
+	public RedisSession getRedisSession() throws RedisException  {
+		return null;
+	}
+	
+	@Override
+	public ShardedSession getShardedSession() throws RedisException {
+		ShardedSession session = null;
 		try {
-			session = (RedisSession) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-					new Class[] { RedisSession.class }, new JedisClusterSessionProxy(new JedisClusterSession()));
+			session = (ShardedSession) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+					new Class[] { ShardedSession.class }, new JedisShardedSessionProxy(new JedisShardedSession()));
 		}
 		catch (Exception e) {
 			logger.error("{ Get RedisSession error : }", e.getMessage());
@@ -46,32 +51,29 @@ public class JedisClusterSessionFactory implements RedisSessionFactory {
 		return session;
 	}
 	
-	@Override
-	public ShardedSession getShardedSession() throws RedisException {
-		return null;
-	}
-	
 	/**
-	 * redis 集群代理
+	 * redis 分片的代理
 	 * @author bruce
 	 */
-	private class JedisClusterSessionProxy implements InvocationHandler {
+	private class JedisShardedSessionProxy implements InvocationHandler {
+		
 		private Logger logger = LoggerFactory.getLogger(getClass());
-		private JedisClusterSession clusterSession;
+		
+		private JedisShardedSession shardedSession;
 
-		public JedisClusterSessionProxy(JedisClusterSession clusterSession) {
-			this.clusterSession = clusterSession;
+		public JedisShardedSessionProxy(JedisShardedSession shardedSession) {
+			this.shardedSession = shardedSession;
 		}
 		
 		/**
 		 * 同步获取Jedis链接
 		 * @return
 		 */
-		private synchronized JedisCluster getClusterClient() {
+		private synchronized ShardedJedis getShardedClient() {
 			logger.debug("获取redis链接");
-			JedisCluster jedis = null;
+			ShardedJedis jedis = null;
 			try {
-				jedis = JedisClusterSessionFactory.this.getClusterPool().getClusterResource();
+				jedis = JedisShardedSessionFactory.this.getShardedPool().getShardedResource();
 			}
 			catch (Exception e) {
 				logger.error("获取redis链接错误,{}", e);
@@ -95,29 +97,29 @@ public class JedisClusterSessionFactory implements RedisSessionFactory {
 		 */
 		@Override
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-			JedisCluster jedisCluster = null;
+			ShardedJedis shardedJedis = null;
 			boolean success = true;
 			try {
-				if (getClusterPool() == null) {
+				if (getShardedPool() == null) {
 					logger.error("获取Jedi连接池失败");
 					throw new RedisException("获取Jedi连接池失败");
 				}
-				jedisCluster = getClusterClient();
-				clusterSession.setClusterJedis(jedisCluster);
-				return method.invoke(clusterSession, args);
+				shardedJedis = getShardedClient();
+				shardedSession.setShardedJedis(shardedJedis);
+				return method.invoke(shardedSession, args);
 			}
 			catch (RuntimeException e) {
 				success = false;
-				if (jedisCluster != null) {
-					jedisCluster.close();
+				if (shardedJedis != null) {
+					shardedJedis.close();
 				}
 				logger.error("[Jedis执行失败！异常信息为：{}]", e);
 				throw e;
 			}
 			finally {
-				if (success && jedisCluster != null) {
+				if (success && shardedJedis != null) {
 					logger.debug("redis 链接关闭");
-					jedisCluster.close();
+					shardedJedis.close();
 				}
 			}
 		}
