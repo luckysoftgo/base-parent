@@ -61,7 +61,7 @@ public interface DistributedLock {
      * @throws DistributedLockException
      * @throws RedisException
      */
-    boolean lock(String uniqueKey) throws DistributedLockException,RedisException;
+    boolean loopLock(String uniqueKey) throws DistributedLockException,RedisException;
     
     /**
      * 根据uniqueKey构建分布式锁,如果锁可用   立即返回true，  否则返回false
@@ -105,27 +105,45 @@ public interface DistributedLock {
     /*************************************************************************************************************************************************************************/
     
     /**
-     *根据uniqueKey构建分布式锁,对key进行锁定,循环获取锁,直到获取到锁为止
-     * @param dbindex
+     * 根据uniqueKey构建分布式锁,对key进行锁定,循环获取锁,直到获取到锁为止
+     * @param uniqueKey:唯一的key,
+     * @param uniqueValue:请求的value,可以使用UUID来获取.
+     * @param expireTime:毫秒数.
+     * @return
+     * @throws DistributedLockException
+     * @throws RedisException
+     */
+    boolean getDistLock(int dbindex,String uniqueKey,String uniqueValue,int expireTime) throws DistributedLockException,RedisException;
+    
+    /**
+     * 释放 uniqueKey 对应的锁资源.
+     * @param uniqueKey
+     * @param uniqueValue
+     * @return
+     * @throws DistributedLockException
+     * @throws RedisException
+     */
+    boolean releaseDistLock(int dbindex,String uniqueKey,String uniqueValue) throws DistributedLockException,RedisException;
+    
+    /**
+     * 根据uniqueKey构建分布式锁,对key进行锁定,循环获取锁,直到获取到锁为止
      * @param uniqueKey
      * @throws DistributedLockException
      * @throws RedisException
      */
-    boolean lock(int dbindex, String uniqueKey) throws DistributedLockException,RedisException;
+    boolean loopLock(int dbindex,String uniqueKey) throws DistributedLockException,RedisException;
     
     /**
      * 根据uniqueKey构建分布式锁,如果锁可用   立即返回true，  否则返回false
-     * @param dbindex
      * @param uniqueKey
      * @return
      * @throws DistributedLockException
      * @throws RedisException
      */
-    boolean tryLock(int dbindex, String uniqueKey) throws DistributedLockException,RedisException;
+    boolean tryLock(int dbindex,String uniqueKey) throws DistributedLockException,RedisException;
     
     /**
      * 在给定时间内获取锁,如果获取锁则返回true,否则返回false
-     * @param dbindex
      * @param uniqueKey
      * @param timeout
      * @param unit
@@ -133,16 +151,15 @@ public interface DistributedLock {
      * @throws DistributedLockException
      * @throws RedisException
      */
-    boolean tryLock(int dbindex, String uniqueKey, long timeout, TimeUnit unit) throws DistributedLockException,RedisException;
+    boolean tryLock(int dbindex,String uniqueKey, long timeout, TimeUnit unit) throws DistributedLockException,RedisException;
     
     /**
-     *释放锁
-     * @param dbindex
+     * 释放锁
      * @param uniqueKey
      * @throws DistributedLockException
      * @throws RedisException
      */
-    boolean unLock(int dbindex, String uniqueKey) throws DistributedLockException,RedisException;
+    boolean unLock(int dbindex,String uniqueKey) throws DistributedLockException,RedisException;
     
     /**
      * 是否锁住的.
@@ -151,4 +168,5 @@ public interface DistributedLock {
      * @throws RedisException
      */
     boolean isLock(int dbindex,String uniqueKey) throws DistributedLockException,RedisException;
+    
 }

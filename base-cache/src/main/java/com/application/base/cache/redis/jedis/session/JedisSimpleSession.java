@@ -175,9 +175,10 @@ public class JedisSimpleSession implements RedisSession {
                 nxxx = SET_IF_NOT_EXIST;
             }
             if (isEmpty(expx)) {
-                nxxx = SET_WITH_EXPIRE_TIME;
+                expx = SET_WITH_EXPIRE_TIME;
             }
             return this.getJedisClient().set(key, value, nxxx, expx, expireTime);
+            
         } catch (Exception e) {
             logger.error("[redis错误:{}]", e);
             throw new RedisException(e);

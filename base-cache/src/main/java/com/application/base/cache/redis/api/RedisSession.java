@@ -19,12 +19,20 @@ public interface RedisSession {
      * 返回的标识
      */
     long LOCK_SUCCESS = 1;
+    
+    /*
+        EX seconds -- Set the specified expire time, in seconds.
+        PX milliseconds -- Set the specified expire time, in milliseconds.
+        NX -- Only set the key if it does not already exist.
+        XX -- Only set the key if it already exist.
+    */
+    
     /**
      * 这个参数我们填的是NX，意思是SET IF NOT EXIST,即当key不存在时,我们进行set操作;若key已经存在,则不做任何操作.
      */
     String SET_IF_NOT_EXIST = "NX";
     /**
-     * 这个参数我们传的是PX，意思是我们要给这个key加一个过期的设置，具体时间由第五个参数决定
+     * 这个参数我们传的是PX，意思是我们要给这个key加一个过期的设置（单位毫秒），具体时间由第五个参数决定
      */
     String SET_WITH_EXPIRE_TIME = "PX";
     
@@ -144,7 +152,7 @@ public interface RedisSession {
      * 1. 当前没有锁（key不存在），那么就进行加锁操作，并对锁设置个有效期，同时value表示加锁的客户端。2. 已有锁存在，不做任何操作。
      * @param key
      * @param value
-     * @return
+     * @return OK
      * @throws RedisException
      */
     String set(String key, String value) throws RedisException;
@@ -156,7 +164,7 @@ public interface RedisSession {
      * @param nxxx ：这个参数我们填的是NX，意思是SET IF NOT EXIST，即当key不存在时，我们进行set操作；若key已经存在，则不做任何操作；
      * @param expx ：这个参数我们传的是PX，意思是我们要给这个key加一个过期的设置，具体时间由第五个参数决定。
      * @param expireTime ：
-     * @return
+     * @return OK
      */
     String set(String key, String value, String nxxx, String expx,long expireTime) throws RedisException;
     
