@@ -83,7 +83,7 @@ public class RedissonSimpleSessionFactory implements RedissonSessionFactory {
 			logger.debug("获取 redisson 链接");
 			RedissonClient client = null;
 			try {
-				client = RedissonSimpleSessionFactory.this.simpleClient;
+				client = RedissonSimpleSessionFactory.this.getSimpleClient();
 			}
 			catch (Exception e) {
 				logger.error("获取 redisson 链接错误,{}", e);

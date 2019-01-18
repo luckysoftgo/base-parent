@@ -31,7 +31,7 @@ public class JDelegateDistributedLock implements JDistributedLock {
 
     @Override
     public boolean loopLock(String uniqueKey) throws JDistributedLockException, RedissonException {
-       return loopLock(uniqueKey,0,null);
+       return loopLock(uniqueKey,5,TimeUnit.SECONDS);
     }
     
     @Override
@@ -63,7 +63,7 @@ public class JDelegateDistributedLock implements JDistributedLock {
 
     @Override
     public boolean tryLock(String uniqueKey) throws JDistributedLockException, RedissonException {
-        return tryLock(uniqueKey, 0, null);
+        return tryLock(uniqueKey, 5, TimeUnit.SECONDS);
     }
 
     @Override
