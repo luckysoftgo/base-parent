@@ -6,7 +6,6 @@ import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPubSub;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 /**

@@ -4,7 +4,6 @@ import com.application.base.cache.redis.exception.RedisException;
 import redis.clients.jedis.ShardedJedis;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 /**
