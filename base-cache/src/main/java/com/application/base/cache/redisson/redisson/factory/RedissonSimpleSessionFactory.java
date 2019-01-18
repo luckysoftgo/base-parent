@@ -4,6 +4,7 @@ import com.application.base.cache.redis.exception.RedisException;
 import com.application.base.cache.redisson.api.RedissonSession;
 import com.application.base.cache.redisson.exception.RedissonException;
 import com.application.base.cache.redisson.factory.RedissonSessionFactory;
+import com.application.base.cache.redisson.redisson.session.RedissonSentinelSession;
 import com.application.base.cache.redisson.redisson.session.RedissonSimpleSession;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
@@ -48,14 +49,8 @@ public class RedissonSimpleSessionFactory implements RedissonSessionFactory {
 	public RedissonSession getRedissonSession() throws RedissonException {
 		RedissonSession session = null;
 		try {
-			session = (RedissonSession) Proxy.newProxyInstance(
-					Thread.currentThread().getContextClassLoader(),
-					new Class[]{
-							RedissonSession.class
-					},
-					new RedissonSimpleSessionProxy(
-							new RedissonSimpleSession()
-					)
+			session = (RedissonSession) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+					new Class[]{RedissonSession.class},new RedissonSimpleSessionProxy(new RedissonSimpleSession())
 			);
 		} catch (Exception e) {
 			logger.error("出現的异常是: {}", e);
@@ -66,7 +61,6 @@ public class RedissonSimpleSessionFactory implements RedissonSessionFactory {
 		}
 		return session;
 	}
-	
 	
 	/**
 	 * 代理实现处理.

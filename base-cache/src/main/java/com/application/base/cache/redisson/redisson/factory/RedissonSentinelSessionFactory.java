@@ -4,6 +4,7 @@ import com.application.base.cache.redis.exception.RedisException;
 import com.application.base.cache.redisson.api.RedissonSession;
 import com.application.base.cache.redisson.exception.RedissonException;
 import com.application.base.cache.redisson.factory.RedissonSessionFactory;
+import com.application.base.cache.redisson.redisson.session.RedissonMasterSlaveSession;
 import com.application.base.cache.redisson.redisson.session.RedissonSentinelSession;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ public class RedissonSentinelSessionFactory implements RedissonSessionFactory {
 	 * 操作实例.
 	 */
 	private RedissonClient sentinelClient;
+	
 	public RedissonClient getSentinelClient() {
 		if (null==sentinelClient){
 			logger.error("[redisson错误:{}]","获得redisson哨兵实例对象为空");
@@ -46,14 +48,8 @@ public class RedissonSentinelSessionFactory implements RedissonSessionFactory {
 	public RedissonSession getRedissonSession() throws RedissonException {
 		RedissonSession session = null;
 		try {
-			session = (RedissonSession) Proxy.newProxyInstance(
-					Thread.currentThread().getContextClassLoader(),
-					new Class[]{
-							RedissonSession.class
-					},
-					new RedissonSentinelSessionProxy(
-							new RedissonSentinelSession()
-					)
+			session = (RedissonSession) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+					new Class[]{RedissonSession.class},new RedissonSentinelSessionProxy(new RedissonSentinelSession())
 			);
 		} catch (Exception e) {
 			logger.error("出現的异常是: {}", e);
@@ -87,7 +83,7 @@ public class RedissonSentinelSessionFactory implements RedissonSessionFactory {
 			logger.debug("获取 redisson 链接");
 			RedissonClient client = null;
 			try {
-				client = RedissonSentinelSessionFactory.this.sentinelClient;
+				client = RedissonSentinelSessionFactory.this.getSentinelClient();
 			}
 			catch (Exception e) {
 				logger.error("获取 redisson 链接错误,{}", e);

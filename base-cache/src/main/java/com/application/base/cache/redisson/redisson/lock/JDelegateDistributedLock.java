@@ -30,12 +30,12 @@ public class JDelegateDistributedLock implements JDistributedLock {
    
 
     @Override
-    public boolean lock(String uniqueKey) throws JDistributedLockException, RedissonException {
-       return lock(uniqueKey,0,null);
+    public boolean loopLock(String uniqueKey) throws JDistributedLockException, RedissonException {
+       return loopLock(uniqueKey,0,null);
     }
     
     @Override
-    public boolean lock(String uniqueKey,long timeout,TimeUnit unit) throws JDistributedLockException, RedissonException {
+    public boolean loopLock(String uniqueKey,long timeout,TimeUnit unit) throws JDistributedLockException, RedissonException {
         RedissonSession session = null;
         try {
             session = lockFactory.getRedissonSession();

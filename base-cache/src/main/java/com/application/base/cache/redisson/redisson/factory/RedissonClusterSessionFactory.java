@@ -25,9 +25,10 @@ public class RedissonClusterSessionFactory implements RedissonSessionFactory {
 	 * 操作实例.
 	 */
 	private RedissonClient clusterClient;
+	
 	public RedissonClient getClusterClient() {
 		if (null==clusterClient){
-			logger.error("[redisson错误:{}]","获得redissonj集群实例对象为空");
+			logger.error("[redisson错误:{}]","获得redisson集群实例对象为空");
 			throw new RedisException("获得redisson集群实例对象为空");
 		}
 		return clusterClient;
@@ -48,12 +49,7 @@ public class RedissonClusterSessionFactory implements RedissonSessionFactory {
 		try {
 			session = (RedissonSession) Proxy.newProxyInstance(
 					Thread.currentThread().getContextClassLoader(),
-					new Class[]{
-							RedissonSession.class
-					},
-					new RedissonClusterSessionProxy(
-							new RedissonClusterSession()
-					)
+					new Class[]{RedissonSession.class},new RedissonClusterSessionProxy(new RedissonClusterSession())
 			);
 		} catch (Exception e) {
 			logger.error("出現的异常是: {}", e);
@@ -87,7 +83,7 @@ public class RedissonClusterSessionFactory implements RedissonSessionFactory {
 			logger.debug("获取 redisson 链接");
 			RedissonClient client = null;
 			try {
-				client = RedissonClusterSessionFactory.this.clusterClient;
+				client = RedissonClusterSessionFactory.this.getClusterClient();
 			}
 			catch (Exception e) {
 				logger.error("获取 redisson 链接错误,{}", e);

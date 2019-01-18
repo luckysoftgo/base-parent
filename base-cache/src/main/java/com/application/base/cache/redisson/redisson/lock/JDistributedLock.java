@@ -18,7 +18,7 @@ public interface JDistributedLock {
      * @throws JDistributedLockException
      * @throws RedissonException
      */
-    boolean lock(String uniqueKey) throws JDistributedLockException,RedissonException;
+    boolean loopLock(String uniqueKey) throws JDistributedLockException,RedissonException;
     
     /**
      * 根据uniqueKey构建分布式锁,对key进行锁定,循环获取锁,直到获取到锁为止
@@ -28,7 +28,7 @@ public interface JDistributedLock {
      * @throws JDistributedLockException
      * @throws RedissonException
      */
-    boolean lock(String uniqueKey,long timeout,TimeUnit unit) throws JDistributedLockException,RedissonException;
+    boolean loopLock(String uniqueKey,long timeout,TimeUnit unit) throws JDistributedLockException,RedissonException;
     
     /**
      * 根据uniqueKey构建分布式锁,如果锁可用   立即返回true，  否则返回false

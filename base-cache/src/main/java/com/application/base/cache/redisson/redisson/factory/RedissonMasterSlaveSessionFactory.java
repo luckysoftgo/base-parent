@@ -25,6 +25,7 @@ public class RedissonMasterSlaveSessionFactory implements RedissonSessionFactory
 	 * 操作实例.
 	 */
 	private RedissonClient masterSlaveClient;
+	
 	public RedissonClient getMasterSlaveClient() {
 		if (null==masterSlaveClient){
 			logger.error("[redisson错误:{}]","获得redisson主从实例对象为空");
@@ -46,14 +47,8 @@ public class RedissonMasterSlaveSessionFactory implements RedissonSessionFactory
 	public RedissonSession getRedissonSession() throws RedissonException {
 		RedissonSession session = null;
 		try {
-			session = (RedissonSession) Proxy.newProxyInstance(
-					Thread.currentThread().getContextClassLoader(),
-					new Class[]{
-							RedissonSession.class
-					},
-					new RedissonMasterSlaveSessionProxy(
-							new RedissonMasterSlaveSession()
-					)
+			session = (RedissonSession) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+					new Class[]{RedissonSession.class},new RedissonMasterSlaveSessionProxy(new RedissonMasterSlaveSession())
 			);
 		} catch (Exception e) {
 			logger.error("出現的异常是: {}", e);
@@ -87,7 +82,7 @@ public class RedissonMasterSlaveSessionFactory implements RedissonSessionFactory
 			logger.debug("获取 redisson 链接");
 			RedissonClient client = null;
 			try {
-				client = RedissonMasterSlaveSessionFactory.this.masterSlaveClient;
+				client = RedissonMasterSlaveSessionFactory.this.getMasterSlaveClient();
 			}
 			catch (Exception e) {
 				logger.error("获取 redisson 链接错误,{}", e);
