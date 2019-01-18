@@ -101,9 +101,12 @@ public class JedisClusterFactory extends JedisPool {
 				instance=new HostAndPort(ipAndPortArray[0],Integer.parseInt(ipAndPortArray[1]));
 				clusterNodes.add(instance);
 			}
+			
 			//得到实例.
-			jedisCluster = new JedisCluster(clusterNodes, timeout, sotimeout, maxattempts,poolConfig);
-			jedisCluster.auth(passWord);
+			jedisCluster = new JedisCluster(clusterNodes, timeout, sotimeout, maxattempts,getPoolConfig());
+			if (StringUtils.isNotBlank(passWord)) {
+				jedisCluster.auth(passWord);
+			}
 		}
 		catch (Exception ex) {
 			logger.error("格式化传入的ip端口异常了,请检查出传入的字符串信息,error:{}" , ex.getMessage());

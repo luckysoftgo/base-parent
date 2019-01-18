@@ -27,8 +27,8 @@ public class JedisSimpleSessionFactory implements RedisSessionFactory {
 	public JedisSimpleSessionFactory() {
 	}
 	
-	public JedisSimpleSessionFactory(JedisPool pool) {
-		this.jedisPool = pool;
+	public JedisSimpleSessionFactory(JedisPool jedisPool) {
+		this.jedisPool = jedisPool;
 	}
 
     @Override
@@ -74,7 +74,7 @@ public class JedisSimpleSessionFactory implements RedisSessionFactory {
 			logger.debug("获取redis链接");
 			Jedis jedis = null;
 			try {
-				jedis = JedisSimpleSessionFactory.this.jedisPool.getResource();
+				jedis = JedisSimpleSessionFactory.this.getJedisPool().getResource();
 			}
 			catch (Exception e) {
 				logger.error("获取redis链接错误,{}", e);

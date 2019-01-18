@@ -111,13 +111,11 @@ public class JedisSentinelFactory extends Pool<Jedis> {
 			for (int i = 0; i <ipAndPorts.length ; i++) {
 				sentinels.add(ipAndPorts[i]);
 			}
-			//设置内容.
-			setSentinels(sentinels);
 			//得到实例.
 			if (isAuth) {
-				jedisPool=new JedisSentinelPool(getMasterName(),getSentinels(),getPoolConfig(),getPassWords());
+				jedisPool=new JedisSentinelPool(getMasterName(),sentinels,getPoolConfig(),getPassWords());
 			} else {
-				jedisPool=new JedisSentinelPool(getMasterName(),getSentinels(),getPoolConfig());
+				jedisPool=new JedisSentinelPool(getMasterName(),sentinels,getPoolConfig());
 			}
 		}
 		catch (Exception ex) {
@@ -151,14 +149,6 @@ public class JedisSentinelFactory extends Pool<Jedis> {
 	
 	public void setMasterName(String masterName) {
 		this.masterName = masterName;
-	}
-	
-	public Set<String> getSentinels() {
-		return sentinels;
-	}
-	
-	public void setSentinels(Set<String> sentinels) {
-		this.sentinels = sentinels;
 	}
 	
 	public int getTimeout() {

@@ -23,12 +23,9 @@ public class JedisShardedFactory extends Pool<ShardedJedis> {
 	/**
 	 * 分片集群实例:它只会选择一个服务器存放你set的数据，选择是根据你的key值按哈希算法决定哪台服务器。
 	 * 所以只会有一台有数据，而且一样的key，基本是只会在某台redis服务器存放;
-	 * 如果采用的是：使用 sentinel 做 HA 操作.则换成 : ShardedJedisSentinelPool
-	 *
+	 * 如果采用的是：使用 sentinel 做 HA 操作.则换成 : ShardedJedisSentinelPool .
 	 */
 	private ShardedJedisPool shardedPool;
-	
-	
 	/**
 	 * redis结点列表
 	 */
@@ -103,7 +100,7 @@ public class JedisShardedFactory extends Pool<ShardedJedis> {
 			}
 			boolean isAuth=false;
 			String[] authPassWord=null;
-			if (!StringUtils.isNotBlank(passWords)) {
+			if (StringUtils.isNotBlank(passWords)) {
 				isAuth=true;
 				authPassWord=passWords.split(passSplit);
 			}
@@ -120,7 +117,7 @@ public class JedisShardedFactory extends Pool<ShardedJedis> {
 				clusterNodes.add(instance);
 			}
 			//得到实例.
-			shardedPool = new ShardedJedisPool(poolConfig,clusterNodes);
+			shardedPool = new ShardedJedisPool(getPoolConfig(),clusterNodes);
 		}
 		catch (Exception ex) {
 			logger.error("格式化传入的ip端口异常了,请检查出传入的字符串信息,error:{}" , ex.getMessage());

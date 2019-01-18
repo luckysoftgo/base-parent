@@ -152,7 +152,7 @@ public class JedisShardedSession implements ShardedSession {
                 nxxx = SET_IF_NOT_EXIST;
             }
             if (isEmpty(expx)) {
-                nxxx = SET_WITH_EXPIRE_TIME;
+                expx = SET_WITH_EXPIRE_TIME;
             }
             return this.getShardedClient().set(key,value,nxxx,expx,expireTime);
         } catch (Exception e) {
