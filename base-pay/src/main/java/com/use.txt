@@ -3,3 +3,6 @@
 
 集成使用,使用时候 : 将支付需要的参数设置进去 , 就可以实现对应的操作 .
 
+聚合支付,可以参见开源 :
+https://github.com/luckysoftgo/pay-java-parent
+https://github.com/luckysoftgo/xxpay-master
