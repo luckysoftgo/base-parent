@@ -73,7 +73,6 @@ public interface RedissonSession {
 	/**
 	 * 获取 String 字符串对象.
 	 * @param objectKey
-	 * @param <T>
 	 * @return
 	 * @throws RedissonException
 	 */
@@ -132,7 +131,6 @@ public interface RedissonSession {
 	/**
 	 * 获取 SortedSet 有序集合.
 	 * @param objectKey
-	 * @param <V>
 	 * @return
 	 * @throws RedissonException
 	 */
@@ -150,7 +148,6 @@ public interface RedissonSession {
 	/**
 	 * 获取 SortedSet 有序集合.
 	 * @param objectKey
-	 * @param <V>
 	 * @return
 	 * @throws RedissonException
 	 */

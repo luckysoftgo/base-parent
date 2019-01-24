@@ -12,4 +12,5 @@ http://doc.redisfans.com/
 https://www.yiibai.com/redis/lists_rpoplpush.html
 https://www.cnblogs.com/kongzhongqijing/p/6867960.html
 
-学习redis的资料
+学习redis的资料.
+htp://www.iocoder.cn/Fight/Redis-went-from-getting-started-to-quitting
