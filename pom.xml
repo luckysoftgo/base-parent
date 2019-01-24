@@ -27,6 +27,8 @@
 		<module>base-boot</module>
 		<!-- dubbo 监控 -->
 		<module>base-monitor</module>
+		<!--服务注册于发现(zk,eureka)-->
+		<module>base-config</module>
 
 	</modules>
 	<artifactId>base-parent</artifactId>
