@@ -9,7 +9,7 @@ import java.util.Objects;
  * @desc jedis 工具类
  * @author 孤狼
  */
-public class JedisUtil {
+public class JedisValidUtil {
 	
 	/**
 	 * 校验输入.
