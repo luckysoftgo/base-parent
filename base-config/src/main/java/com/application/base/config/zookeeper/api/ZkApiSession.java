@@ -50,6 +50,13 @@ public interface ZkApiSession {
 	}
 	
 	/**
+	 * 获得 Curator 的 Client 端.
+	 * @return
+	 * @throws ZookeeperException
+	 */
+	CuratorFramework getCuratorClient() throws ZookeeperException;
+	
+	/**
 	 * 获得zookeeper的实例
 	 * @param connectString:连接字符串：192.168.1.1:2181,192.168.2.2:2181
 	 * @param sessionTimeout:会话超时时间，单位毫秒，默认60000ms

@@ -19,6 +19,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<curator.version>4.1.0</curator.version>
 		<zookeeper.version>3.4.13</zookeeper.version>
+		<zkclient.version>0.10</zkclient.version>
 	</properties>
 
 	<dependencies>
@@ -47,7 +48,11 @@
 			<artifactId>curator-recipes</artifactId>
 			<version>${curator.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.101tec</groupId>
+			<artifactId>zkclient</artifactId>
+			<version>${zkclient.version}</version>
+		</dependency>
 		<!-- utils 设置 -->
 		<dependency>
 			<groupId>com.application.base</groupId>

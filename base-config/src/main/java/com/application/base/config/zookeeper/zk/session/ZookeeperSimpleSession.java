@@ -32,10 +32,18 @@ public class ZookeeperSimpleSession implements ZkApiSession{
 			logger.error("[zookeeper错误:{}]","获得zookeeper实例对象为空");
 			throw new ZookeeperException("获得zookeeper实例对象为空");
 		}
+		//开启服务.
+		client.start();
 		return client;
 	}
+	
 	public void setClient(CuratorFramework client) {
 		this.client = client;
+	}
+	
+	@Override
+	public CuratorFramework getCuratorClient() throws ZookeeperException {
+		return getClient();
 	}
 	
 	@Override
@@ -57,6 +65,8 @@ public class ZookeeperSimpleSession implements ZkApiSession{
 			logger.error("[zookeeper错误:{}]", e);
 			throw new ZookeeperException(e);
 		}
+		//开启服务.
+		client.start();
 		return client;
 	}
 	
@@ -81,6 +91,8 @@ public class ZookeeperSimpleSession implements ZkApiSession{
 			logger.error("[zookeeper错误:{}]", e);
 			throw new ZookeeperException(e);
 		}
+		//开启服务.
+		client.start();
 		return client;
 	}
 	
