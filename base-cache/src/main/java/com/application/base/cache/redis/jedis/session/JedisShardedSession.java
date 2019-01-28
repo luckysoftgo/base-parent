@@ -204,6 +204,22 @@ public class JedisShardedSession implements ShardedSession {
     }
     
     @Override
+    public List<String> brpop(int timeout, String key) throws RedisException {
+        try {
+            JedisValidUtil.redisValidated(logger,key);
+            List<String> values = getShardedClient().brpop(timeout,key);
+            if(isEmpty(values)) {
+                return null;
+            }
+            logger.debug("[根据key:{},获得:{}]",key,values.toString());
+            return values;
+        } catch (Exception e) {
+            logger.error("[redis错误:{}]",e);
+            throw new RedisException(e);
+        }
+    }
+    
+    @Override
     public long lpush(String key, String... value) throws RedisException {
         try {
             JedisValidUtil.redisValidated(logger,key,value);
@@ -226,6 +242,22 @@ public class JedisShardedSession implements ShardedSession {
             }
             logger.debug("[根据key:{},获得:{}]",key,o);
             return o;
+        } catch (Exception e) {
+            logger.error("[redis错误:{}]",e);
+            throw new RedisException(e);
+        }
+    }
+    
+    @Override
+    public List<String> blpop(int timeout, String key) throws RedisException {
+        try {
+            JedisValidUtil.redisValidated(logger,key);
+            List<String> values = getShardedClient().blpop(timeout,key);
+            if(isEmpty(values)) {
+                return null;
+            }
+            logger.debug("[根据key:{},获得:{}]",key,values.toString());
+            return values;
         } catch (Exception e) {
             logger.error("[redis错误:{}]",e);
             throw new RedisException(e);

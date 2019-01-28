@@ -1,6 +1,9 @@
 package com.application.base.cache.redis.api;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @Author: 孤狼
@@ -40,6 +43,27 @@ public interface ApiSession {
 	 * @return
 	 */
 	default boolean isEmpty(Object value) {
+		if (null == value) {
+			return true;
+		}
+		if (value instanceof Map) {
+			if (((Map) value).isEmpty()) {
+				return true;
+			}
+			return false;
+		}
+		if (value instanceof List) {
+			if (((List) value).isEmpty()) {
+				return true;
+			}
+			return false;
+		}
+		if (value instanceof Set) {
+			if (((Set) value).isEmpty()) {
+				return true;
+			}
+			return false;
+		}
 		if (null==value || "".equals(value)){
 			return true;
 		}

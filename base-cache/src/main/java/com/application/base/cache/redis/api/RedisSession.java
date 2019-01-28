@@ -140,6 +140,14 @@ public interface RedisSession extends ApiSession {
     String rpop(String key) throws RedisException;
     
     /**
+     * brpop是列表的阻塞式(blocking)弹出原语,它是 rpop 命令的阻塞版本.
+     * @param key
+     * @return
+     * @throws RedisException
+     */
+    List<String> brpop(int timeout,String key) throws RedisException;
+    
+    /**
      * 从队列的左边入队一个或多个元素
      * @param key
      * @param value
@@ -155,6 +163,14 @@ public interface RedisSession extends ApiSession {
      * @throws RedisException
      */
     String lpop(String key) throws RedisException;
+    
+    /**
+     * blpop 是列表的阻塞式(blocking)弹出原语,它是 lpop 命令的阻塞版本
+     * @param key
+     * @return
+     * @throws RedisException
+     */
+    List<String> blpop(int timeout,String key) throws RedisException;
 
     /**
      * 设定键有效期,到期时间后键不会在Redis中使用。

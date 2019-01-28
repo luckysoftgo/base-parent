@@ -226,6 +226,22 @@ public class JedisClusterSession implements RedisSession {
     }
     
     @Override
+    public List<String> brpop(int timeout, String key) throws RedisException {
+        try {
+            JedisValidUtil.redisValidated(logger,key);
+            List<String> values = getClusterClient().brpop(timeout,key);
+            if(isEmpty(values)) {
+                return null;
+            }
+            logger.debug("[根据key:{},获得:{}]",key,values.toString());
+            return values;
+        } catch (Exception e) {
+            logger.error("[redis错误:{}]",e);
+            throw new RedisException(e);
+        }
+    }
+    
+    @Override
     public long lpush(String key, String... value) throws RedisException {
         try {
             JedisValidUtil.redisValidated(logger,key,value);
@@ -248,6 +264,22 @@ public class JedisClusterSession implements RedisSession {
             }
             logger.debug("[根据key:{},获得:{}]",key,o);
             return o;
+        } catch (Exception e) {
+            logger.error("[redis错误:{}]",e);
+            throw new RedisException(e);
+        }
+    }
+    
+    @Override
+    public List<String> blpop(int timeout, String key) throws RedisException {
+        try {
+            JedisValidUtil.redisValidated(logger,key);
+            List<String> values = getClusterClient().blpop(timeout,key);
+            if(isEmpty(values)) {
+                return null;
+            }
+            logger.debug("[根据key:{},获得:{}]",key,values.toString());
+            return values;
         } catch (Exception e) {
             logger.error("[redis错误:{}]",e);
             throw new RedisException(e);
