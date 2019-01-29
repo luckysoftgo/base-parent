@@ -1,7 +1,9 @@
-package com.application.base.utils.common;
+package com.application.base.utils.common.guava;
 
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
+import orestes.bloomfilter.CountingBloomFilter;
+import orestes.bloomfilter.FilterBuilder;
 import org.apache.commons.io.Charsets;
 
 import java.io.Serializable;
@@ -35,19 +37,33 @@ public class GuavaBloomFilterUtil implements Serializable {
 	 */
 	public static void main(String[] args) throws Exception {
 		int count = 10000, start = 9990, end = 11000;
-		//不能存在的用户Id集合.
-		BloomFilter<String> values = createStringInstance(count, 0.0001);
 		String tag = "userId";
+		
+		//不能存在的用户Id集合.
+		BloomFilter<String> values = (BloomFilter<String>) createInstance(InputType.STRING, 0.03);
 		for (int i = start; i < end; i++) {
 			values.put(tag + i);
 		}
 		//TODO 从数据库中获得登录的用户名称.
 		for (int i = 0; i < end; i++) {
-			if (values.mightContain(tag + i)) {
-				System.out.println(tag + i + ":该用户不属于系统的用户");
+			if (values.mightContain(tag+i)) {
+				System.out.println(tag +i+ ", 1 : 该用户不属于系统的用户");
 			}
 		}
 		System.out.println("完成结果!" + appElementCount(values));
+		
+		
+		CountingBloomFilter<String> filters =(CountingBloomFilter<String>) createCountInstance(InputType.STRING,100,0.03);
+		for (int i = start; i < end; i++) {
+			filters.add(tag + i);
+		}
+		//TODO 从数据库中获得登录的用户名称.
+		for (int i = 0; i < end; i++) {
+			if (filters.contains(tag + i)) {
+				System.out.println(tag + i + ", 2 : 该用户不属于系统的用户");
+			}
+		}
+		System.out.println("完成结果!" + filters.getCountingBits());
 	}
 	
 	/**
@@ -122,79 +138,85 @@ public class GuavaBloomFilterUtil implements Serializable {
 
 	/**
 	 * 创建一个 defaultCount 长度,精准率为rate的 BloomFilter 对象.
-	 * @param rate
+	 * @param type:String,Integer,Long.
+	 * @param rate:精准率.
 	 * @return
 	 */
-	public static BloomFilter<String> createStringInstance(double rate) {
-		BloomFilter<String> bloomFilter = BloomFilter.create(Funnels.stringFunnel(Charsets.UTF_8), defaultCount, rate);
-		return bloomFilter;
+	public static BloomFilter<? extends Object> createInstance(InputType type,double rate) {
+		Integer count = defaultCount;
+		return createInstance(type,count,rate);
 	}
 	
 	/**
-	 * 创建一个count长度,精准率为rate的 BloomFilter 对象.
-	 *
-	 * @param count
-	 * @param rate
+	 * 创建一个 defaultCount 长度,精准率为rate的 BloomFilter 对象.
+	 * @param type:String,Integer,Long
+	 * @param count:过滤器个数大小
+	 * @param rate:精准率 越小越好.
 	 * @return
 	 */
-	public static BloomFilter<String> createStringInstance(Integer count, double rate) {
+	public static BloomFilter<? extends Object> createInstance(InputType type,Integer count, double rate) {
 		if (count == null || count == 0) {
 			count = defaultCount;
 		}
-		BloomFilter<String> bloomFilter = BloomFilter.create(Funnels.stringFunnel(Charsets.UTF_8), count, rate);
+		BloomFilter<? extends Object> bloomFilter=null;
+		switch (type){
+			case STRING:
+				bloomFilter = BloomFilter.create(Funnels.stringFunnel(Charsets.UTF_8), count, rate);
+				break;
+			case INTEGER:
+				bloomFilter = BloomFilter.create(Funnels.integerFunnel(), count, rate);
+				break;
+			case LONG:
+				bloomFilter = BloomFilter.create(Funnels.longFunnel(), count, rate);
+				break;
+			default:
+				bloomFilter = BloomFilter.create(Funnels.stringFunnel(Charsets.UTF_8), count, rate);
+				break;
+		}
+		//返回默认的过滤器.
 		return bloomFilter;
 	}
 	
+	/******************************************************************** CountingBloomFilter *********************************************************************************/
+	
 	/**
-	 * 创建一个defaultCount长度,精准率为rate的 BloomFilter 对象.
-	 *
-	 * @param rate
+	 * 创建一个 defaultCount 长度,精准率为rate的 CountingBloomFilter 对象.
+	 * @param type:String,Integer,Long.
+	 * @param rate:精准率.
 	 * @return
 	 */
-	public static BloomFilter<Integer> createIntegerInstance(double rate) {
-		BloomFilter<Integer> bloomFilter = BloomFilter.create(Funnels.integerFunnel(), defaultCount, rate);
-		return bloomFilter;
+	public static CountingBloomFilter<? extends Object> createCountInstance(InputType type,double rate) {
+		Integer count = defaultCount;
+		return createCountInstance(type,count,rate);
 	}
 	
 	/**
-	 * 创建一个count长度,精准率为rate的 BloomFilter 对象.
-	 *
-	 * @param count
-	 * @param rate
+	 * 创建一个 defaultCount 长度,精准率为rate的 CountingBloomFilter 对象.
+	 * @param type:String,Integer,Long
+	 * @param count:过滤器个数大小
+	 * @param rate:精准率 越小越好.
 	 * @return
 	 */
-	public static BloomFilter<Integer> createIntegerInstance(Integer count, double rate) {
+	public static CountingBloomFilter<? extends Object> createCountInstance(InputType type,Integer count, double rate) {
 		if (count == null || count == 0) {
 			count = defaultCount;
 		}
-		BloomFilter<Integer> bloomFilter = BloomFilter.create(Funnels.integerFunnel(), count, rate);
-		return bloomFilter;
-	}
-	
-	
-	/**
-	 * 创建一个defaultCount长度,精准率为rate的 BloomFilter 对象.
-	 *
-	 * @param rate
-	 * @return
-	 */
-	public static BloomFilter<Long> createLongInstance(double rate) {
-		BloomFilter<Long> bloomFilter = BloomFilter.create(Funnels.longFunnel(), defaultCount, rate);
-		return bloomFilter;
-	}
-	
-	/**
-	 * 创建一个count长度,精准率为rate的 BloomFilter 对象.
-	 *
-	 * @param count
-	 * @param rate
-	 * @return
-	 */
-	public static BloomFilter<Long> createLongInstance(Integer count, double rate) {
-		if (count == null || count == 0) {
-			count = defaultCount;
+		CountingBloomFilter<? extends Object> bloomFilter=null;
+		switch (type){
+			case STRING:
+				bloomFilter = new FilterBuilder(count,rate).buildCountingBloomFilter();
+				break;
+			case INTEGER:
+				bloomFilter = new FilterBuilder(count,rate).buildCountingBloomFilter();
+				break;
+			case LONG:
+				bloomFilter = new FilterBuilder(count,rate).buildCountingBloomFilter();
+				break;
+			default:
+				bloomFilter = new FilterBuilder(count,rate).buildCountingBloomFilter();
+				break;
 		}
-		BloomFilter<Long> bloomFilter = BloomFilter.create(Funnels.longFunnel(), count, rate);
+		//返回默认的过滤器.
 		return bloomFilter;
 	}
 	
@@ -227,4 +249,42 @@ public class GuavaBloomFilterUtil implements Serializable {
 		return bloomFilter.approximateElementCount();
 	}
 	
+	/**
+	 * 得到过滤器的类型
+	 */
+	enum InputType{
+		/**
+		 * 字符串类型
+		 */
+		STRING("String","字符串类型"),
+		/**
+		 * Integer类型
+		 */
+		INTEGER("Integer","Integer类型"),
+		/**
+		 * Long 类型
+		 */
+		LONG("Long","Long 类型"),
+		;
+		
+		private String type;
+		private String des;
+		
+		InputType(String type, String des) {
+			this.type = type;
+			this.des = des;
+		}
+		public String getType() {
+			return type;
+		}
+		public void setType(String type) {
+			this.type = type;
+		}
+		public String getDes() {
+			return des;
+		}
+		public void setDes(String des) {
+			this.des = des;
+		}
+	}
 }
