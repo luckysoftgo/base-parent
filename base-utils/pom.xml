@@ -307,7 +307,11 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.2.38</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.baqend</groupId>
+			<artifactId>bloom-filter</artifactId>
+			<version>1.0.8</version>
+		</dependency>
 	</dependencies>
 	
 	 <!-- 全局环境变量 -->

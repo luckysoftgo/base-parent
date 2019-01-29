@@ -61,6 +61,10 @@ public class GuavaBloomFilterUtil implements Serializable {
 		for (int i = 0; i < end; i++) {
 			if (filters.contains(tag + i)) {
 				System.out.println(tag + i + ", 2 : 该用户不属于系统的用户");
+				boolean result=filters.remove(tag + i);
+				if (result){
+					System.out.println(tag + i + "已经被布隆过滤器删除了.");
+				}
 			}
 		}
 		System.out.println("完成结果!" + filters.getCountingBits());
