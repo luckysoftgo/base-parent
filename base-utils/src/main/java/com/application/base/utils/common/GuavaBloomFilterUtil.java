@@ -5,9 +5,6 @@ import com.google.common.hash.Funnels;
 import org.apache.commons.io.Charsets;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @desc: bloomFliter 过滤器,利用Guava创建 bloomFilter.
  *
  * 此工具的的主要目的是:用于请求过来时候,减轻系统中对于第三方缓存(redis,redession,memcahced)的压力。
- *
+ * 主要是使用位图的方式来标记存在的元素,存在的使用"0"标记,否则使用"1"标记.
  */
 public class GuavaBloomFilterUtil implements Serializable {
 	

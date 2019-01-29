@@ -236,7 +236,7 @@ public class VerifyImageUtil {
 			}
 		}
 		
-		//save session
+		//save zk
 		HttpSession session = request.getSession(true);
 		session.setAttribute("AutoCode", randomCode.toString());
 
