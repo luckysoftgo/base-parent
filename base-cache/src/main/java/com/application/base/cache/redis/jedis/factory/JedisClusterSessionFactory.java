@@ -29,6 +29,7 @@ public class JedisClusterSessionFactory implements RedisSessionFactory {
 	public JedisClusterFactory getClusterPool() {
 		return jedisCluster;
 	}
+
 	public void setClusterPool(JedisClusterFactory jedisCluster) {
 		this.jedisCluster = jedisCluster;
 	}
@@ -47,6 +48,7 @@ public class JedisClusterSessionFactory implements RedisSessionFactory {
 	}
 	
 	@Override
+	@Deprecated
 	public ShardedSession getShardedSession() throws RedisException {
 		return null;
 	}

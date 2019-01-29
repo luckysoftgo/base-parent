@@ -29,11 +29,10 @@ public class JedisSentinelSessionFactory implements RedisSessionFactory {
 	public JedisSentinelFactory getSentinelPool() {
 		return sentinelPool;
 	}
+	
 	public void setSentinelPool(JedisSentinelFactory sentinelPool) {
 		this.sentinelPool = sentinelPool;
 	}
-	
-
 	
 	@Override
 	public RedisSession getRedisSession() throws RedisException {
@@ -48,6 +47,7 @@ public class JedisSentinelSessionFactory implements RedisSessionFactory {
 	}
 	
 	@Override
+	@Deprecated
 	public ShardedSession getShardedSession() throws RedisException {
 		return null;
 	}

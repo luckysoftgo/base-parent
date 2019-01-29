@@ -34,6 +34,7 @@ public class JedisShardedSessionFactory implements RedisSessionFactory {
 	}
 
 	@Override
+	@Deprecated
 	public RedisSession getRedisSession() throws RedisException  {
 		return null;
 	}
