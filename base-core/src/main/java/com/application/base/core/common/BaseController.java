@@ -26,6 +26,7 @@ import com.application.base.utils.page.PageView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.application.base.core.apisupport.BaseResultSupport;
@@ -37,9 +38,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * @desc 基础控制Controller
+ * @desc 基础控制Controller : @ControllerAdvice Controller 通知
  * @author 孤狼
  */
+@ControllerAdvice
 public class BaseController extends BaseResultSupport {
 
     private Logger logger = LoggerFactory.getLogger(BaseController.class.getName());
