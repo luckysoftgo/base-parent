@@ -5,6 +5,7 @@ import com.application.base.utils.common.BaseStringUtil;
 import com.application.base.utils.common.Constants;
 import com.application.base.utils.common.FileUtils;
 import com.application.base.utils.freemaker.FreeMarkerUtils;
+import org.springframework.util.StringUtils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -150,7 +151,10 @@ public class FileBuilder {
     	
         //项目子系统
         if(!BaseStringUtil.isEmpty(config.getSystemName())){
-            
+	        String tempPath= config.getPackagePath();
+	        if (!StringUtils.isEmpty(tempPath)){
+		        COMMON_JAVA_PATH=tempPath;
+	        }
         	String interfaceProjectRoot = config.getWorkspacesPath() + config.getSystemName() + COMMON_JAVA_PATH + config.getPackageName() + Constants.Separator.SLASH;
             
         	String jspProjectRoot = config.getWorkspacesPath() + config.getSystemName() + JSP_JAVA_PATH ; 

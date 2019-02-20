@@ -40,7 +40,10 @@ public class GenerateConfig {
 	private String systemName;
 
 	private String packageName;
-	
+	/**
+	 *包路径
+	 */
+	private String packagePath;
 	/**
 	 * // 单独的包结构 .
 	 */
@@ -123,7 +126,7 @@ public class GenerateConfig {
 
 	private Map<String, String> excludeColumnMap = new HashMap<String, String>();
 
-	public GenerateConfig(String databaseName,String tableName,String parentName, String systemName, String packageName, String primaryKeyStyle,String factoryTag,String useTransactional,String useCache,String saveLog,String moreDbTag)
+	public GenerateConfig(String databaseName,String tableName,String parentName, String systemName, String packageName, String primaryKeyStyle,String factoryTag,String useTransactional,String useCache,String saveLog,String moreDbTag,String packagePath)
 			throws Exception {
 
 		// 表名不做处理
@@ -138,13 +141,14 @@ public class GenerateConfig {
 		this.useCache = useCache;
 		this.saveLog = saveLog;
 		this.moreDbTag =moreDbTag;
+		this.packagePath = packagePath;
 		
 		// 初始化
 		initProperties(parentName,systemName);
 	}
 
 	public GenerateConfig(String databaseName,String tableName, String parentName,String systemName, String packageName, String primaryKeyStyle,
-			String instancePackage,String factoryTag,String useTransactional,String useCache,String saveLog,String moreDbTag) throws Exception {
+			String instancePackage,String factoryTag,String useTransactional,String useCache,String saveLog,String moreDbTag,String packagePath) throws Exception {
 
 		// 表名不做处理
 		this.databaseName = databaseName;
@@ -159,6 +163,7 @@ public class GenerateConfig {
 		this.useCache = useCache;
 		this.saveLog = saveLog;
 		this.moreDbTag =moreDbTag;
+		this.packagePath = packagePath;
 		// 初始化
 		initProperties(parentName,systemName);
 	}
@@ -543,5 +548,12 @@ public class GenerateConfig {
 	public void setMoreDbTag(String moreDbTag) {
 		this.moreDbTag = moreDbTag;
 	}
-
+	
+	public String getPackagePath() {
+		return packagePath;
+	}
+	
+	public void setPackagePath(String packagePath) {
+		this.packagePath = packagePath;
+	}
 }

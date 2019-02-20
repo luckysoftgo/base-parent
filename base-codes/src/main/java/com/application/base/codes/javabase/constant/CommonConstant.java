@@ -9,7 +9,7 @@ public class CommonConstant {
     /**
      * java文件相对目录:com/javabase/生成文件中有配置具体路径.
      */
-    public static String COMMON_JAVA_PATH = "/src/main/java/com/javabase/";
+    public static String COMMON_JAVA_PATH = "/src/main/java/com/application/base";
     
     /**
      * jsp 的生成目录环境.
