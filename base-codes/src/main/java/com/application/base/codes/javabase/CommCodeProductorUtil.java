@@ -48,6 +48,8 @@ public class CommCodeProductorUtil {
 		if (BaseStringUtil.isEmpty(useCache)) {
 			useCache = "YES";
 		}
+		//包名地址
+		String packagePath = prop.get("generate.java.path");
 		//对应数据库的名称
 		String databaseName = prop.get("generate.databaseName");
 
@@ -84,9 +86,9 @@ public class CommCodeProductorUtil {
 			for (String tableName : list) {
 				GenerateConfig config = null;
 				if (BaseStringUtil.isEmpty(instancePackage)) {
-					config = new GenerateConfig(databaseName, tableName, parentName, systemName, packageName, primaryKeyStyle, factoryTag, useTransactional, useCache, saveLog, moreDbTag);
+					config = new GenerateConfig(databaseName, tableName, parentName, systemName, packageName, primaryKeyStyle, factoryTag, useTransactional, useCache, saveLog, moreDbTag,packagePath);
 				} else {
-					config = new GenerateConfig(databaseName, tableName, parentName, systemName, packageName, primaryKeyStyle, instancePackage, factoryTag, useTransactional, useCache, saveLog, moreDbTag);
+					config = new GenerateConfig(databaseName, tableName, parentName, systemName, packageName, primaryKeyStyle, instancePackage, factoryTag, useTransactional, useCache, saveLog, moreDbTag,packagePath);
 				}
 				
 				FileBuilder builder = new FileBuilder(config);
@@ -138,7 +140,7 @@ public class CommCodeProductorUtil {
 	 * 
 	 * @throws Exception
 	 */
-	public static void codeGenerate(String databaseName,String tableNames,String parentName,String systemName,String packageName,String generateAll,String instancePackage,String primaryKeyStyle,String factoryTag,String useTransactional,String useCache,String saveLog,String moreDbTag) throws Exception {
+	public static void codeGenerate(String databaseName,String tableNames,String parentName,String systemName,String packageName,String generateAll,String instancePackage,String primaryKeyStyle,String factoryTag,String useTransactional,String useCache,String saveLog,String moreDbTag,String packagePath) throws Exception {
 		if (BaseStringUtil.isEmpty(useCache)) {
 			useCache = "YES";
 		}
@@ -157,9 +159,9 @@ public class CommCodeProductorUtil {
 			for (String tableName : list) {
 				GenerateConfig config = null;
 				if (BaseStringUtil.isEmpty(instancePackage)) {
-					 config = new GenerateConfig(databaseName,tableName,parentName,systemName, packageName,primaryKeyStyle,factoryTag,useTransactional,useCache,saveLog,moreDbTag);
+					 config = new GenerateConfig(databaseName,tableName,parentName,systemName, packageName,primaryKeyStyle,factoryTag,useTransactional,useCache,saveLog,moreDbTag,packagePath);
 				}else{
-					 config = new GenerateConfig(databaseName,tableName,parentName,systemName, packageName,primaryKeyStyle,instancePackage,factoryTag,useTransactional,useCache,saveLog,moreDbTag);
+					 config = new GenerateConfig(databaseName,tableName,parentName,systemName, packageName,primaryKeyStyle,instancePackage,factoryTag,useTransactional,useCache,saveLog,moreDbTag,packagePath);
 				}
 					
 				FileBuilder builder = new FileBuilder(config);
