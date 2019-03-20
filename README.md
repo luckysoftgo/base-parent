@@ -39,5 +39,7 @@
 
 ## 三.组件用例
 
-* #### api-demo 和 web-demo
+* #### github上的 api-demo 和 web-demo 为本组件的实战.
+
+
  
