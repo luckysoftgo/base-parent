@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @desc 分布式锁实现.
+ * https://redis.io/topics/distlock
  * @author 孤狼
  */
 public class DelegateDistributedLock implements DistributedLock {
