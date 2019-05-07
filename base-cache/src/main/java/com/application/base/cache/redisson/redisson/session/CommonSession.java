@@ -4,11 +4,19 @@ import com.application.base.cache.redisson.RedissonUtil;
 import com.application.base.cache.redisson.api.RedissonSession;
 import com.application.base.cache.redisson.exception.RedissonException;
 import org.redisson.api.*;
-import org.redisson.api.listener.MessageListener;
+import org.redisson.api.listener.BaseStatusListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -453,10 +461,11 @@ public class CommonSession implements RedissonSession {
 	public void messageSub(String objectKey) throws RedissonException {
 		try {
 			RTopic topic = getCurrentClient().getTopic(objectKey);
-			topic.addListener(new MessageListener<String>() {
+			
+			topic.addListener(new BaseStatusListener() {
 				@Override
-				public void onMessage(String channel, String message) {
-					System.out.println("channel = "+channel+",message = "+message);
+				public void onSubscribe(String channel) {
+					System.out.println("channel = "+channel);
 				}
 			});
 		} catch (Exception e) {
