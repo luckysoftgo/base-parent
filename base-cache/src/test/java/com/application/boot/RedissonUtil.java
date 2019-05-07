@@ -197,8 +197,8 @@ public class RedissonUtil {
 	 * @param objectName
 	 * @return
 	 */
-	public <M> RTopic<M> getRTopic(RedissonClient redisson,String objectName){
-		RTopic<M> rTopic=redisson.getTopic(objectName);
+	public <M> RTopic getRTopic(RedissonClient redisson,String objectName){
+		RTopic  rTopic=redisson.getTopic(objectName);
 		return rTopic;
 	}
 	

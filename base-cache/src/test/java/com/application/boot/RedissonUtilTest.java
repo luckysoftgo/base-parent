@@ -1,6 +1,12 @@
 package com.application.boot;
 
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.redisson.api.*;
+import org.redisson.api.listener.BaseStatusListener;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,13 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.redisson.api.*;
-import org.redisson.api.RFuture;
-import org.redisson.api.listener.MessageListener;
 
 
 /**
@@ -301,12 +300,11 @@ public class RedissonUtilTest {
 	 */
 	@Test
 	public void testGetRTopicSub() throws InterruptedException {
-		RTopic<String> rTopic=RedissonUtil.getInstance().getRTopic(redisson, "testTopic");
-		rTopic.addListener(new MessageListener<String>() {
+		RTopic rTopic=RedissonUtil.getInstance().getRTopic(redisson, "testTopic");
+		rTopic.addListener(new BaseStatusListener() {
 			@Override
-			public void onMessage(String s1, String s2) {
-				System.out.println("你发布的是:" + s1);
-				System.out.println("你发布的是:" + s2);
+			public void onSubscribe(String channel) {
+				System.out.println("channel = "+channel);
 			}
 		});
 		//等待发布者发布消息
@@ -320,14 +318,15 @@ public class RedissonUtilTest {
 	 */
 	@Test
 	public void testGetRTopicPub() {
-		RTopic<String> rTopic=RedissonUtil.getInstance().getRTopic(redisson, "testTopic");
-		// 添加监听 //
-		rTopic.addListener(new MessageListener<String>() {
+		RTopic rTopic=RedissonUtil.getInstance().getRTopic(redisson, "testTopic");
+		//添加监听
+		rTopic.addListener(new BaseStatusListener() {
 			@Override
-			public void onMessage(String channel, String message) {
-				System.out.println("channel = "+channel+",message = "+message);
+			public void onSubscribe(String channel) {
+				System.out.println("channel = "+channel);
 			}
 		});
+		
 		System.out.println(rTopic.publish("今天是儿童节，大家儿童节快乐"));
 		
 		//发送完消息后 让订阅者不再等待
