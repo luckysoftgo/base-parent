@@ -76,10 +76,10 @@ public class EsClientUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static TransportClient getSettingClient() throws Exception {
+	public static TransportClient getSettingClient(String inputPath) throws Exception {
 		if (settingClient==null) {
 			EsClientBuilder client = new EsClientBuilder();
-			settingClient = client.initSettingsClient();
+			settingClient = client.initSettingsClient(inputPath);
 		}
 		if (settingClient==null){
 			throw new Exception("没有通过配置文件获得 TransportClient 对象的实例!");
@@ -133,9 +133,6 @@ public class EsClientUtils {
 	 * @return 存在：true; 不存在：false;
 	 */
 	public static boolean isExistsIndex(TransportClient client,String dbName) throws Exception {
-		if(client == null){
-			client = getSettingClient();
-		}
 		IndicesExistsResponse response=client.admin().indices().exists(new IndicesExistsRequest().indices(new String[]{dbName})).actionGet();
         return response.isExists();
 	}
@@ -148,9 +145,6 @@ public class EsClientUtils {
 	 * @return 存在：true; 不存在：false;
 	 */
 	public static boolean isExistsType(TransportClient client,String dbName, String tableName) throws Exception {
-		if(client == null){
-			client = getSettingClient();
-		}
 		if(!isExistsIndex(client,dbName)){
 			return false;
 		}
@@ -165,9 +159,6 @@ public class EsClientUtils {
 	 * @throws Exception
 	 */
 	public static boolean addDBName(TransportClient client,String dbName) throws Exception {
-		if(client == null){
-			client = getSettingClient();
-		}
 	    CreateIndexRequestBuilder requestBuilder = client.admin().indices().prepareCreate(dbName);
 	    CreateIndexResponse response = requestBuilder.execute().actionGet();
 	    return response.isAcknowledged();
@@ -183,9 +174,6 @@ public class EsClientUtils {
 	 * @throws Exception
 	 */
 	public static boolean addTableName(TransportClient client,String dbName,String tableName) throws Exception {
-		if(client == null){
-			client = getSettingClient();
-		}
 		TypesExistsAction action = TypesExistsAction.INSTANCE;
 		TypesExistsRequestBuilder requestBuilder  = new TypesExistsRequestBuilder(client, action, dbName);
 		requestBuilder.setTypes(tableName);
@@ -218,9 +206,6 @@ public class EsClientUtils {
 	 */
 	@SuppressWarnings("deprecation")
 	public static boolean addDocument(TransportClient client, ElasticData data) throws Exception {
-		if(client == null){
-			client = getSettingClient();
-		}
 		if (data==null) {
 			logger.info("传递的 ElasticData 的值为空,请重新设置参数.");
 		}
@@ -240,9 +225,6 @@ public class EsClientUtils {
 	 */
 	@SuppressWarnings("deprecation")
 	public static boolean addDocumentList(TransportClient client,List<ElasticData> elasticData) throws Exception {
-		if(client == null){
-			client = getSettingClient();
-		}
 		if (elasticData.isEmpty()) {
 			logger.info("传递的 List<ElasticData> 的值为空,请重新设置参数.");
 		}
@@ -317,9 +299,6 @@ public class EsClientUtils {
 	 * @throws Exception
 	 */
 	public static boolean deleteDocument(TransportClient client,String dbName, String tableName, String documentId) throws Exception {
-		if(client == null){
-			client = getSettingClient();
-		}
 		DeleteResponse response =client.prepareDelete(dbName, tableName, documentId).get();
 		if (response!=null && response.status().equals(RestStatus.OK)){
 			return true;
@@ -336,9 +315,6 @@ public class EsClientUtils {
 	 * @throws Exception
 	 */
 	public static boolean deleteDocument(TransportClient client, ElasticData data) throws Exception {
-		if(client == null){
-			client = getSettingClient();
-		}
 		DeleteResponse response = client.prepareDelete(data.getDbName(), data.getTableName(), data.getDocumentId()).get();
 		if (response!=null && response.status().equals(RestStatus.OK)){
 			return true;
@@ -353,9 +329,6 @@ public class EsClientUtils {
 	 * @return
 	 */
 	public static boolean deleteDocuments(TransportClient client,List<ElasticData> elasticData) throws Exception {
-		if(client == null){
-			client = getSettingClient();
-		}
 		BulkRequestBuilder deleteBulk = client.prepareBulk();
 		for (ElasticData data : elasticData) {
 			deleteBulk.add(client.prepareDelete(data.getDbName(), data.getTableName(), data.getDocumentId()));
@@ -375,9 +348,6 @@ public class EsClientUtils {
 	 * @throws Exception
 	 */
 	public static boolean deleteIndex(TransportClient client,String dbName) throws Exception {
-		if(client == null){
-			client = getSettingClient();
-		}
 		IndicesExistsRequest ier = new IndicesExistsRequest();
 		ier.indices(new String[] { dbName });
 		boolean exists = client.admin().indices().exists(ier).actionGet().isExists();
@@ -405,9 +375,6 @@ public class EsClientUtils {
 	 */
 	public static boolean updateDocument(TransportClient client,String dbName, String tableName, ElasticData data)
 			throws Exception {
-		if(client == null){
-			client = getSettingClient();
-		}
 		// 如果新增的时候index存在，就是更新操作
 		return addDocument(client,dbName, tableName, data);
 	}
@@ -416,14 +383,10 @@ public class EsClientUtils {
 	 * 更新document
 	 * @param data
 	 *            商品dto
-	 * @throws JsonProcessingException
-	 * @throws UnknownHostException
+	 * @throws Exception
 	 */
 	public static boolean updateDocument(TransportClient client,ElasticData data)
 			throws Exception {
-		if(client == null){
-			client = getSettingClient();
-		}
 		UpdateRequest updateRequest = new UpdateRequest();
 		updateRequest.index(data.getDbName());
 		updateRequest.type(data.getTableName());
@@ -447,9 +410,6 @@ public class EsClientUtils {
 	 * @throws Exception
 	 */
 	public static List<ElasticData> searcher(TransportClient client, QueryBuilder queryBuilder, String dbName, String tableName) throws Exception {
-		if(client == null){
-			client = getSettingClient();
-		}
 		SearchResponse response = client.prepareSearch(dbName).setTypes(tableName).get();
 		//非空设置.
 		if (queryBuilder != null) {
@@ -480,9 +440,6 @@ public class EsClientUtils {
 	public static List<ElasticData> searcher(TransportClient client, String dbName, String tableName, QueryBuilder boolQuery,
 	                                         List<FieldSortBuilder> sortBuilders, int from, int size) throws Exception {
 		List<ElasticData> list = new ArrayList<ElasticData>();
-		if(client == null){
-			client = getSettingClient();
-		}
 		/**
 		 * 遍历查询结果输出相关度分值和文档内容
 		 */
@@ -507,9 +464,6 @@ public class EsClientUtils {
 	 */
 	public static List<ElasticData> searcher(TransportClient client, String dbName, String tableName, String[] keyWords, String[] channelIdArr, int pageNo, int pageSize) throws Exception {
 		List<ElasticData> list = new ArrayList<ElasticData>();
-		if(client == null){
-			client = getSettingClient();
-		}
 		/**
 		 * 遍历查询结果输出相关度分值和文档内容
 		 */
@@ -625,9 +579,6 @@ public class EsClientUtils {
 	 * @throws Exception
 	 */
 	private static TransportClient checkIndex(TransportClient client, String dbName) throws Exception {
-		if (client == null) {
-			client = getSettingClient();
-		}
 		// 去掉不存在的索引
 		IndicesExistsRequest ier = new IndicesExistsRequest();
 		ier.indices(new String[]{dbName});
@@ -678,9 +629,6 @@ public class EsClientUtils {
 	public static List<ElasticData> searchPostion(TransportClient client, String dbName, String tableName, String busUuid, String lineUuid) throws Exception {
 		if(!isExistsType(client,dbName, tableName)){
 			return new ArrayList<ElasticData>();
-		}
-		if(client == null){
-			client = getSettingClient();
 		}
 		/**
 		 * 构建查询条件
