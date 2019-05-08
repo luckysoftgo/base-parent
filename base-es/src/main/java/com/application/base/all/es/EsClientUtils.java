@@ -1,6 +1,5 @@
 package com.application.base.all.es;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
@@ -40,7 +39,6 @@ import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -210,7 +208,7 @@ public class EsClientUtils {
 			logger.info("传递的 ElasticData 的值为空,请重新设置参数.");
 		}
 		IndexResponse response = client.prepareIndex(data.getDbName(), data.getTableName(), data.getDocumentId()).setSource(data.getJsonStr(), XContentType.JSON).get();
-		if (response!=null && response.status().equals(RestStatus.OK)) {
+		if (response!=null && response.status().equals(RestStatus.CREATED)) {
 			return true;
 		}else {
 			return false;
@@ -220,8 +218,7 @@ public class EsClientUtils {
 	/**
 	 * 批量新增
 	 * @param elasticData, es存储模型的列表(具体看EsData)
-	 * @throws UnknownHostException
-	 * @throws JsonProcessingException
+	 * @throws Exception
 	 */
 	@SuppressWarnings("deprecation")
 	public static boolean addDocumentList(TransportClient client,List<ElasticData> elasticData) throws Exception {
