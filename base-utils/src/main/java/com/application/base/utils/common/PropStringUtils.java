@@ -16,6 +16,11 @@ public class PropStringUtils {
 	public static String propsFilePath = "/configPros/config.properties";
 	
 	/**
+	 * 空字符串定义.
+	 */
+	private static String NULL = "";
+	
+	/**
 	 * test
 	 * @param args
 	 */
@@ -25,7 +30,12 @@ public class PropStringUtils {
 		Properties prop = new Properties();
 		InputStream in = PropStringUtils.class.getClassLoader().getResourceAsStream(propsFilePath);
 		try {
-			prop.load(in);
+			if (in==null){
+				in=Thread.currentThread().getContextClassLoader().getResourceAsStream(propsFilePath);
+			}
+			if (in!=null){
+				prop.load(in);
+			}
 			Iterator<Entry<Object, Object>> itr = prop.entrySet().iterator();
 			while (itr.hasNext()) {
 				Entry<Object, Object> e = (Entry<Object, Object>) itr.next();
@@ -48,15 +58,7 @@ public class PropStringUtils {
 	 */
 	public static Map<String, String> getValues(String propPath) {
 		Properties prop = getProperties(propPath);
-		Map<String, String> resultMap = new HashMap<>(16);
-		if (prop!=null) {
-			Iterator<Entry<Object, Object>> itr = prop.entrySet().iterator();
-			while (itr.hasNext()) {
-				Entry<Object, Object> e = (Entry<Object, Object>) itr.next();
-				resultMap.put(e.getKey().toString(), e.getValue().toString());
-			}
-		}
-		return resultMap;
+		return getPropValue(prop);
 	}
 	
 	/**
@@ -67,8 +69,17 @@ public class PropStringUtils {
 	 */
 	public static Map<String, String> getValues(String filePath,String propsFileName) {
 		Properties prop = getProperties(filePath,propsFileName);
+		return getPropValue(prop);
+	}
+	
+	/**
+	 * 获取properties资源信息
+	 * @param prop
+	 * @return
+	 */
+	private static Map<String, String> getPropValue(Properties prop) {
 		Map<String, String> resultMap = new HashMap<>(16);
-		if (prop!=null) {
+		if (prop != null) {
 			Iterator<Entry<Object, Object>> itr = prop.entrySet().iterator();
 			while (itr.hasNext()) {
 				Entry<Object, Object> e = (Entry<Object, Object>) itr.next();
@@ -77,7 +88,6 @@ public class PropStringUtils {
 		}
 		return resultMap;
 	}
-	
 	
 	/**
 	 * 获得 value
@@ -167,7 +177,12 @@ public class PropStringUtils {
 		Properties prop = new Properties();
 		try {
 			InputStream in = PropStringUtils.class.getClassLoader().getResourceAsStream(filePath);
-			prop.load(in);
+			if (in==null){
+				in=Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath);
+			}
+			if (in!=null){
+				prop.load(in);
+			}
 		} catch (Exception e) {
 			return null;
 		}
@@ -183,9 +198,13 @@ public class PropStringUtils {
 	public static Properties getProperties(String fileName,String propsFileName){
 		Properties prop = new Properties();
 		try {
-			InputStream in = PropStringUtils.class.getClassLoader()
-					.getResourceAsStream(File.separator+fileName+File.separator+propsFileName);
-			prop.load(in);
+			InputStream in = PropStringUtils.class.getClassLoader().getResourceAsStream(File.separator+fileName+File.separator+propsFileName);
+			if (in==null){
+				in=Thread.currentThread().getContextClassLoader().getResourceAsStream(File.separator+fileName+File.separator+propsFileName);
+			}
+			if (in!=null){
+				prop.load(in);
+			}
 		} catch (Exception e) {
 			return null;
 		}
@@ -252,7 +271,7 @@ public class PropStringUtils {
 	}
 	
 	
-	static String NULL = "";
+	
 	/**
 	 * 判断为空.
 	 * @param value
