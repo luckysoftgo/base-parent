@@ -13,7 +13,7 @@ public class PropStringUtils {
 	/**
 	 * 属性文件的文件地址.
 	 */
-	public static String propsFilePath = "/configPros/config.properties";
+	public static String propsFilePath = "config/config.properties";
 	
 	/**
 	 * 空字符串定义.
@@ -25,7 +25,7 @@ public class PropStringUtils {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println(PropStringUtils.getValue("bosent.system.id","/framework-config/start.properties"));
+		System.out.println(PropStringUtils.getValue("appId","config/wechat.properties"));
 		
 		Properties prop = new Properties();
 		InputStream in = PropStringUtils.class.getClassLoader().getResourceAsStream(propsFilePath);
