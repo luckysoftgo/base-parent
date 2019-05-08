@@ -58,11 +58,14 @@ public class EsClientBuilder {
 	 * @return TransportClient
 	 */
 	@SuppressWarnings("unchecked")
-	public TransportClient initSettingsClient() {
+	public TransportClient initSettingsClient(String inputPath) {
         try {
             if (settingClient == null) {
             	synchronized (EsClientBuilder.class){
 		            if (settingClient == null) {
+		            	if (!BaseStringUtil.isEmpty(inputPath)){
+				            infoPath=inputPath;
+			            }
 		            	Map<String,String> value = PropStringUtils.getValues(infoPath);
 		            	if (value.isEmpty()){
 		            		logger.info("根据配置文件:"+infoPath+"获取的配置信息为空!");
