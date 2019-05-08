@@ -1,5 +1,6 @@
 package com.application.base.all.es;
 
+import com.application.base.utils.common.BaseStringUtil;
 import com.application.base.utils.common.PropStringUtils;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -42,7 +43,12 @@ public class EsClientBuilder {
 	/**
 	 * 是否自动加载集群的机器到列表中：true.是;false.否.
 	 */
-	private boolean isAppend = true;
+	private boolean isAppend=true;
+	
+	/**
+	 *配置文件信息记录
+	 */
+	private String infoPath="/es.properties";
 	
 	/**
 	 * 读取文件初始化.
@@ -55,33 +61,23 @@ public class EsClientBuilder {
 	public TransportClient initSettingsClient() {
         try {
             if (settingClient == null) {
-            	clusterName = PropStringUtils.getValue("elasticsearch.cluster.name", clusterName, "/es.properties");
-            	serverIPs = PropStringUtils.getValue("elasticsearch.cluster.ip", serverIPs, "/es.properties");
-            	isAppend = Boolean.parseBoolean(PropStringUtils.getValue("elasticsearch.transport.sniff", isAppend+"", "/es.properties"));
-                if(serverIPs == null || "".equals(serverIPs.trim()) || "".equalsIgnoreCase(clusterName)){
-                    return  null;
-                }
-                
-                Settings settings = Settings.builder()
-						// 集群名
-                		.put("cluster.name", clusterName)
-						// 自动把集群下的机器添加到列表中:true.是;false.否
-                        .put("client.transport.sniff", isAppend)
-						// 忽略集群名字验证, 打开后集群名字不对也能连接上
-                        .put("client.transport.ignore_cluster_name", true)
-                        .build();
-                
-                settingClient = new PreBuiltTransportClient(settings);
-                
-                //节点信息
-	    		Map<String, Integer> nodeMap = parseNodeIps(serverIPs);
-	    		for (Map.Entry<String, Integer> entry : nodeMap.entrySet()) {
-	    			try {
-	    				settingClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(entry.getKey()), entry.getValue()));
-	    			} catch (UnknownHostException e) {
-	    				logger.error("添加索引IP,Port出现异常,异常信息是{}",e.getMessage());
-	    			}
-	    		}
+            	synchronized (EsClientBuilder.class){
+		            if (settingClient == null) {
+		            	Map<String,String> value = PropStringUtils.getValues(infoPath);
+		            	if (value.isEmpty()){
+		            		logger.info("根据配置文件:"+infoPath+"获取的配置信息为空!");
+		            		return null;
+			            }
+			            clusterName = value.get("elasticsearch.cluster.name");
+			            serverIPs = value.get("elasticsearch.cluster.ip");
+			            String sniff = value.get("elasticsearch.transport.sniff");
+			            if (!BaseStringUtil.isEmpty(sniff)){
+				            isAppend=Boolean.getBoolean(sniff);
+			            }
+			            //初始化操作实现
+			            settingClient=initClient(clusterName,isAppend,serverIPs);
+		            }
+	            }
                 return settingClient;
             } else {
                 return settingClient;
@@ -94,6 +90,35 @@ public class EsClientBuilder {
             return null;
         }
     }
+	
+	/**
+	 * 返回创建的客户端信息
+	 * @param clusterName
+	 * @param isAppend
+	 * @param serverIPs
+	 * @return
+	 */
+	private TransportClient initClient(String clusterName,boolean isAppend,String serverIPs) {
+		Settings settings = Settings.builder()
+				// 集群名
+				.put("cluster.name", clusterName)
+				// 自动把集群下的机器添加到列表中:true.是;false.否
+				//.put("client.transport.sniff", isAppend)
+				// 忽略集群名字验证, 打开后集群名字不对也能连接上
+				//.put("client.transport.ignore_cluster_name", true)
+				.build();
+		TransportClient settingClient = new PreBuiltTransportClient(settings);
+		//节点信息
+		Map<String, Integer> nodeMap = parseNodeIps(serverIPs);
+		for (Map.Entry<String, Integer> entry : nodeMap.entrySet()) {
+			try {
+				settingClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(entry.getKey()), entry.getValue()));
+			} catch (UnknownHostException e) {
+				logger.error("添加索引IP,Port出现异常,异常信息是{}",e.getMessage());
+			}
+		}
+		return settingClient;
+	}
 	
 	/**
 	 * 通过参数获得对象.
@@ -109,30 +134,13 @@ public class EsClientBuilder {
 	public TransportClient initParamsClient(String clusterName,String serverIPs,boolean isAppend) {
         try {
             if (paramClient == null) {
-                if(serverIPs == null || "".equals(serverIPs.trim())){
-                    return  null;
+	            synchronized (EsClientBuilder.class){
+	                if(BaseStringUtil.isEmpty(clusterName) || BaseStringUtil.isEmpty(serverIPs)){
+	                    return null;
+	                }
+		            //初始化操作实现
+		            paramClient=initClient(clusterName,isAppend,serverIPs);
                 }
-                
-                Settings settings = Settings.builder()
-						// 集群名
-                		.put("cluster.name", clusterName)
-						// 自动把集群下的机器添加到列表中:true.是;false.否
-                        .put("client.transport.sniff", isAppend)
-						// 忽略集群名字验证, 打开后集群名字不对也能连接上
-                        .put("client.transport.ignore_cluster_name", true)
-                        .build();
-                
-                paramClient = new PreBuiltTransportClient(settings);
-                
-                //节点信息
-	    		Map<String, Integer> nodeMap = parseNodeIps(serverIPs);
-	    		for (Map.Entry<String, Integer> entry : nodeMap.entrySet()) {
-	    			try {
-	    				paramClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(entry.getKey()), entry.getValue()));
-	    			} catch (UnknownHostException e) {
-	    				logger.error("添加索引IP,Port出现异常,异常信息是{}",e.getMessage());
-	    			}
-	    		}
                 return paramClient;
             } else {
                 return paramClient;

@@ -16,16 +16,17 @@ import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.NoNodeAvailableException;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.index.IndexNotFoundException;
-import org.elasticsearch.index.query.*;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -33,7 +34,6 @@ import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,11 +42,10 @@ import java.util.regex.Pattern;
 
 /**
  * elasticsearch 相关操作工具类
- * 
  * <br> 数据对应关系】
- * <br> index(索引)    --> 数据库名
- * <br> type(类型)     --> 表名
- * <br> document(文档) --> 表中一行数据
+ * <br> index (索引)    --> 数据库名
+ * <br> type (类型)     --> 表名
+ * <br> document (文档) --> 表中一行数据
  * @author 孤狼
  */
 
@@ -69,12 +68,15 @@ public class EsClientUtils {
 	/**
 	 * 获得连接对象
 	 * @return
-	 * @throws UnknownHostException
+	 * @throws Exception
 	 */
 	public static TransportClient getSettingClient() throws Exception {
 		if (settingClient==null) {
 			EsClientBuilder client = new EsClientBuilder();
 			settingClient = client.initSettingsClient();
+		}
+		if (settingClient==null){
+			throw new Exception("没有通过配置文件获得 TransportClient 对象的实例!");
 		}
 		return settingClient;
 	}
@@ -82,7 +84,7 @@ public class EsClientUtils {
 	/**
 	 * 获得连接对象
 	 * @return
-	 * @throws UnknownHostException
+	 * @throws Exception
 	 */
 	public static TransportClient getParamClient(String clusterName,String serverIPs,boolean isAppend) throws Exception {
 		if (paramClient==null) {
@@ -96,7 +98,7 @@ public class EsClientUtils {
 	 * 关闭对应client
 	 * @param client
 	 */
-	public static void close(Client client) {
+	public static void close(TransportClient client) {
 		try {
 			client.close();
 		} catch (Exception e) {
@@ -110,7 +112,7 @@ public class EsClientUtils {
 	 * @param dbName
 	 * @param tableName
 	 */
-	public static void flush(Client client, String dbName, String tableName) {
+	public static void flush(TransportClient client, String dbName, String tableName) {
 		try {
 			client.admin().indices().flush(new FlushRequest(dbName.toLowerCase(), tableName)).actionGet();
 		} catch (Exception e) {
@@ -124,11 +126,11 @@ public class EsClientUtils {
 	 * @param dbName 索引名
 	 * @return 存在：true; 不存在：false;
 	 */
-	public static boolean isExistsIndex(Client client,String dbName) throws Exception {
+	public static boolean isExistsIndex(TransportClient client,String dbName) throws Exception {
 		if(client == null){
 			client = getSettingClient();
 		}
-		IndicesExistsResponse  response = client.admin().indices().exists(new IndicesExistsRequest().indices(new String[]{dbName})).actionGet();
+		IndicesExistsResponse response=client.admin().indices().exists(new IndicesExistsRequest().indices(new String[]{dbName})).actionGet();
         return response.isExists();
 	}
 
@@ -139,14 +141,14 @@ public class EsClientUtils {
 	 * @param tableName 索引类型
 	 * @return 存在：true; 不存在：false;
 	 */
-	public static boolean isExistsType(Client client,String dbName, String tableName) throws Exception {
+	public static boolean isExistsType(TransportClient client,String dbName, String tableName) throws Exception {
 		if(client == null){
 			client = getSettingClient();
 		}
 		if(!isExistsIndex(client,dbName)){
 			return false;
 		}
-		TypesExistsResponse response = client.admin().indices().typesExists(new TypesExistsRequest(new String[] { dbName }, tableName)).actionGet();
+		TypesExistsResponse response=client.admin().indices().typesExists(new TypesExistsRequest(new String[] { dbName }, tableName)).actionGet();
 		return response.isExists();
 	}
 	
@@ -155,16 +157,15 @@ public class EsClientUtils {
 	 *
 	 * @param dbName
 	 *            索引名称
-	 * @throws UnknownHostException
+	 * @throws Exception
 	 */
-	public static boolean addDBName(Client client,String dbName) throws Exception {
+	public static boolean addDBName(TransportClient client,String dbName) throws Exception {
 		if(client == null){
 			client = getSettingClient();
 		}
 	    CreateIndexRequestBuilder requestBuilder = client.admin().indices().prepareCreate(dbName);
 	    CreateIndexResponse response = requestBuilder.execute().actionGet();
 	    return response.isAcknowledged();
-		//client.close();
 	}
 	
 	/**
@@ -174,9 +175,9 @@ public class EsClientUtils {
 	 *            索引名称
 	 * @param tableName
 	 *            索引类型
-	 * @throws UnknownHostException
+	 * @throws Exception
 	 */
-	public static boolean addTableName(Client client,String dbName,String tableName) throws Exception {
+	public static boolean addTableName(TransportClient client,String dbName,String tableName) throws Exception {
 		if(client == null){
 			client = getSettingClient();
 		}
@@ -196,71 +197,62 @@ public class EsClientUtils {
 	 *            类型名称
 	 * @param data
 	 *            存储模型对象
-	 * @throws UnknownHostException
+	 * @throws Exception
 	 */
 	@SuppressWarnings("deprecation")
-	public static void addDocument(Client client,String dbName, String tableName, EsData data) throws Exception {
+	public static void addDocument(TransportClient client,String dbName, String tableName, ElasticData data) throws Exception {
 		if(client == null){
 			client = getSettingClient();
 		}
 		if (data==null) {
-			logger.info("传递的 EsData 的值为空,请重新设置参数.");
+			logger.info("传递的 ElasticData 的值为空,请重新设置参数.");
 		}
-		
-		//https://stackoverflow.com/questions/45851621/how-to-use-es-java-api-to-create-a-new-type-of-an-index
-		//client.admin().indices().preparePutMapping(dbName).setType(tableName).setSource(data.getJsonStr(),XContentType.JSON).get();
-		
 		client.prepareIndex(dbName, tableName, data.getDocumentId()).setSource(data.getJsonStr()).get();
-		// 单条插入 不关闭连接
-		//client.close();
 	}
 
 	/**
 	 * 新增 document
 	 * @param data
-	 * @throws UnknownHostException
+	 * @throws Exception
 	 */
 	@SuppressWarnings("deprecation")
-	public static boolean addDocument(Client client,EsData data) throws Exception {
+	public static boolean addDocument(TransportClient client, ElasticData data) throws Exception {
 		if(client == null){
 			client = getSettingClient();
 		}
 		if (data==null) {
-			logger.info("传递的 EsData 的值为空,请重新设置参数.");
+			logger.info("传递的 ElasticData 的值为空,请重新设置参数.");
 		}
-		IndexRequestBuilder indexBuilder = client.prepareIndex(data.getDbName(), data.getTableName(), data.getDocumentId()).setSource(data.getJsonStr());
-		IndexResponse  response = indexBuilder.execute().actionGet();
+		IndexResponse response = client.prepareIndex(data.getDbName(), data.getTableName(), data.getDocumentId()).setSource(data.getJsonStr()).get();
 		RestStatus status = response.status();
 		if (status==RestStatus.OK) {
 			return true;
 		}else {
 			return false;
 		}
-		// 单条插入 不关闭连接
-		//client.close();
 	}
 	
 	/**
 	 * 批量新增
-	 * @param esDatas, es存储模型的列表(具体看EsData)
+	 * @param elasticData, es存储模型的列表(具体看EsData)
 	 * @throws UnknownHostException
 	 * @throws JsonProcessingException
 	 */
 	@SuppressWarnings("deprecation")
-	public static void addDocumentList(Client client,List<EsData> esDatas) throws Exception {
-		if(esDatas == null || esDatas.size() == 0){
-			logger.info("");
+	public static void addDocumentList(TransportClient client,List<ElasticData> elasticData) throws Exception {
+		if(elasticData == null || elasticData.size() == 0){
+			logger.info("数据内容为空!");
 			return;
 		}
 		if(client == null){
 			client = getSettingClient();
 		}
-		if (esDatas.isEmpty() || esDatas.size()==0) {
-			logger.info("传递的 List<EsData> 的值为空,请重新设置参数.");
+		if (elasticData.isEmpty() || elasticData.size()==0) {
+			logger.info("传递的 List<ElasticData> 的值为空,请重新设置参数.");
 		}
 		// 批量处理request
 		BulkRequestBuilder bulkRequest = client.prepareBulk();
-		for (EsData data : esDatas) {
+		for (ElasticData data : elasticData) {
 			bulkRequest.add(new IndexRequest(data.getDbName(), data.getTableName(), data.getDocumentId()).source(data.getJsonStr()));
 		}
 		// 执行批量处理request
@@ -275,7 +267,6 @@ public class EsClientUtils {
 			}
 			logger.error("====================批量创建索引过程中出现错误 上面是错误信息 共有: " + count + " 条记录==========================");
 		}
-		client.close();
 	}
 	
 	
@@ -287,62 +278,55 @@ public class EsClientUtils {
 	 *            索引名称
 	 * @param tableName
 	 *            类型名称
-	 * @param modelId
+	 * @param documentId
 	 *            要删除存储模型对象的id
 	 * @throws UnknownHostException
 	 */
-	public static void deleteDocument(Client client,String dbName, String tableName, String documentId) throws Exception {
+	public static void deleteDocument(TransportClient client,String dbName, String tableName, String documentId) throws Exception {
 		if(client == null){
 			client = getSettingClient();
 		}
 		client.prepareDelete(dbName, tableName, documentId).get();
-		// 单条插入 不关闭连接
-		//client.close();
 	}
 	
 	/**
 	 * 删除document
 	 *
-	 * @param EsData
+	 * @param data
 	 *            索引对象
 	 * @throws UnknownHostException
 	 */
-	public static void deleteIndex(Client client,EsData data) throws Exception {
+	public static void deleteIndex(TransportClient client, ElasticData data) throws Exception {
 		if(client == null){
 			client = getSettingClient();
 		}
 		client.prepareDelete(data.getDbName(), data.getTableName(), data.getDocumentId()).get();
-		// 单条插入 不关闭连接
-		//client.close();
 	}
 	
 	/**
 	 * 批量刪除索引
-	 * @param esDatas, es存储模型的列表(具体看EsData)
+	 * @param elasticData, es存储模型的列表(具体看EsData)
 	 * @return
 	 */
-	public static boolean deleteIndex(Client client,List<EsData> esDatas) throws Exception {
+	public static boolean deleteIndex(TransportClient client,List<ElasticData> elasticData) throws Exception {
 		if(client == null){
 			client = getSettingClient();
 		}
 		BulkRequestBuilder deleteBulk = client.prepareBulk();
-		for (EsData data : esDatas) {
+		for (ElasticData data : elasticData) {
 			deleteBulk.add(client.prepareDelete(data.getDbName(), data.getTableName(), data.getDocumentId()));
 		}
-		deleteBulk.execute().actionGet();
-		client.close();
-		return true;
+		BulkResponse response=deleteBulk.execute().actionGet();
+		return response.hasFailures();
 	}
 	
 
 	/**
-	 *
 	 * 根据索引名称删除索引
 	 * @param dbName 索引名称
 	 * @throws Exception
-	 *
 	 */
-	public static void deleteIndex(Client client,String dbName) throws Exception {
+	public static void deleteIndex(TransportClient client,String dbName) throws Exception {
 		if(client == null){
 			client = getSettingClient();
 		}
@@ -365,7 +349,7 @@ public class EsClientUtils {
 	 * @throws JsonProcessingException
 	 * @throws UnknownHostException
 	 */
-	public static void updateDocument(Client client,String dbName, String tableName, EsData data)
+	public static void updateDocument(TransportClient client,String dbName, String tableName, ElasticData data)
 			throws Exception {
 		if(client == null){
 			client = getSettingClient();
@@ -383,38 +367,26 @@ public class EsClientUtils {
 	 * @return
 	 * @throws UnknownHostException
 	 */
-	public static List<EsData> searcher(Client client, QueryBuilder queryBuilder, String dbName, String tableName) throws Exception {
+	public static List<ElasticData> searcher(TransportClient client, QueryBuilder queryBuilder, String dbName, String tableName) throws Exception {
 		if(client == null){
 			client = getSettingClient();
 		}
-		
 		SearchResponse response = client.prepareSearch(dbName).setTypes(tableName).get();
 		//非空设置.
 		if (queryBuilder != null) {
 			response = client.prepareSearch(dbName).setTypes(tableName).setQuery(queryBuilder).get();
 		}
-		
 		/**
 		 * 遍历查询结果输出相关度分值和文档内容
 		 */
 		SearchHits searchHits =  response.getHits();
 		logger.info("查询到记录数:{} 条." ,searchHits.getTotalHits());
 		
-		List<EsData> dataList = new ArrayList<EsData>();
-		EsData model = null;
-		for(SearchHit searchHit : searchHits){
-			String json = searchHit.getSourceAsString();
-			model = new EsData();
-			model.setDocumentId(searchHit.getId());
-			model.setDbName(dbName);
-			model.setTableName(tableName);
-			model.setJsonStr(json);
-			dataList.add(model);
-		}
+		List<ElasticData> dataList = new ArrayList<ElasticData>();
+		tranList(dbName, tableName, searchHits, dataList);
 		return dataList;
 	}
 	
-
 	/**
 	 * 分页 执行搜索
 	 *
@@ -427,9 +399,9 @@ public class EsClientUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static List<EsData> searcher(Client client, String dbName, String tableName, QueryBuilder boolQuery,
-										List<FieldSortBuilder> sortBuilders, int from, int size) throws Exception {
-		List<EsData> list = new ArrayList<EsData>();
+	public static List<ElasticData> searcher(TransportClient client, String dbName, String tableName, QueryBuilder boolQuery,
+	                                         List<FieldSortBuilder> sortBuilders, int from, int size) throws Exception {
+		List<ElasticData> list = new ArrayList<ElasticData>();
 		if(client == null){
 			client = getSettingClient();
 		}
@@ -439,17 +411,8 @@ public class EsClientUtils {
 		SearchHits searchHits = search(client,dbName, tableName, boolQuery, sortBuilders, from, size);
 		logger.info("查询到记录数:{}" + searchHits.getTotalHits());
 		
-		List<EsData> dataList = new ArrayList<EsData>();
-		EsData model = null;
-		for(SearchHit searchHit : searchHits){
-			String json = searchHit.getSourceAsString();
-			model = new EsData();
-			model.setDocumentId(searchHit.getId());
-			model.setDbName(dbName);
-			model.setTableName(tableName);
-			model.setJsonStr(json);
-			dataList.add(model);
-		}
+		List<ElasticData> dataList = new ArrayList<ElasticData>();
+		tranList(dbName, tableName, searchHits, dataList);
 		return list;
 	}
 	
@@ -464,28 +427,19 @@ public class EsClientUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static List<EsData> searcher(Client client, String dbName, String tableName, String[] keyWords, String[] channelIdArr, int pageNo, int pageSize) throws Exception {
-		List<EsData> list = new ArrayList<EsData>();
+	public static List<ElasticData> searcher(TransportClient client, String dbName, String tableName, String[] keyWords, String[] channelIdArr, int pageNo, int pageSize) throws Exception {
+		List<ElasticData> list = new ArrayList<ElasticData>();
 		if(client == null){
 			client = getSettingClient();
 		}
 		/**
 		 * 遍历查询结果输出相关度分值和文档内容
 		 */
-		SearchHits searchHits =  search(client,dbName, tableName, keyWords, channelIdArr, pageNo, pageSize);
+		SearchHits searchHits = search(client,dbName, tableName, keyWords, channelIdArr, pageNo, pageSize);
 		logger.info("查询到记录数:{}" + searchHits.getTotalHits());
 		
-		List<EsData> dataList = new ArrayList<EsData>();
-		EsData model = null;
-		for(SearchHit searchHit : searchHits){
-			String json = searchHit.getSourceAsString();
-			model = new EsData();
-			model.setDocumentId(searchHit.getId());
-			model.setDbName(dbName);
-			model.setTableName(tableName);
-			model.setJsonStr(json);
-			dataList.add(model);
-		}
+		List<ElasticData> dataList = new ArrayList<ElasticData>();
+		tranList(dbName, tableName, searchHits, dataList);
 		return list;
 	}
 	
@@ -499,30 +453,11 @@ public class EsClientUtils {
 	 * @param from
 	 * @param size
 	 * @return
-	 * @throws NoNodeAvailableException
+	 * @throws Exception
 	 */
-	public static SearchHits search(Client client,String dbName, String tableName, QueryBuilder boolQuery,
+	public static SearchHits search(TransportClient client,String dbName, String tableName, QueryBuilder boolQuery,
 			List<FieldSortBuilder> sortBuilders, int from, int size) throws Exception {
-
-		if(client == null){
-			client = getSettingClient();
-		}
-
-		// 去掉不存在的索引
-		IndicesExistsRequest ier = new IndicesExistsRequest();
-		ier.indices(new String[] { dbName });
-		boolean exists = client.admin().indices().exists(ier).actionGet().isExists();
-		if (exists) {
-			client.admin().indices().open(new OpenIndexRequest(dbName)).actionGet();
-		} else {
-			throw new IndexNotFoundException(dbName);
-		}
-		try {
-			client.admin().indices().refresh(new RefreshRequest(dbName)).actionGet();
-		} catch (IndexNotFoundException e) {
-			logger.error("重新刷新索引库异常,异常信息是：{}",e.getMessage());
-		}
-
+		client = checkIndex(client, dbName);
 		/**
 		 * 查询请求建立
 		 */
@@ -541,10 +476,10 @@ public class EsClientUtils {
 		}
 		return searchRequestBuilder.execute().actionGet().getHits();
 	}
-
+	
 	/**
 	 * 按照关键字查询.
-	 *
+	 * @param client
 	 * @param dbName
 	 * @param tableName
 	 * @param keyWords
@@ -553,29 +488,9 @@ public class EsClientUtils {
 	 * @param pageSize
 	 * @return
 	 * @throws Exception
-	 * @throws IndexNotFoundException
 	 */
-	public static SearchHits search(Client client,String dbName, String tableName, String[] keyWords, String[] channelIdArr, int pageNo, int pageSize) throws Exception {
-
-		if(client == null){
-			client = getSettingClient();
-		}
-
-		// 去掉不存在的索引
-		IndicesExistsRequest ier = new IndicesExistsRequest();
-		ier.indices(new String[] { dbName });
-		boolean exists = client.admin().indices().exists(ier).actionGet().isExists();
-		if (exists) {
-			client.admin().indices().open(new OpenIndexRequest(dbName)).actionGet();
-		} else {
-			throw new IndexNotFoundException(dbName);
-		}
-
-		try {
-			client.admin().indices().refresh(new RefreshRequest(dbName)).actionGet();
-		} catch (IndexNotFoundException e) {
-			logger.error("重新刷新索引库异常,异常信息是：{}",e.getMessage());
-		}
+	public static SearchHits search(TransportClient client,String dbName, String tableName, String[] keyWords, String[] channelIdArr, int pageNo, int pageSize) throws Exception {
+		client = checkIndex(client, dbName);
 		
 		/**
 		 * 查询请求建立
@@ -585,9 +500,7 @@ public class EsClientUtils {
 		searchRequestBuilder.setFrom(pageNo);
 		searchRequestBuilder.setSize(pageSize);
 		searchRequestBuilder.setExplain(true);
-
 		BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
-
 		StringBuffer totalKeys = new StringBuffer();
 		for (String keyword : keyWords) {
 			totalKeys.append(keyword);
@@ -619,7 +532,6 @@ public class EsClientUtils {
 		} else {
 			 boolQuery.should(QueryBuilders.queryStringQuery("*"));
 		}
-
 		if (channelIdArr != null && channelIdArr.length > 0) {
 			TermQueryBuilder inQuery = QueryBuilders.termQuery("channelid_", channelIdArr);
 			boolQuery.must(inQuery);
@@ -628,22 +540,49 @@ public class EsClientUtils {
 		return searchRequestBuilder.execute().actionGet().getHits();
 	}
 	
+	/**
+	 * 去掉不存在的索引
+	 *
+	 * @param client
+	 * @param dbName
+	 * @return
+	 * @throws Exception
+	 */
+	private static TransportClient checkIndex(TransportClient client, String dbName) throws Exception {
+		if (client == null) {
+			client = getSettingClient();
+		}
+		// 去掉不存在的索引
+		IndicesExistsRequest ier = new IndicesExistsRequest();
+		ier.indices(new String[]{dbName});
+		boolean exists = client.admin().indices().exists(ier).actionGet().isExists();
+		if (exists) {
+			client.admin().indices().open(new OpenIndexRequest(dbName)).actionGet();
+		} else {
+			throw new IndexNotFoundException(dbName);
+		}
+		try {
+			client.admin().indices().refresh(new RefreshRequest(dbName)).actionGet();
+		} catch (IndexNotFoundException e) {
+			logger.error("重新刷新索引库异常,异常信息是：{}", e.getMessage());
+		}
+		return client;
+	}
 	
 	/**======================================================================== << 以下是实例应用 >> ===============================================================================*/
 	
 	/**
 	 * 删除es中位置信息
+	 * @param client
 	 * @param dbName
 	 * @param tableName
 	 * @param busUuid
 	 * @param lineUuid
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
+	 * @throws Exception
 	 */
-	public static void deletePostion(Client client,String dbName, String tableName, String busUuid, String lineUuid) throws Exception {
+	public static void deletePostion(TransportClient client,String dbName, String tableName, String busUuid, String lineUuid) throws Exception {
 		// 执行2次 应该能删完 一辆车 一天不会超过20000条
-		List<EsData> esModelList = searchPostion(client,dbName, tableName, busUuid, lineUuid);
+		List<ElasticData> esModelList = searchPostion(client,dbName, tableName, busUuid, lineUuid);
 		if(esModelList.size() > 0){
 			deleteIndex(client,esModelList);
 		}
@@ -651,23 +590,21 @@ public class EsClientUtils {
 	
 	/**
 	 * 查询位置信息
-	 * @param date
+	 * @param client
+	 * @param dbName
+	 * @param tableName
 	 * @param busUuid
-	 * @param busNumber
 	 * @param lineUuid
 	 * @return
-	 * @throws JsonParseException
-	 * @throws JsonMappingException
-	 * @throws IOException
+	 * @throws Exception
 	 */
-	public static List<EsData> searchPostion(Client client, String dbName, String tableName, String busUuid, String lineUuid) throws Exception {
+	public static List<ElasticData> searchPostion(TransportClient client, String dbName, String tableName, String busUuid, String lineUuid) throws Exception {
 		if(!isExistsType(client,dbName, tableName)){
-			return new ArrayList<EsData>();
+			return new ArrayList<ElasticData>();
 		}
 		if(client == null){
 			client = getSettingClient();
 		}
-		
 		/**
 		 * 构建查询条件
 		 */
@@ -685,25 +622,32 @@ public class EsClientUtils {
 				.setSize(10000)
 				.execute()
 				.actionGet();
-		
 		/**
 		 * 遍历查询结果输出相关度分值和文档内容
 		 */
 		SearchHits searchHits =  response.getHits();
 		
-		List<EsData> dataList = new ArrayList<EsData>();
-		EsData model = null;
-		for(SearchHit searchHit : searchHits){
+		List<ElasticData> dataList = new ArrayList<ElasticData>();
+		tranList(dbName, tableName, searchHits, dataList);
+		return dataList;
+	}
+	
+	/**
+	 * 给集合中添加数据
+	 * @param dbName
+	 * @param tableName
+	 * @param searchHits
+	 * @param dataList
+	 */
+	private static void tranList(String dbName, String tableName, SearchHits searchHits, List<ElasticData> dataList) {
+		for (SearchHit searchHit : searchHits) {
 			String json = searchHit.getSourceAsString();
-			model = new EsData();
+			ElasticData model = new ElasticData();
 			model.setDocumentId(searchHit.getId());
 			model.setDbName(dbName);
 			model.setTableName(tableName);
 			model.setJsonStr(json);
 			dataList.add(model);
 		}
-		client.close();
-		return dataList;
 	}
-	
 }

@@ -34,14 +34,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cn.crxy.es.domain.Person;
 
-/**
- *     <dependency>
-			<groupId>org.elasticsearch</groupId>
-			<artifactId>elasticsearch</artifactId>
-			<version>1.4.4</version>
-		</dependency>
- *
- */
 public class TestEs {
 	
 	TransportClient transportClient;
