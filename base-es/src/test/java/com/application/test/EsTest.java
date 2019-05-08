@@ -36,7 +36,7 @@ public class EsTest {
 	}
 	
 	private static void test2() throws Exception {
-		TransportClient client = EsClientUtils.getSettingClient();
+		TransportClient client = EsClientUtils.getSettingClient("/es.properties");
 		ElasticData data = new ElasticData(dbName,tableName, "123456789",createJson1());
 		EsClientUtils.addDocument(client, data);
 		System.out.println("添加到ES中成功了...");
