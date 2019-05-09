@@ -198,9 +198,9 @@ public class PropStringUtils {
 	public static Properties getProperties(String fileName,String propsFileName){
 		Properties prop = new Properties();
 		try {
-			InputStream in = PropStringUtils.class.getClassLoader().getResourceAsStream(File.separator+fileName+File.separator+propsFileName);
+			InputStream in = PropStringUtils.class.getClassLoader().getResourceAsStream(fileName+File.separator+propsFileName);
 			if (in==null){
-				in=Thread.currentThread().getContextClassLoader().getResourceAsStream(File.separator+fileName+File.separator+propsFileName);
+				in=Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName+File.separator+propsFileName);
 			}
 			if (in!=null){
 				prop.load(in);
@@ -269,8 +269,6 @@ public class PropStringUtils {
 		filePath += File.separator;
 		return filePath;
 	}
-	
-	
 	
 	/**
 	 * 判断为空.
