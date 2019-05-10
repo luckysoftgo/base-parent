@@ -1,4 +1,4 @@
-package com.application.base.all.es;
+package com.application.base.all.elastic;
 
 import com.application.base.utils.common.BaseStringUtil;
 import com.application.base.utils.common.PropStringUtils;

@@ -1,4 +1,4 @@
-package com.application.base.all.es;
+package com.application.base.all.elastic;
 
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
