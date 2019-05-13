@@ -19,7 +19,7 @@
 		<activemq-core.version>5.7.0</activemq-core.version>
 		<!-- spring rabbitmq 消息 -->
 		<amqp-client.version>3.6.5</amqp-client.version>
-		<spring-rabbit.version>2.0.8.RELEASE</spring-rabbit.version>
+		<spring-rabbit.version>2.1.2.RELEASE</spring-rabbit.version>
 		<spring-amqp.version>2.0.8.RELEASE</spring-amqp.version>
 		<spring-retry.version>1.1.2.RELEASE</spring-retry.version>
 		<commons-pool.version>1.6</commons-pool.version>
