@@ -1,5 +1,6 @@
 package com.application.base.all.elastic;
 
+import com.application.base.all.elastic.exception.ElasticException;
 import com.application.base.utils.common.BaseStringUtil;
 import com.application.base.utils.common.PropStringUtils;
 import org.elasticsearch.client.transport.TransportClient;
@@ -110,17 +111,22 @@ public class EsClientBuilder {
 				// 忽略集群名字验证, 打开后集群名字不对也能连接上
 				//.put("client.transport.ignore_cluster_name", true)
 				.build();
-		TransportClient settingClient = new PreBuiltTransportClient(settings);
-		//节点信息
-		Map<String, Integer> nodeMap = parseNodeIps(serverIPs);
-		for (Map.Entry<String, Integer> entry : nodeMap.entrySet()) {
-			try {
-				settingClient.addTransportAddress(new TransportAddress(InetAddress.getByName(entry.getKey()), entry.getValue()));
-			} catch (UnknownHostException e) {
-				logger.error("添加索引IP,Port出现异常,异常信息是{}",e.getMessage());
+		try {
+			TransportClient settingClient = new PreBuiltTransportClient(settings);
+			//节点信息
+			Map<String, Integer> nodeMap = parseNodeIps(serverIPs);
+			for (Map.Entry<String, Integer> entry : nodeMap.entrySet()) {
+				try {
+					settingClient.addTransportAddress(new TransportAddress(InetAddress.getByName(entry.getKey()), entry.getValue()));
+				} catch (UnknownHostException e) {
+					logger.error("添加索引IP,Port出现异常,异常信息是{}",e.getMessage());
+				}
 			}
+			return settingClient;
+		}catch (Exception e){
+			logger.error("初始化对象实例失败:{}",e);
+			throw  new ElasticException(e);
 		}
-		return settingClient;
 	}
 	
 	/**
