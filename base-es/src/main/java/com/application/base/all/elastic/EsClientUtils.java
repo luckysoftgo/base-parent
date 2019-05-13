@@ -2,7 +2,6 @@ package com.application.base.all.elastic;
 
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.exists.types.TypesExistsAction;
@@ -22,6 +21,7 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -254,8 +254,7 @@ public class EsClientUtils {
 	 * @throws Exception
 	 */
 	public static String getDocById(TransportClient client,String dbName,String tableName,String docId) throws Exception{
-		GetResponse response = client.prepareGet(dbName, tableName, docId).setOperationThreaded(false) // 默认为true,在不同的线程执行
-				.get();
+		GetResponse response = client.prepareGet(dbName, tableName, docId).get();
 		if (response!=null){
 			return response.getSourceAsString();
 		}else{
@@ -270,8 +269,7 @@ public class EsClientUtils {
 	 * @throws Exception
 	 */
 	public static ElasticData getDocInfoById(TransportClient client,String dbName,String tableName,String docId) throws Exception{
-		GetResponse response = client.prepareGet(dbName, tableName, docId).setOperationThreaded(false) // 默认为true,在不同的线程执行
-				.get();
+		GetResponse response = client.prepareGet(dbName, tableName, docId).get();
 		if (response!=null){
 			ElasticData data = new ElasticData();
 			data.setDbName(response.getIndex());
@@ -349,7 +347,7 @@ public class EsClientUtils {
 		ier.indices(new String[] { dbName });
 		boolean exists = client.admin().indices().exists(ier).actionGet().isExists();
 		if (exists) {
-			DeleteIndexResponse response=client.admin().indices().prepareDelete(dbName.toLowerCase()).get();
+			AcknowledgedResponse response=client.admin().indices().prepareDelete(dbName.toLowerCase()).get();
 			if (response!=null && response.isAcknowledged()){
 				return true;
 			}else{

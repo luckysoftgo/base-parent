@@ -4,7 +4,7 @@ import com.application.base.utils.common.BaseStringUtil;
 import com.application.base.utils.common.PropStringUtils;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,7 +115,7 @@ public class EsClientBuilder {
 		Map<String, Integer> nodeMap = parseNodeIps(serverIPs);
 		for (Map.Entry<String, Integer> entry : nodeMap.entrySet()) {
 			try {
-				settingClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(entry.getKey()), entry.getValue()));
+				settingClient.addTransportAddress(new TransportAddress(InetAddress.getByName(entry.getKey()), entry.getValue()));
 			} catch (UnknownHostException e) {
 				logger.error("添加索引IP,Port出现异常,异常信息是{}",e.getMessage());
 			}

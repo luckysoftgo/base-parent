@@ -5,7 +5,6 @@ import com.application.base.all.elastic.entity.ElasticData;
 import com.application.base.all.elastic.exception.ElasticException;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.exists.types.TypesExistsAction;
@@ -25,6 +24,7 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -159,8 +159,7 @@ public class ElasticOperateSession implements ElasticSession {
 	
 	@Override
 	public String getDataById(ElasticData data) throws ElasticException {
-		GetResponse response = getClient().prepareGet(data.getIndex(), data.getType(), data.getId()).setOperationThreaded(false) // 默认为true,在不同的线程执行
-				.get();
+		GetResponse response = getClient().prepareGet(data.getIndex(), data.getType(), data.getId()).get();
 		if (response!=null){
 			return response.getSourceAsString();
 		}else{
@@ -170,8 +169,7 @@ public class ElasticOperateSession implements ElasticSession {
 	
 	@Override
 	public ElasticData getDataInfoById(ElasticData data) throws ElasticException {
-		GetResponse response = getClient().prepareGet(data.getIndex(), data.getType(), data.getId()).setOperationThreaded(false) // 默认为true,在不同的线程执行
-				.get();
+		GetResponse response = getClient().prepareGet(data.getIndex(), data.getType(), data.getId()).get();
 		if (response!=null){
 			data.setIndex(response.getIndex());
 			data.setType(response.getType());
@@ -213,7 +211,7 @@ public class ElasticOperateSession implements ElasticSession {
 		ier.indices(new String[] { index });
 		boolean exists = getClient().admin().indices().exists(ier).actionGet().isExists();
 		if (exists) {
-			DeleteIndexResponse response=getClient().admin().indices().prepareDelete(index.toLowerCase()).get();
+			AcknowledgedResponse response=getClient().admin().indices().prepareDelete(index.toLowerCase()).get();
 			if (response!=null && response.isAcknowledged()){
 				return true;
 			}else{
