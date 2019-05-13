@@ -1,6 +1,6 @@
 package com.application.base.all.elastic.elastic.session;
 
-import com.application.base.all.elastic.api.ElasticSession;
+import com.application.base.all.elastic.core.ElasticSession;
 import com.application.base.all.elastic.entity.ElasticData;
 import com.application.base.all.elastic.exception.ElasticException;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;

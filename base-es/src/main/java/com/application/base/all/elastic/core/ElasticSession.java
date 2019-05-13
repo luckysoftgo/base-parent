@@ -1,4 +1,4 @@
-package com.application.base.all.elastic.api;
+package com.application.base.all.elastic.core;
 
 
 import com.application.base.all.elastic.entity.ElasticData;

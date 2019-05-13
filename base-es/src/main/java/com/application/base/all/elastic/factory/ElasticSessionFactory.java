@@ -1,6 +1,6 @@
 package com.application.base.all.elastic.factory;
 
-import com.application.base.all.elastic.api.ElasticSession;
+import com.application.base.all.elastic.core.ElasticSession;
 import com.application.base.all.elastic.exception.ElasticException;
 
 /**
