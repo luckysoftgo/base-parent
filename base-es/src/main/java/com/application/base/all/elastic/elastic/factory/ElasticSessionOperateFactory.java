@@ -1,6 +1,7 @@
 package com.application.base.all.elastic.elastic.factory;
 
 import com.application.base.all.elastic.core.ElasticSession;
+import com.application.base.all.elastic.elastic.client.ElasticPool;
 import com.application.base.all.elastic.elastic.session.ElasticOperateSession;
 import com.application.base.all.elastic.exception.ElasticException;
 import com.application.base.all.elastic.factory.ElasticSessionFactory;
@@ -21,13 +22,13 @@ public class ElasticSessionOperateFactory implements ElasticSessionFactory {
 	
 	Logger logger = LoggerFactory.getLogger(getClass());
 
-	private TransportClient transportClient;
+	private ElasticPool elasticPool;
 	
 	public ElasticSessionOperateFactory() {
 	}
 	
-	public ElasticSessionOperateFactory(TransportClient transportClient) {
-		this.transportClient = transportClient;
+	public ElasticSessionOperateFactory(ElasticPool elasticPool) {
+		this.elasticPool = elasticPool;
 	}
 	
 	/**
@@ -47,12 +48,12 @@ public class ElasticSessionOperateFactory implements ElasticSessionFactory {
 		return session;
 	}
 	
-	public TransportClient getTransportClient() {
-		return transportClient;
+	public ElasticPool getElasticPool() {
+		return elasticPool;
 	}
 	
-	public void setTransportClient(TransportClient transportClient) {
-		this.transportClient = transportClient;
+	public void setElasticPool(ElasticPool elasticPool) {
+		this.elasticPool = elasticPool;
 	}
 	
 	/**
@@ -76,7 +77,7 @@ public class ElasticSessionOperateFactory implements ElasticSessionFactory {
 			logger.debug("获取Elastic链接");
 			TransportClient client = null;
 			try {
-				client = ElasticSessionOperateFactory.this.getTransportClient();
+				client = ElasticSessionOperateFactory.this.elasticPool.getResource();
 			}
 			catch (Exception e) {
 				logger.error("获取Elastic链接错误,{}", e);
@@ -103,6 +104,10 @@ public class ElasticSessionOperateFactory implements ElasticSessionFactory {
 			TransportClient client = null;
 			boolean success = true;
 			try {
+				if (elasticPool == null) {
+					logger.error("获取elastic连接池失败");
+					throw new ElasticException("获取elastic连接池失败");
+				}
 				client = getClient();
 				operateSession.setClient(client);
 				return method.invoke(operateSession, args);

@@ -27,10 +27,10 @@
     <!-- codis single setting  -->
     <bean id="singleCodisFactory" class="com.application.base.cache.codis.factory.SingleCodisSessionFactory">
         <property name="client" ref="cacheClinet"/>
-        <property name="pool" ref="jedisPool"/>
+        <property name="jedisPool" ref="redisFactory"/>
     </bean>
     <bean id="distributedLock" class="com.application.base.cache.redis.jedis.lock.DelegateDistributedLock">
-        <property name="factory" ref="singleCodisFactory"/>
+        <property name="sessionFactory" ref="singleCodisFactory"/>
     </bean>
 
 

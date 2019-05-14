@@ -72,9 +72,9 @@ public class EsClientBuilder {
 		            		logger.info("根据配置文件:"+infoPath+"获取的配置信息为空!");
 		            		return null;
 			            }
-			            clusterName = value.get("elasticsearch.cluster.name");
-			            serverIPs = value.get("elasticsearch.cluster.ip");
-			            String sniff = value.get("elasticsearch.transport.sniff");
+			            clusterName = value.get("elastic.cluster.name");
+			            serverIPs = value.get("elastic.serverIps");
+			            String sniff = value.get("elastic.transport.sniff");
 			            if (!BaseStringUtil.isEmpty(sniff)){
 				            isAppend=Boolean.getBoolean(sniff);
 			            }

@@ -21,9 +21,8 @@
         <property name="numTestsPerEvictionRun" value="${redis.pool.numTestsPerEvictionRun}"/>
     </bean>
 
-
-
-
+    
+    
     <!-- 1. redis 单点服务器,只存在一个redis的服务器 -->
     <bean id = "jedisPool" class="redis.clients.jedis.JedisPool">
         <constructor-arg index="0" ref="jedisPoolConfig"/>
@@ -33,12 +32,11 @@
         <constructor-arg index="4" value="${redis.password}"/>
     </bean>
     <bean id="redisFactory" class="com.application.base.cache.redis.jedis.factory.JedisSimpleSessionFactory">
-        <property name="pool" ref="jedisPool"/>
+        <property name="jedisPool" ref="jedisPool"/>
     </bean>
     <bean id="distributedLock" class="com.application.base.cache.redis.jedis.lock.DelegateDistributedLock">
-        <property name="factory" ref="redisFactory"/>
+        <property name="sessionFactory" ref="redisFactory"/>
     </bean>
-
 
 
 

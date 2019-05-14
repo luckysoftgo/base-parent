@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+   		http://www.springframework.org/schema/context
+   		http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- elastic 基础信息配置 (公共使用) -->
+    <bean id="elasticPoolConfig" class="com.application.base.all.elastic.elastic.client.ElasticPoolConfig">
+        <property name="maxTotal" value="${elastic.pool.maxTotal}"/>
+        <property name="maxIdle" value="${elastic.pool.maxIdle}"/>
+        <property name="minIdle" value="${elastic.pool.minIdle}"/>
+        <property name="maxWaitMillis" value="${elastic.pool.maxWaitMillis}"/>
+        <property name="testOnBorrow" value="${elastic.pool.testOnBorrow}"/>
+        <property name="testOnReturn" value="${elastic.pool.testOnReturn}"/>
+        <property name="testWhileIdle" value="${elastic.pool.testWhileIdle}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${elastic.pool.timeBetweenEvictionRunsMillis}"/>
+        <property name="numTestsPerEvictionRun" value="${elastic.pool.numTestsPerEvictionRun}"/>
+    </bean>
+
+    <!-- 1. elastic 单点服务器,只存在一个elastic的服务器 -->
+    <bean id="elasticPool" class="com.application.base.all.elastic.elastic.client.ElasticPool">
+        <constructor-arg index="0" ref="elasticPoolConfig"/>
+        <constructor-arg index="1" value="${elastic.cluster.name}"/>
+        <constructor-arg index="2" value="${elastic.host}"/>
+        <constructor-arg index="3" value="${elastic.port}"/>
+    </bean>
+    <bean id="elasticFactory" class="com.application.base.all.elastic.elastic.factory.ElasticSessionOperateFactory">
+        <property name="elasticPool" ref="elasticPool"/>
+    </bean>
+
+</beans>
+
