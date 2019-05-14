@@ -1,9 +1,9 @@
 package com.application.base.all.elastic.elastic.client;
 
+import com.application.base.all.elastic.elastic.util.Pool;
 import com.application.base.all.elastic.exception.ElasticException;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
-import redis.clients.util.Pool;
 
 /**
  * @NAME: ElasticPool
