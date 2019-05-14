@@ -1,6 +1,7 @@
 package com.application.base.all.elastic.elastic.client;
 
 import com.application.base.all.elastic.elastic.util.Pool;
+import com.application.base.all.elastic.elastic.util.Protocol;
 import com.application.base.all.elastic.exception.ElasticException;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
@@ -13,7 +14,7 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
 public class ElasticPool extends Pool<PreBuiltTransportClient> {
 	
 	public ElasticPool() {
-		this((String)"localhost", 9300);
+		this(Protocol.DEFAULT_HOST, Protocol.DEFAULT_PORT);
 	}
 	
 	public ElasticPool(String host, int port) {
@@ -74,7 +75,8 @@ public class ElasticPool extends Pool<PreBuiltTransportClient> {
 	
 	@Override
 	public PreBuiltTransportClient getResource() {
-		PreBuiltTransportClient transportClient = super.getResource();
+		ElasticSearchClient transportClient = (ElasticSearchClient)super.getResource();
+		transportClient.setDataSource(this);
 		return transportClient;
 	}
 	

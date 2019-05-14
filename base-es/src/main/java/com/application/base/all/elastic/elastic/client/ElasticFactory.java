@@ -1,5 +1,6 @@
 package com.application.base.all.elastic.elastic.client;
 
+import com.application.base.all.elastic.elastic.util.Protocol;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.PooledObjectFactory;
@@ -22,11 +23,11 @@ import java.util.Map;
  * @DESC: elastic 工厂.
  * @USER: 孤狼
  **/
-public class ElasticFactory implements PooledObjectFactory<PreBuiltTransportClient> {
+public class ElasticFactory implements PooledObjectFactory<ElasticSearchClient> {
 	
 	private String clusterName;
-	private String host="127.0.0.1";
-	private int port=9300;
+	private String host= Protocol.DEFAULT_HOST;
+	private int port=Protocol.DEFAULT_PORT;
 	private String username;
 	private String password;
 	private String serverIps="127.0.0.1:9300";
@@ -97,7 +98,7 @@ public class ElasticFactory implements PooledObjectFactory<PreBuiltTransportClie
 	}
 	
 	@Override
-	public PooledObject<PreBuiltTransportClient> makeObject() throws Exception {
+	public PooledObject<ElasticSearchClient> makeObject() throws Exception {
 		Settings settings = Settings.EMPTY;
 		if (!StringUtils.isEmpty(clusterName)){
 			settings = Settings.builder()
@@ -128,7 +129,7 @@ public class ElasticFactory implements PooledObjectFactory<PreBuiltTransportClie
 	}
 	
 	@Override
-	public void destroyObject(PooledObject<PreBuiltTransportClient> pooledObject) throws Exception {
+	public void destroyObject(PooledObject<ElasticSearchClient> pooledObject) throws Exception {
 		TransportClient client = pooledObject.getObject();
 		if (client!=null){
 			client.close();
@@ -136,17 +137,17 @@ public class ElasticFactory implements PooledObjectFactory<PreBuiltTransportClie
 	}
 	
 	@Override
-	public boolean validateObject(PooledObject<PreBuiltTransportClient> pooledObject) {
+	public boolean validateObject(PooledObject<ElasticSearchClient> pooledObject) {
 		return false;
 	}
 	
 	@Override
-	public void activateObject(PooledObject<PreBuiltTransportClient> pooledObject) throws Exception {
+	public void activateObject(PooledObject<ElasticSearchClient> pooledObject) throws Exception {
 	
 	}
 	
 	@Override
-	public void passivateObject(PooledObject<PreBuiltTransportClient> pooledObject) throws Exception {
+	public void passivateObject(PooledObject<ElasticSearchClient> pooledObject) throws Exception {
 	
 	}
 	
@@ -155,13 +156,12 @@ public class ElasticFactory implements PooledObjectFactory<PreBuiltTransportClie
 	 * @return
 	 */
 	private Map<String, Integer> parseNodeIps(String serverIPs) {
-		String[] nodeIpInfoArr = serverIPs.split(",");
+		String[] nodeIpInfoArr = serverIPs.split(Protocol.SPLIT_TAG);
 		Map<String, Integer> resultMap = new HashMap<String, Integer>(nodeIpInfoArr.length);
 		for (String ipInfo : nodeIpInfoArr) {
-			String[] ipInfoArr = ipInfo.split(":");
+			String[] ipInfoArr = ipInfo.split(Protocol.SPLIT_PORT);
 			resultMap.put(ipInfoArr[0], Integer.parseInt(ipInfoArr[1]));
 		}
 		return resultMap;
 	}
-	
 }

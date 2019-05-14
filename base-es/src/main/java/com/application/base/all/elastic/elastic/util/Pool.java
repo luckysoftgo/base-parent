@@ -1,5 +1,6 @@
 package com.application.base.all.elastic.elastic.util;
 
+import com.application.base.all.elastic.elastic.client.ElasticFactory;
 import com.application.base.all.elastic.exception.ElasticException;
 import org.apache.commons.pool2.PooledObjectFactory;
 import org.apache.commons.pool2.impl.GenericObjectPool;
@@ -14,27 +15,27 @@ import java.util.NoSuchElementException;
  * @DESC: 池信息描述
  * @USER: 孤狼
  **/
-public class Pool<T> implements Closeable {
+public abstract class Pool<T> implements Closeable {
 	
 	protected GenericObjectPool<T> internalPool;
 	
-	public Pool() {
+	public Pool(GenericObjectPoolConfig poolConfig, ElasticFactory elasticFactory) {
 	}
 	
-	public Pool(GenericObjectPoolConfig poolConfig, PooledObjectFactory<T> factory) {
-		this.initPool(poolConfig, factory);
+	public Pool(final GenericObjectPoolConfig poolConfig, PooledObjectFactory<T> factory) {
+		initPool(poolConfig, factory);
 	}
 	
 	@Override
 	public void close() {
-		this.destroy();
+		destroy();
 	}
 	
 	public boolean isClosed() {
 		return this.internalPool.isClosed();
 	}
 	
-	public void initPool(GenericObjectPoolConfig poolConfig, PooledObjectFactory<T> factory) {
+	public void initPool(final GenericObjectPoolConfig poolConfig, PooledObjectFactory<T> factory) {
 		if (this.internalPool != null) {
 			try {
 				this.closeInternalPool();
@@ -46,7 +47,7 @@ public class Pool<T> implements Closeable {
 	
 	public T getResource() {
 		try {
-			return this.internalPool.borrowObject();
+			return internalPool.borrowObject();
 		} catch (NoSuchElementException e) {
 			throw new ElasticException("Could not get a resource from the pool", e);
 		} catch (Exception e) {
@@ -59,7 +60,7 @@ public class Pool<T> implements Closeable {
 	public void returnResourceObject(T resource) {
 		if (resource != null) {
 			try {
-				this.internalPool.returnObject(resource);
+				internalPool.returnObject(resource);
 			} catch (Exception e) {
 				throw new ElasticException("Could not return the resource to the pool", e);
 			}
@@ -70,7 +71,7 @@ public class Pool<T> implements Closeable {
 	@Deprecated
 	public void returnBrokenResource(T resource) {
 		if (resource != null) {
-			this.returnBrokenResourceObject(resource);
+			returnBrokenResourceObject(resource);
 		}
 		
 	}
@@ -79,18 +80,18 @@ public class Pool<T> implements Closeable {
 	@Deprecated
 	public void returnResource(T resource) {
 		if (resource != null) {
-			this.returnResourceObject(resource);
+			returnResourceObject(resource);
 		}
 		
 	}
 	
 	public void destroy() {
-		this.closeInternalPool();
+		closeInternalPool();
 	}
 	
 	protected void returnBrokenResourceObject(T resource) {
 		try {
-			this.internalPool.invalidateObject(resource);
+			internalPool.invalidateObject(resource);
 		} catch (Exception var3) {
 			throw new ElasticException("Could not return the broken resource to the pool", var3);
 		}
@@ -98,30 +99,45 @@ public class Pool<T> implements Closeable {
 	
 	protected void closeInternalPool() {
 		try {
-			this.internalPool.close();
+			internalPool.close();
 		} catch (Exception e) {
 			throw new ElasticException("Could not destroy the pool", e);
 		}
 	}
 	
 	public int getNumActive() {
-		return this.poolInactive() ? -1 : this.internalPool.getNumActive();
+		if (poolInactive()){
+			return -1;
+		}
+		return this.internalPool.getNumActive();
 	}
 	
 	public int getNumIdle() {
-		return this.poolInactive() ? -1 : this.internalPool.getNumIdle();
+		if (poolInactive()){
+			return -1;
+		}
+		return this.internalPool.getNumIdle();
 	}
 	
 	public int getNumWaiters() {
-		return this.poolInactive() ? -1 : this.internalPool.getNumWaiters();
+		if (poolInactive()){
+			return -1;
+		}
+		return this.internalPool.getNumWaiters();
 	}
 	
 	public long getMeanBorrowWaitTimeMillis() {
-		return this.poolInactive() ? -1L : this.internalPool.getMeanBorrowWaitTimeMillis();
+		if (poolInactive()){
+			return -1;
+		}
+		return this.internalPool.getMeanBorrowWaitTimeMillis();
 	}
 	
 	public long getMaxBorrowWaitTimeMillis() {
-		return this.poolInactive() ? -1L : this.internalPool.getMaxBorrowWaitTimeMillis();
+		if (poolInactive()){
+			return -1;
+		}
+		return this.internalPool.getMaxBorrowWaitTimeMillis();
 	}
 	
 	private boolean poolInactive() {
