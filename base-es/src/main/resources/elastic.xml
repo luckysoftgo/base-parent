@@ -23,10 +23,10 @@
 
     <!-- 1. elastic 单点服务器,只存在一个elastic的服务器 -->
     <bean id="elasticPool" class="com.application.base.all.elastic.elastic.client.ElasticPool">
-        <constructor-arg index="0" ref="elasticPoolConfig"/>
-        <constructor-arg index="1" value="${elastic.cluster.name}"/>
-        <constructor-arg index="2" value="${elastic.host}"/>
-        <constructor-arg index="3" value="${elastic.port}"/>
+        <constructor-arg name="poolConfig" ref="elasticPoolConfig"/>
+        <constructor-arg name="clusterName" value="${elastic.cluster.name}"/>
+        <constructor-arg name="host" value="${elastic.host}"/>
+        <constructor-arg name="port" value="${elastic.port}"/>
     </bean>
     <bean id="elasticFactory" class="com.application.base.all.elastic.elastic.factory.ElasticSessionOperateFactory">
         <property name="elasticPool" ref="elasticPool"/>

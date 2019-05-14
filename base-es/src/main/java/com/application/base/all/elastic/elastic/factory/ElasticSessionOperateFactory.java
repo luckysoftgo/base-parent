@@ -51,6 +51,9 @@ public class ElasticSessionOperateFactory implements ElasticSessionFactory {
 	 */
 	@Override
 	public ElasticSession getElasticSession() throws ElasticException {
+		// netty 异常信息.
+		System.setProperty("es.set.netty.runtime.available.processors", "false");
+		
 		ElasticSession session = null;
 		try {
 			session = (ElasticSession) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
@@ -87,6 +90,8 @@ public class ElasticSessionOperateFactory implements ElasticSessionFactory {
 		 * @return
 		 */
 		private synchronized TransportClient getClient() {
+			// netty 异常信息.
+			System.setProperty("es.set.netty.runtime.available.processors", "false");
 			logger.debug("获取Elastic链接");
 			TransportClient client = null;
 			try {
@@ -114,6 +119,9 @@ public class ElasticSessionOperateFactory implements ElasticSessionFactory {
 		 */
 		@Override
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+			// netty 异常信息.
+			System.setProperty("es.set.netty.runtime.available.processors", "false");
+			
 			TransportClient client = null;
 			boolean success = true;
 			try {

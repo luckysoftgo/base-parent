@@ -9,6 +9,9 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.SSLSocketFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -24,9 +27,12 @@ public class ElasticFactory implements PooledObjectFactory<TransportClient> {
 	private String clusterName;
 	private String host="127.0.0.1";
 	private int port=9300;
-	private String username="elastic";
-	private String password="elastic";
+	private String username;
+	private String password;
 	private String serverIps="127.0.0.1:9300";
+	private SSLSocketFactory sslSocketFactory;
+	private SSLParameters sslParameters;
+	private HostnameVerifier hostnameVerifier;
 	
 	public ElasticFactory(String host, int port) {
 		this.host = host;
@@ -76,6 +82,20 @@ public class ElasticFactory implements PooledObjectFactory<TransportClient> {
 		this.serverIps = serverIps;
 	}
 	
+	public ElasticFactory(String clusterName, String host, int port, String username, String password,
+	                      String serverIps, SSLSocketFactory sslSocketFactory, SSLParameters sslParameters,
+	                      HostnameVerifier hostnameVerifier) {
+		this.clusterName = clusterName;
+		this.host = host;
+		this.port = port;
+		this.username = username;
+		this.password = password;
+		this.serverIps = serverIps;
+		this.sslSocketFactory = sslSocketFactory;
+		this.sslParameters = sslParameters;
+		this.hostnameVerifier = hostnameVerifier;
+	}
+	
 	@Override
 	public PooledObject<TransportClient> makeObject() throws Exception {
 		Settings settings = Settings.EMPTY;
@@ -109,7 +129,10 @@ public class ElasticFactory implements PooledObjectFactory<TransportClient> {
 	
 	@Override
 	public void destroyObject(PooledObject<TransportClient> pooledObject) throws Exception {
-	
+		TransportClient client = pooledObject.getObject();
+		if (client!=null){
+			client.close();
+		}
 	}
 	
 	@Override
@@ -127,7 +150,6 @@ public class ElasticFactory implements PooledObjectFactory<TransportClient> {
 	
 	}
 	
-	
 	/**
 	 * 解析节点IP信息,多个节点用逗号隔开,IP和端口用冒号隔开
 	 * @return
@@ -141,4 +163,5 @@ public class ElasticFactory implements PooledObjectFactory<TransportClient> {
 		}
 		return resultMap;
 	}
+	
 }
