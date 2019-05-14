@@ -2,7 +2,7 @@ package com.application.base.all.elastic.elastic.client;
 
 import com.application.base.all.elastic.exception.ElasticException;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import redis.clients.util.Pool;
 
 /**
@@ -10,7 +10,7 @@ import redis.clients.util.Pool;
  * @DESC: Es 的连接池
  * @USER: 孤狼
  **/
-public class ElasticPool extends Pool<TransportClient> {
+public class ElasticPool extends Pool<PreBuiltTransportClient> {
 	
 	public ElasticPool() {
 		this((String)"localhost", 9300);
@@ -73,15 +73,15 @@ public class ElasticPool extends Pool<TransportClient> {
 	}
 	
 	@Override
-	public TransportClient getResource() {
-		TransportClient transportClient = super.getResource();
+	public PreBuiltTransportClient getResource() {
+		PreBuiltTransportClient transportClient = super.getResource();
 		return transportClient;
 	}
 	
 	/** @deprecated */
 	@Deprecated
 	@Override
-	public void returnBrokenResource(TransportClient resource) {
+	public void returnBrokenResource(PreBuiltTransportClient resource) {
 		if (resource != null) {
 			this.returnBrokenResourceObject(resource);
 		}
@@ -91,7 +91,7 @@ public class ElasticPool extends Pool<TransportClient> {
 	/** @deprecated */
 	@Deprecated
 	@Override
-	public void returnResource(TransportClient resource) {
+	public void returnResource(PreBuiltTransportClient resource) {
 		if (resource != null) {
 			try {
 				this.returnResourceObject(resource);

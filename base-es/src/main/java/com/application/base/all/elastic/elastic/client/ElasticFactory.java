@@ -22,7 +22,7 @@ import java.util.Map;
  * @DESC: elastic 工厂.
  * @USER: 孤狼
  **/
-public class ElasticFactory implements PooledObjectFactory<TransportClient> {
+public class ElasticFactory implements PooledObjectFactory<PreBuiltTransportClient> {
 	
 	private String clusterName;
 	private String host="127.0.0.1";
@@ -97,7 +97,7 @@ public class ElasticFactory implements PooledObjectFactory<TransportClient> {
 	}
 	
 	@Override
-	public PooledObject<TransportClient> makeObject() throws Exception {
+	public PooledObject<PreBuiltTransportClient> makeObject() throws Exception {
 		Settings settings = Settings.EMPTY;
 		if (!StringUtils.isEmpty(clusterName)){
 			settings = Settings.builder()
@@ -128,7 +128,7 @@ public class ElasticFactory implements PooledObjectFactory<TransportClient> {
 	}
 	
 	@Override
-	public void destroyObject(PooledObject<TransportClient> pooledObject) throws Exception {
+	public void destroyObject(PooledObject<PreBuiltTransportClient> pooledObject) throws Exception {
 		TransportClient client = pooledObject.getObject();
 		if (client!=null){
 			client.close();
@@ -136,17 +136,17 @@ public class ElasticFactory implements PooledObjectFactory<TransportClient> {
 	}
 	
 	@Override
-	public boolean validateObject(PooledObject<TransportClient> pooledObject) {
+	public boolean validateObject(PooledObject<PreBuiltTransportClient> pooledObject) {
 		return false;
 	}
 	
 	@Override
-	public void activateObject(PooledObject<TransportClient> pooledObject) throws Exception {
+	public void activateObject(PooledObject<PreBuiltTransportClient> pooledObject) throws Exception {
 	
 	}
 	
 	@Override
-	public void passivateObject(PooledObject<TransportClient> pooledObject) throws Exception {
+	public void passivateObject(PooledObject<PreBuiltTransportClient> pooledObject) throws Exception {
 	
 	}
 	
