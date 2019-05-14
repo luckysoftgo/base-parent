@@ -21,7 +21,10 @@ import java.lang.reflect.Proxy;
 public class ElasticSessionOperateFactory implements ElasticSessionFactory {
 	
 	Logger logger = LoggerFactory.getLogger(getClass());
-
+	
+	/**
+	 * 操作的池子
+	 */
 	private ElasticPool elasticPool;
 	
 	public ElasticSessionOperateFactory() {
@@ -30,6 +33,16 @@ public class ElasticSessionOperateFactory implements ElasticSessionFactory {
 	public ElasticSessionOperateFactory(ElasticPool elasticPool) {
 		this.elasticPool = elasticPool;
 	}
+	
+	public TransportClient getClient() {
+		return client;
+	}
+	
+	public void setClient(TransportClient client) {
+		this.client = client;
+	}
+	
+	private TransportClient client;
 	
 	/**
 	 * 获得操作的实例
