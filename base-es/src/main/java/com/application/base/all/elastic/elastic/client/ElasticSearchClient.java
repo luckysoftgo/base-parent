@@ -22,8 +22,7 @@ public class ElasticSearchClient extends PreBuiltTransportClient {
         return dataSource;
     }
 
-    public void setDataSource(Pool<ElasticSearchClient> dataSource) {
+    public void setDataSource(ElasticPool elasticPool) {
         this.dataSource = dataSource;
     }
-
 }
