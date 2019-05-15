@@ -143,7 +143,7 @@ public class ElasticFactory implements PooledObjectFactory<ElasticSearchClient> 
 	
 	@Override
 	public void activateObject(PooledObject<ElasticSearchClient> pooledObject) throws Exception {
-	
+		ElasticSearchClient client = pooledObject.getObject();
 	}
 	
 	@Override
