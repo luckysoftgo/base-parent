@@ -1,10 +1,9 @@
-package com.application.base.all.elastic.elastic.util;
+package com.application.base.all.elastic.elastic.transport.client;
 
 import com.application.base.all.elastic.exception.ElasticException;
 import org.apache.commons.pool2.PooledObjectFactory;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-
 
 import java.io.Closeable;
 import java.util.NoSuchElementException;

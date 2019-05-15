@@ -1,6 +1,6 @@
-package com.application.base.all.elastic.elastic.client;
+package com.application.base.all.elastic.elastic.transport.client;
 
-import com.application.base.all.elastic.elastic.util.Protocol;
+import com.application.base.all.elastic.elastic.constant.Protocol;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.PooledObjectFactory;

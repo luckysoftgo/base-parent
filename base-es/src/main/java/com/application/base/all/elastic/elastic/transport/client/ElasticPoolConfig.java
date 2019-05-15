@@ -1,4 +1,4 @@
-package com.application.base.all.elastic.elastic.client;
+package com.application.base.all.elastic.elastic.transport.client;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 

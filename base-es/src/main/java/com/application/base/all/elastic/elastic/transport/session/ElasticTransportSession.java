@@ -1,4 +1,4 @@
-package com.application.base.all.elastic.elastic.session;
+package com.application.base.all.elastic.elastic.transport.session;
 
 import com.application.base.all.elastic.core.ElasticSession;
 import com.application.base.all.elastic.entity.ElasticData;
@@ -48,10 +48,10 @@ import java.util.regex.Pattern;
 
 /**
  * @author 孤狼
- * @ClassName : ElasticOperateSession.
+ * @ClassName : ElasticRestSession.
  * @Desc : 操作elastic 的实现.
  */
-public class ElasticOperateSession implements ElasticSession {
+public class ElasticTransportSession implements ElasticSession {
     
     private Logger logger = LoggerFactory.getLogger(getClass());
 	
