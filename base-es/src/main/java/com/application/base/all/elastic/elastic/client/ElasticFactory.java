@@ -23,7 +23,7 @@ import java.util.Map;
  * @DESC: elastic 工厂.
  * @USER: 孤狼
  **/
-public class ElasticFactory implements PooledObjectFactory<ElasticSearchClient> {
+public class ElasticFactory implements PooledObjectFactory<PreBuiltTransportClient> {
 	
 	private String clusterName;
 	private String host= Protocol.DEFAULT_HOST;
@@ -98,7 +98,7 @@ public class ElasticFactory implements PooledObjectFactory<ElasticSearchClient> 
 	}
 	
 	@Override
-	public PooledObject<ElasticSearchClient> makeObject() throws Exception {
+	public PooledObject<PreBuiltTransportClient> makeObject() throws Exception {
 		Settings settings = Settings.EMPTY;
 		if (!StringUtils.isEmpty(clusterName)){
 			settings = Settings.builder()
@@ -129,7 +129,7 @@ public class ElasticFactory implements PooledObjectFactory<ElasticSearchClient> 
 	}
 	
 	@Override
-	public void destroyObject(PooledObject<ElasticSearchClient> pooledObject) throws Exception {
+	public void destroyObject(PooledObject<PreBuiltTransportClient> pooledObject) throws Exception {
 		TransportClient client = pooledObject.getObject();
 		if (client!=null){
 			client.close();
@@ -137,17 +137,17 @@ public class ElasticFactory implements PooledObjectFactory<ElasticSearchClient> 
 	}
 	
 	@Override
-	public boolean validateObject(PooledObject<ElasticSearchClient> pooledObject) {
+	public boolean validateObject(PooledObject<PreBuiltTransportClient> pooledObject) {
 		return false;
 	}
 	
 	@Override
-	public void activateObject(PooledObject<ElasticSearchClient> pooledObject) throws Exception {
-		ElasticSearchClient client = pooledObject.getObject();
+	public void activateObject(PooledObject<PreBuiltTransportClient> pooledObject) throws Exception {
+		PreBuiltTransportClient client = pooledObject.getObject();
 	}
 	
 	@Override
-	public void passivateObject(PooledObject<ElasticSearchClient> pooledObject) throws Exception {
+	public void passivateObject(PooledObject<PreBuiltTransportClient> pooledObject) throws Exception {
 	
 	}
 	

@@ -1,6 +1,5 @@
 package com.application.base.all.elastic.elastic.util;
 
-import com.application.base.all.elastic.elastic.client.ElasticFactory;
 import com.application.base.all.elastic.exception.ElasticException;
 import org.apache.commons.pool2.PooledObjectFactory;
 import org.apache.commons.pool2.impl.GenericObjectPool;

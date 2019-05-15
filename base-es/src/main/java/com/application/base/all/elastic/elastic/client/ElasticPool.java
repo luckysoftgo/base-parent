@@ -4,13 +4,14 @@ import com.application.base.all.elastic.elastic.util.Pool;
 import com.application.base.all.elastic.elastic.util.Protocol;
 import com.application.base.all.elastic.exception.ElasticException;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 /**
  * @NAME: ElasticPool
  * @DESC: Es 的连接池
  * @USER: 孤狼
  **/
-public class ElasticPool extends Pool<ElasticSearchClient> {
+public class ElasticPool extends Pool<PreBuiltTransportClient> {
 	
 	public ElasticPool() {
 		this(Protocol.DEFAULT_HOST, Protocol.DEFAULT_PORT);
@@ -73,16 +74,16 @@ public class ElasticPool extends Pool<ElasticSearchClient> {
 	}
 	
 	@Override
-	public ElasticSearchClient getResource() {
-		ElasticSearchClient transportClient = (ElasticSearchClient)super.getResource();
-		transportClient.setDataSource(this);
+	public PreBuiltTransportClient getResource() {
+		PreBuiltTransportClient transportClient = (PreBuiltTransportClient)super.getResource();
+		//transportClient.setDataSource(this);
 		return transportClient;
 	}
 	
 	/** @deprecated */
 	@Deprecated
 	@Override
-	public void returnBrokenResource(ElasticSearchClient resource) {
+	public void returnBrokenResource(PreBuiltTransportClient resource) {
 		if (resource != null) {
 			this.returnBrokenResourceObject(resource);
 		}
@@ -92,7 +93,7 @@ public class ElasticPool extends Pool<ElasticSearchClient> {
 	/** @deprecated */
 	@Deprecated
 	@Override
-	public void returnResource(ElasticSearchClient resource) {
+	public void returnResource(PreBuiltTransportClient resource) {
 		if (resource != null) {
 			try {
 				this.returnResourceObject(resource);
