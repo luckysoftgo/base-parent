@@ -19,7 +19,7 @@ public abstract class Pool<T> implements Closeable {
 	
 	protected GenericObjectPool<T> internalPool;
 	
-	public Pool(GenericObjectPoolConfig poolConfig, ElasticFactory elasticFactory) {
+	public Pool() {
 	}
 	
 	public Pool(final GenericObjectPoolConfig poolConfig, PooledObjectFactory<T> factory) {
