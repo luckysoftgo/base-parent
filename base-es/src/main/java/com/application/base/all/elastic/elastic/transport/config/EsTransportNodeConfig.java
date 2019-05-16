@@ -1,13 +1,13 @@
-package com.application.base.all.elastic.elastic.rest.config;
+package com.application.base.all.elastic.elastic.transport.config;
 
 import java.io.Serializable;
 
 /**
- * @NAME: ElasticSearchNodeConfig
+ * @NAME: EsTransportNodeConfig
  * @DESC: 节点配置信息
  * @USER: 孤狼
  **/
-public class ElasticSearchNodeConfig implements Serializable {
+public class EsTransportNodeConfig implements Serializable {
 	/**
 	 * 节点名称
 	 */

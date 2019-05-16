@@ -58,24 +58,23 @@ public class ElasticTransportSession implements ElasticSession {
 	/**
 	 * 调用的实例.
 	 */
-	private TransportClient client;
+	private TransportClient transportClient;
 	
-	public TransportClient getClient() {
-		if (null==client){
+	public TransportClient getTransportClient() {
+		if (null==transportClient){
 			logger.error("[elastic错误:{}]","获得client操作实例对象为空");
 			throw new ElasticException("获得transportClient实例对象为空");
 		}
-		return client;
+		return transportClient;
 	}
-	
-	public void setClient(TransportClient client) {
-		this.client = client;
+	public void setTransportClient(TransportClient transportClient) {
+		this.transportClient = transportClient;
 	}
 	
 	@Override
 	public void flushEs(String index, String type) throws ElasticException {
 		try {
-			getClient().admin().indices().flush(new FlushRequest(index.toLowerCase(), type)).actionGet();
+			getTransportClient().admin().indices().flush(new FlushRequest(index.toLowerCase(), type)).actionGet();
 		} catch (Exception e) {
 			logger.error("刷新ES异常,异常信息是{}",e.getMessage());
 			throw new ElasticException(e);
@@ -84,12 +83,12 @@ public class ElasticTransportSession implements ElasticSession {
 	
 	@Override
 	public void close() throws ElasticException {
-		getClient().close();
+		getTransportClient().close();
 	}
 	
 	@Override
 	public boolean judgeIndexExist(String index) throws ElasticException {
-		IndicesExistsResponse response=getClient().admin().indices().exists(new IndicesExistsRequest().indices(new String[]{index})).actionGet();
+		IndicesExistsResponse response=getTransportClient().admin().indices().exists(new IndicesExistsRequest().indices(new String[]{index})).actionGet();
 		return response.isExists();
 	}
 	
@@ -98,13 +97,13 @@ public class ElasticTransportSession implements ElasticSession {
 		if(!judgeIndexExist(index)){
 			return false;
 		}
-		TypesExistsResponse response=getClient().admin().indices().typesExists(new TypesExistsRequest(new String[] { index }, type)).actionGet();
+		TypesExistsResponse response=getTransportClient().admin().indices().typesExists(new TypesExistsRequest(new String[] { index }, type)).actionGet();
 		return response.isExists();
 	}
 	
 	@Override
 	public boolean addEsIndex(String index) throws ElasticException {
-		CreateIndexRequestBuilder requestBuilder = getClient().admin().indices().prepareCreate(index);
+		CreateIndexRequestBuilder requestBuilder = getTransportClient().admin().indices().prepareCreate(index);
 		CreateIndexResponse response = requestBuilder.execute().actionGet();
 		return response.isAcknowledged();
 	}
@@ -112,7 +111,7 @@ public class ElasticTransportSession implements ElasticSession {
 	@Override
 	public boolean addEsType(String index, String type) throws ElasticException {
 		TypesExistsAction action = TypesExistsAction.INSTANCE;
-		TypesExistsRequestBuilder requestBuilder  = new TypesExistsRequestBuilder(getClient(), action, index);
+		TypesExistsRequestBuilder requestBuilder  = new TypesExistsRequestBuilder(getTransportClient(), action, index);
 		requestBuilder.setTypes(type);
 		TypesExistsResponse response = requestBuilder.get();
 		return response.isExists();
@@ -123,7 +122,7 @@ public class ElasticTransportSession implements ElasticSession {
 		if (data==null) {
 			logger.info("传递的 ElasticData 的值为空,请重新设置参数.");
 		}
-		IndexResponse response = getClient().prepareIndex(data.getIndex(), data.getType(), data.getId()).setSource(data.getData(), XContentType.JSON).get();
+		IndexResponse response = getTransportClient().prepareIndex(data.getIndex(), data.getType(), data.getId()).setSource(data.getData(), XContentType.JSON).get();
 		if (response!=null && response.status().equals(RestStatus.CREATED)) {
 			return true;
 		}else {
@@ -137,7 +136,7 @@ public class ElasticTransportSession implements ElasticSession {
 			logger.info("传递的 List<ElasticData> 的值为空,请重新设置参数.");
 		}
 		// 批量处理request
-		BulkRequestBuilder bulkRequest = getClient().prepareBulk();
+		BulkRequestBuilder bulkRequest = getTransportClient().prepareBulk();
 		for (ElasticData data : elasticData) {
 			bulkRequest.add(new IndexRequest(data.getIndex(), data.getType(), data.getId()).source(data.getData(),XContentType.JSON));
 		}
@@ -159,7 +158,7 @@ public class ElasticTransportSession implements ElasticSession {
 	
 	@Override
 	public String getDataById(ElasticData data) throws ElasticException {
-		GetResponse response = getClient().prepareGet(data.getIndex(), data.getType(), data.getId()).get();
+		GetResponse response = getTransportClient().prepareGet(data.getIndex(), data.getType(), data.getId()).get();
 		if (response!=null){
 			return response.getSourceAsString();
 		}else{
@@ -169,7 +168,7 @@ public class ElasticTransportSession implements ElasticSession {
 	
 	@Override
 	public ElasticData getDataInfoById(ElasticData data) throws ElasticException {
-		GetResponse response = getClient().prepareGet(data.getIndex(), data.getType(), data.getId()).get();
+		GetResponse response = getTransportClient().prepareGet(data.getIndex(), data.getType(), data.getId()).get();
 		if (response!=null){
 			data.setIndex(response.getIndex());
 			data.setType(response.getType());
@@ -183,7 +182,7 @@ public class ElasticTransportSession implements ElasticSession {
 	
 	@Override
 	public boolean deleteEsData(ElasticData data) throws ElasticException {
-		DeleteResponse response =getClient().prepareDelete(data.getIndex(), data.getType(), data.getId()).get();
+		DeleteResponse response =getTransportClient().prepareDelete(data.getIndex(), data.getType(), data.getId()).get();
 		if (response!=null && response.status().equals(RestStatus.OK)){
 			return true;
 		}else{
@@ -193,9 +192,9 @@ public class ElasticTransportSession implements ElasticSession {
 	
 	@Override
 	public boolean deleteEsDataList(List<ElasticData> elasticData) throws ElasticException {
-		BulkRequestBuilder deleteBulk = getClient().prepareBulk();
+		BulkRequestBuilder deleteBulk = getTransportClient().prepareBulk();
 		for (ElasticData data : elasticData) {
-			deleteBulk.add(getClient().prepareDelete(data.getIndex(), data.getType(), data.getId()));
+			deleteBulk.add(getTransportClient().prepareDelete(data.getIndex(), data.getType(), data.getId()));
 		}
 		BulkResponse response=deleteBulk.execute().actionGet();
 		if (response!=null && response.status().equals(RestStatus.OK)){
@@ -209,9 +208,9 @@ public class ElasticTransportSession implements ElasticSession {
 	public boolean deleteIndex(String index) throws ElasticException {
 		IndicesExistsRequest ier = new IndicesExistsRequest();
 		ier.indices(new String[] { index });
-		boolean exists = getClient().admin().indices().exists(ier).actionGet().isExists();
+		boolean exists = getTransportClient().admin().indices().exists(ier).actionGet().isExists();
 		if (exists) {
-			AcknowledgedResponse response=getClient().admin().indices().prepareDelete(index.toLowerCase()).get();
+			AcknowledgedResponse response=getTransportClient().admin().indices().prepareDelete(index.toLowerCase()).get();
 			if (response!=null && response.isAcknowledged()){
 				return true;
 			}else{
@@ -230,7 +229,7 @@ public class ElasticTransportSession implements ElasticSession {
 		updateRequest.id(data.getId());
 		updateRequest.doc(data.getData());
 		try {
-			UpdateResponse response=getClient().update(updateRequest).get();
+			UpdateResponse response=getTransportClient().update(updateRequest).get();
 			if (response.status().equals(RestStatus.OK)){
 				return true;
 			}else{
@@ -245,10 +244,10 @@ public class ElasticTransportSession implements ElasticSession {
 	
 	@Override
 	public List<ElasticData> searcher(QueryBuilder queryBuilder, String index, String type) throws ElasticException {
-		SearchResponse response = getClient().prepareSearch(index).setTypes(type).get();
+		SearchResponse response = getTransportClient().prepareSearch(index).setTypes(type).get();
 		//非空设置.
 		if (queryBuilder != null) {
-			response = getClient().prepareSearch(index).setTypes(type).setQuery(queryBuilder).get();
+			response = getTransportClient().prepareSearch(index).setTypes(type).setQuery(queryBuilder).get();
 		}
 		/**
 		 * 遍历查询结果输出相关度分值和文档内容
@@ -290,7 +289,7 @@ public class ElasticTransportSession implements ElasticSession {
 	@Override
 	public SearchHits searchHits(String index, String type, QueryBuilder boolQuery,
 	                             List<FieldSortBuilder> sortBuilders, int from, int size) throws ElasticException {
-		TransportClient client = checkIndex(getClient(), index);
+		TransportClient client = checkIndex(getTransportClient(), index);
 		/**
 		 * 查询请求建立
 		 */
@@ -314,7 +313,7 @@ public class ElasticTransportSession implements ElasticSession {
 	
 	@Override
 	public SearchHits search(String index, String type, String[] keyWords, String[] channelIdArr, int pageNo, int pageSize) throws ElasticException {
-		TransportClient client= checkIndex(getClient(), index);
+		TransportClient client= checkIndex(getTransportClient(), index);
 		/**
 		 * 查询请求建立
 		 */
