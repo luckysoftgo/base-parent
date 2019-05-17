@@ -1,4 +1,4 @@
-package com.application.base.all.elastic;
+package com.application.base.all.util;
 
 import java.io.Serializable;
 

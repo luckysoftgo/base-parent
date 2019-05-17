@@ -1,4 +1,4 @@
-package com.application.base.all.elastic;
+package com.application.base.all.util;
 
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
@@ -268,7 +268,7 @@ public class EsClientUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static ElasticData getDocInfoById(TransportClient client,String dbName,String tableName,String docId) throws Exception{
+	public static ElasticData getDocInfoById(TransportClient client, String dbName, String tableName, String docId) throws Exception{
 		GetResponse response = client.prepareGet(dbName, tableName, docId).get();
 		if (response!=null){
 			ElasticData data = new ElasticData();
@@ -380,7 +380,7 @@ public class EsClientUtils {
 	 *            商品dto
 	 * @throws Exception
 	 */
-	public static boolean updateDocument(TransportClient client,ElasticData data)
+	public static boolean updateDocument(TransportClient client, ElasticData data)
 			throws Exception {
 		UpdateRequest updateRequest = new UpdateRequest();
 		updateRequest.index(data.getDbName());

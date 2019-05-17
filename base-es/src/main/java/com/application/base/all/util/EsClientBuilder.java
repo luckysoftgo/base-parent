@@ -1,4 +1,4 @@
-package com.application.base.all.elastic;
+package com.application.base.all.util;
 
 import com.application.base.all.elastic.exception.ElasticException;
 import com.application.base.utils.common.BaseStringUtil;
