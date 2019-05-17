@@ -25,11 +25,11 @@
     
     <!-- 1. redis 单点服务器,只存在一个redis的服务器 -->
     <bean id = "jedisPool" class="redis.clients.jedis.JedisPool">
-        <constructor-arg index="0" ref="jedisPoolConfig"/>
-        <constructor-arg index="1" value="${redis.host}"/>
-        <constructor-arg index="2" value="${redis.port}"/>
-        <constructor-arg index="3" value="${redis.timeout}"/>
-        <constructor-arg index="4" value="${redis.password}"/>
+        <constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
+        <constructor-arg name="host" value="${redis.host}"/>
+        <constructor-arg name="port" value="${redis.port}"/>
+        <constructor-arg name="timeout" value="${redis.timeout}"/>
+        <constructor-arg name="password" value="${redis.password}"/>
     </bean>
     <bean id="redisFactory" class="com.application.base.cache.redis.jedis.factory.JedisSimpleSessionFactory">
         <property name="jedisPool" ref="jedisPool"/>

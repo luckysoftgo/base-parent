@@ -27,6 +27,7 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.IndexNotFoundException;
@@ -260,22 +261,20 @@ public class ElasticTransportSession implements ElasticSession {
 	}
 	
 	@Override
-	public List<ElasticData> searcher(String index, String type, QueryBuilder boolQuery, List<FieldSortBuilder> sortBuilders, int from, int size) throws ElasticException {
-		List<ElasticData> list = new ArrayList<ElasticData>();
+	public List<ElasticData> searcher(String index, String type, QueryBuilder queryBuilder, List<FieldSortBuilder> sortBuilders, int from, int size) throws ElasticException {
 		/**
 		 * 遍历查询结果输出相关度分值和文档内容
 		 */
-		SearchHits searchHits = searchHits(index, type, boolQuery, sortBuilders, from, size);
+		SearchHits searchHits = searchHits(index, type, queryBuilder, sortBuilders, from, size);
 		logger.info("查询到记录数:{}" + searchHits.getTotalHits());
 		List<ElasticData> dataList = new ArrayList<ElasticData>();
 		tranList(index, type, searchHits, dataList);
-		return list;
+		return dataList;
 	}
 	
 	@Override
 	public List<ElasticData> searcher(String index, String type, String[] keyWords, String[] channelIdArr, int pageNo,
 	                                  int pageSize) throws ElasticException {
-		List<ElasticData> list = new ArrayList<ElasticData>();
 		/**
 		 * 遍历查询结果输出相关度分值和文档内容
 		 */
@@ -283,7 +282,7 @@ public class ElasticTransportSession implements ElasticSession {
 		logger.info("查询到记录数:{}" + searchHits.getTotalHits());
 		List<ElasticData> dataList = new ArrayList<ElasticData>();
 		tranList(index, type, searchHits, dataList);
-		return list;
+		return dataList;
 	}
 	
 	@Override
@@ -362,6 +361,17 @@ public class ElasticTransportSession implements ElasticSession {
 		return searchRequestBuilder.execute().actionGet().getHits();
 	}
 	
+	@Override
+	public TransportClient getTransClient() {
+		return getTransportClient();
+	}
+	
+	@Override
+	@Deprecated
+	public RestHighLevelClient getHighClient() {
+		return null;
+	}
+	
 	/**
 	 * 去掉不存在的索引
 	 *
@@ -387,25 +397,5 @@ public class ElasticTransportSession implements ElasticSession {
 			throw new ElasticException(e);
 		}
 		return client;
-	}
-	
-	
-	/**
-	 * 给集合中添加数据
-	 * @param dbName
-	 * @param tableName
-	 * @param searchHits
-	 * @param dataList
-	 */
-	private static void tranList(String dbName, String tableName, SearchHits searchHits, List<ElasticData> dataList) {
-		for (SearchHit searchHit : searchHits) {
-			String json = searchHit.getSourceAsString();
-			ElasticData model = new ElasticData();
-			model.setId(searchHit.getId());
-			model.setIndex(dbName);
-			model.setType(tableName);
-			model.setData(json);
-			dataList.add(model);
-		}
 	}
 }

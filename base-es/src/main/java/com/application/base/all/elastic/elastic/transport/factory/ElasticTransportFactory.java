@@ -29,6 +29,13 @@ public class ElasticTransportFactory implements PooledObjectFactory<TransportCli
 	private AtomicReference<Set<EsTransportNodeConfig>> nodesReference = new AtomicReference<Set<EsTransportNodeConfig>>();
 	
 	/**
+	 * 设置processors检查为flase
+	 */
+	static{
+		System.setProperty("es.set.netty.runtime.available.processors", "false");
+	}
+	
+	/**
 	 * 群集名称
 	 */
 	private String clusterName;

@@ -26,7 +26,6 @@ public class EsTransportSessionPoolFactory implements ElasticSessionFactory {
 	
 	public EsTransportSessionPoolFactory() {
 	}
-	
 	public EsTransportSessionPoolFactory(ElasticTransportPool transportPool) {
 		this.transportPool = transportPool;
 	}
@@ -67,6 +66,8 @@ public class EsTransportSessionPoolFactory implements ElasticSessionFactory {
 		 * @return
 		 */
 		private synchronized TransportClient getTransportClient() {
+			
+
 			logger.debug("获取elastic链接");
 			TransportClient client = null;
 			try {

@@ -3,7 +3,10 @@ package com.application.base.all.elastic.core;
 
 import com.application.base.all.elastic.entity.ElasticData;
 import com.application.base.all.elastic.exception.ElasticException;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 
@@ -189,4 +192,35 @@ public interface ElasticSession {
 	 */
 	public  SearchHits search(String index, String type, String[] keyWords, String[] channelIdArr, int pageNo, int pageSize) throws ElasticException;
 	
+	/**
+	 * 返回处理的对象,需要自己关闭连接
+	 * @return
+	 */
+	public TransportClient getTransClient();
+	
+	/**
+	 * 返回处理的对象,需要自己关闭连接
+	 * @return
+	 */
+	public RestHighLevelClient getHighClient();
+	
+	
+	 /**
+	 * 给集合中添加数据
+	 * @param dbName
+	 * @param tableName
+	 * @param searchHits
+	 * @param dataList
+	 */
+	 default void tranList(String dbName, String tableName, SearchHits searchHits, List<ElasticData> dataList) {
+		for (SearchHit searchHit : searchHits) {
+			String json = searchHit.getSourceAsString();
+			ElasticData model = new ElasticData();
+			model.setId(searchHit.getId());
+			model.setIndex(dbName);
+			model.setType(tableName);
+			model.setData(json);
+			dataList.add(model);
+		}
+	}
 }
