@@ -1,3 +1,5 @@
 思路连接池思路借鉴:
 https://github.com/andamajing/elasticsearch-pool
 https://github.com/search?p=1&q=elasticsearch+pool&type=Repositories
+
+其他在网络上查找!
