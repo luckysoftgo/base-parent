@@ -1,5 +1,6 @@
-package com.application.base.all.util;
+package com.application.base.all.util.transport;
 
+import com.application.base.all.util.ElasticData;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
@@ -53,9 +54,9 @@ import java.util.regex.Pattern;
  * @author 孤狼
  */
 
-public class EsClientUtils {
+public class EsTransportClientUtils {
 
-	private static Logger logger = LoggerFactory.getLogger(EsClientUtils.class.getName());
+	private static Logger logger = LoggerFactory.getLogger(EsTransportClientUtils.class.getName());
 	
 	static Pattern badChars = Pattern.compile("\\s*[\\s~!\\^&\\(\\)\\-\\+:\\|\\\\\"\\\\$]+\\s*");
 
@@ -76,7 +77,7 @@ public class EsClientUtils {
 	 */
 	public static TransportClient getSettingClient(String inputPath) throws Exception {
 		if (settingClient==null) {
-			EsClientBuilder client = new EsClientBuilder();
+			EsTransportClientBuilder client = new EsTransportClientBuilder();
 			settingClient = client.initSettingsClient(inputPath);
 		}
 		if (settingClient==null){
@@ -92,7 +93,7 @@ public class EsClientUtils {
 	 */
 	public static TransportClient getParamClient(String clusterName,String serverIPs,boolean isAppend) throws Exception {
 		if (paramClient==null) {
-			EsClientBuilder client = new EsClientBuilder();
+			EsTransportClientBuilder client = new EsTransportClientBuilder();
 			paramClient = client.initParamsClient(clusterName, serverIPs, isAppend);
 		}
 		return paramClient;

@@ -1,7 +1,6 @@
 package com.application.test;
 
 import com.application.base.all.util.ElasticData;
-import com.application.base.all.util.EsClientUtils;
 import com.application.base.utils.date.DateUtils;
 import com.application.base.utils.json.JsonConvertUtils;
 import org.elasticsearch.client.transport.TransportClient;

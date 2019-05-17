@@ -1,4 +1,4 @@
-package com.application.base.all.util;
+package com.application.base.all.util.transport;
 
 import com.application.base.all.elastic.exception.ElasticException;
 import com.application.base.utils.common.BaseStringUtil;
@@ -19,9 +19,9 @@ import java.util.Map;
  * ES(5.5.0) 客户端建立.
  * @author 孤狼
  */
-public class EsClientBuilder {
+public class EsTransportClientBuilder {
 
-	static Logger logger = LoggerFactory.getLogger(EsClientBuilder.class.getName());
+	static Logger logger = LoggerFactory.getLogger(EsTransportClientBuilder.class.getName());
 	
 	/**
 	 * 客户端：配置文件获得.
@@ -62,7 +62,7 @@ public class EsClientBuilder {
 	public TransportClient initSettingsClient(String inputPath) {
         try {
             if (settingClient == null) {
-            	synchronized (EsClientBuilder.class){
+            	synchronized (EsTransportClientBuilder.class){
 		            if (settingClient == null) {
 		            	if (!BaseStringUtil.isEmpty(inputPath)){
 				            infoPath=inputPath;
@@ -143,7 +143,7 @@ public class EsClientBuilder {
 	public TransportClient initParamsClient(String clusterName,String serverIPs,boolean isAppend) {
         try {
             if (paramClient == null) {
-	            synchronized (EsClientBuilder.class){
+	            synchronized (EsTransportClientBuilder.class){
 	                if(BaseStringUtil.isEmpty(clusterName) || BaseStringUtil.isEmpty(serverIPs)){
 	                    return null;
 	                }
