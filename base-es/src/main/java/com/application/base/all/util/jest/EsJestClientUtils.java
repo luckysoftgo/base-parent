@@ -18,6 +18,7 @@ import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
@@ -160,6 +161,11 @@ public class EsJestClientUtils {
 	public boolean addEsData(RestHighLevelClient client, ElasticData data) throws ElasticException {
 		try{
 			IndexRequest request =new IndexRequest(data.getDbName(),data.getTableName(),data.getDocumentId());
+			if (data.isJson()){
+				request.source(XContentType.JSON,data.getJsonStr());
+			}else{
+				request.source(data.getJsonStr());
+			}
 			IndexResponse response = client.index(request,RequestOptions.DEFAULT);
 			if (response!=null && response.status().equals(RestStatus.CREATED)){
 				return true;
@@ -202,7 +208,13 @@ public class EsJestClientUtils {
 	private List<IndexRequest> getDbNameRequest(RestHighLevelClient client,List<ElasticData> elasticData) {
 		List<IndexRequest> requests = new ArrayList<>();
 		for (ElasticData data : elasticData) {
-			requests.add(new IndexRequest(data.getDbName(),data.getTableName(),data.getDocumentId()));
+			IndexRequest request =new IndexRequest(data.getDbName(),data.getTableName(),data.getDocumentId());
+			if (data.isJson()){
+				request.source(XContentType.JSON,data.getJsonStr());
+			}else{
+				request.source(data.getJsonStr());
+			}
+			requests.add(request);
 		}
 		return requests;
 	}
@@ -229,7 +241,7 @@ public class EsJestClientUtils {
 			GetResponse response = client.get(request,RequestOptions.DEFAULT);
 			if (response!=null){
 				Map<String,Object> info=response.getSourceAsMap();
-				data.setJsonStr(JsonConvertUtils.toJson(info));
+				data.setJsonStr(info);
 			}
 			return data;
 		}catch(Exception e){

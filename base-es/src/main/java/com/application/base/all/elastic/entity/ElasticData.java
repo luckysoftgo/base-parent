@@ -28,6 +28,11 @@ public class ElasticData<T> implements Serializable {
 	 */
 	private T data;
 	
+	/**
+	 * 是否是json数据.
+	 */
+	private boolean json;
+	
 	public ElasticData() {
 	}
 	
@@ -68,5 +73,13 @@ public class ElasticData<T> implements Serializable {
 	
 	public void setData(T data) {
 		this.data = data;
+	}
+	
+	public boolean isJson() {
+		return json;
+	}
+	
+	public void setJson(boolean json) {
+		this.json = json;
 	}
 }

@@ -24,10 +24,10 @@ public class ElasticJestPool extends JestPool<RestHighLevelClient> {
 	 */
 	private Set<EsJestNodeConfig> clusterNodes;
 	
-	public ElasticJestPool(EsJestPoolConfig jestPoolConfig){
-		super(jestPoolConfig, new ElasticJestFactory(jestPoolConfig.getClusterName(), jestPoolConfig.getEsNodes()));
-		this.clusterName=jestPoolConfig.getClusterName();
-		this.clusterNodes=jestPoolConfig.getEsNodes();
+	public ElasticJestPool(EsJestPoolConfig restPoolConfig){
+		super(restPoolConfig, new ElasticJestFactory(restPoolConfig.getClusterName(), restPoolConfig.getEsNodes()));
+		this.clusterName=restPoolConfig.getClusterName();
+		this.clusterNodes=restPoolConfig.getEsNodes();
 	}
 	
 	

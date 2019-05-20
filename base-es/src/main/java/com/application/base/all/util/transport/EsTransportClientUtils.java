@@ -208,7 +208,12 @@ public class EsTransportClientUtils {
 		if (data==null) {
 			logger.info("传递的 ElasticData 的值为空,请重新设置参数.");
 		}
-		IndexResponse response = client.prepareIndex(data.getDbName(), data.getTableName(), data.getDocumentId()).setSource(data.getJsonStr(), XContentType.JSON).get();
+		IndexResponse response = null;
+		if (data.isJson()){
+			response = client.prepareIndex(data.getDbName(), data.getTableName(), data.getDocumentId()).setSource(data.getJsonStr(), XContentType.JSON).get();
+		}else{
+			response = client.prepareIndex(data.getDbName(), data.getTableName(), data.getDocumentId()).setSource(data.getJsonStr()).get();
+		}
 		if (response!=null && response.status().equals(RestStatus.CREATED)) {
 			return true;
 		}else {
@@ -229,7 +234,11 @@ public class EsTransportClientUtils {
 		// 批量处理request
 		BulkRequestBuilder bulkRequest = client.prepareBulk();
 		for (ElasticData data : elasticData) {
-			bulkRequest.add(new IndexRequest(data.getDbName(), data.getTableName(), data.getDocumentId()).source(data.getJsonStr(),XContentType.JSON));
+			if (data.isJson()){
+				bulkRequest.add(new IndexRequest(data.getDbName(), data.getTableName(), data.getDocumentId()).source(data.getJsonStr(),XContentType.JSON));
+			}else{
+				bulkRequest.add(new IndexRequest(data.getDbName(), data.getTableName(), data.getDocumentId()).source(data.getJsonStr()));
+			}
 		}
 		// 执行批量处理request
 		BulkResponse bulkResponse = bulkRequest.get();

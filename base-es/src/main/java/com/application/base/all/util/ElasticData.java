@@ -1,5 +1,7 @@
 package com.application.base.all.util;
 
+import org.apache.poi.ss.formula.functions.T;
+
 import java.io.Serializable;
 
 /**
@@ -25,16 +27,21 @@ public class ElasticData implements Serializable {
 	private String documentId;
 	
 	/**
-	 * 对象json串
+	 * 对象.
 	 */
-	private String jsonStr;
+	private Object jsonStr;
+	
+	/**
+	 * 是否json串.
+	 */
+	private boolean json=false;
 	
 	
 	public ElasticData() {
 		super();
 	}
 	
-	public ElasticData(String dbName, String tableName, String documentId, String jsonStr) {
+	public ElasticData(String dbName, String tableName, String documentId, Object jsonStr) {
 		super();
 		this.dbName = dbName;
 		this.tableName = tableName;
@@ -60,11 +67,18 @@ public class ElasticData implements Serializable {
 	public void setDocumentId(String documentId) {
 		this.documentId = documentId;
 	}
-	public String getJsonStr() {
+	public Object getJsonStr() {
 		return jsonStr;
 	}
-	public void setJsonStr(String jsonStr) {
+	public void setJsonStr(Object jsonStr) {
 		this.jsonStr = jsonStr;
 	}
 	
+	public boolean isJson() {
+		return json;
+	}
+	
+	public void setJson(boolean json) {
+		this.json = json;
+	}
 }

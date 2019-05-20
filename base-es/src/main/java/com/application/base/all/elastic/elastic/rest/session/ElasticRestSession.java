@@ -20,6 +20,7 @@ import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
@@ -134,6 +135,11 @@ public class ElasticRestSession implements ElasticSession {
     public boolean addEsData(ElasticData data) throws ElasticException {
         try{
             IndexRequest request =new IndexRequest(data.getIndex(),data.getType(),data.getId());
+            if (data.isJson()){
+                request.source(XContentType.JSON,data.getData());
+            }else{
+                request.source(data);
+            }
             IndexResponse response = getLevelClient().index(request,RequestOptions.DEFAULT);
             if (response!=null && response.status().equals(RestStatus.CREATED)){
                 return true;
@@ -176,7 +182,13 @@ public class ElasticRestSession implements ElasticSession {
     private List<IndexRequest> getIndexRequest(List<ElasticData> elasticData) {
         List<IndexRequest> requests = new ArrayList<>();
         for (ElasticData data : elasticData) {
-            requests.add(new IndexRequest(data.getIndex(),data.getType(),data.getId()));
+            IndexRequest request = new IndexRequest(data.getIndex(),data.getType(),data.getId());
+            if (data.isJson()){
+                request.source(XContentType.JSON,data.getData());
+            }else{
+                request.source(data.getData());
+            }
+            requests.add(request);
         }
         return requests;
     }
