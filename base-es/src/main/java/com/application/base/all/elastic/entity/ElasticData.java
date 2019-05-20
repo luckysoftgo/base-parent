@@ -37,7 +37,7 @@ public class ElasticData<T> implements Serializable {
 	/**
 	 * 是否是map集合
 	 */
-	private boolean map;
+	private boolean map=false;
 	
 	public ElasticData() {
 	}
