@@ -123,7 +123,7 @@ public class ElasticTransportSession implements ElasticSession {
 			logger.info("传递的 ElasticData 的值为空,请重新设置参数.");
 		}
 		IndexResponse response = null;
-		if (data.isMap()){
+		if (data.isMapFlag()){
 			getTransportClient().prepareIndex(data.getIndex(), data.getType(), data.getId()).setSource(data.getMapData()).get();
 		}else{
 			getTransportClient().prepareIndex(data.getIndex(), data.getType(), data.getId()).setSource(data.getData()).get();
@@ -144,7 +144,7 @@ public class ElasticTransportSession implements ElasticSession {
 		// 批量处理request
 		BulkRequestBuilder bulkRequest = getTransportClient().prepareBulk();
 		for (ElasticData data : elasticData) {
-			if (data.isMap()){
+			if (data.isMapFlag()){
 				bulkRequest.add(new IndexRequest(data.getIndex(), data.getType(), data.getId()).source(data.getMapData()));
 			}else{
 				bulkRequest.add(new IndexRequest(data.getIndex(), data.getType(), data.getId()).source(data.getData()));

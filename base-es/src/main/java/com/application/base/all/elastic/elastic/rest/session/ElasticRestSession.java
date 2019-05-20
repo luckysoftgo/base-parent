@@ -135,7 +135,7 @@ public class ElasticRestSession implements ElasticSession {
     public boolean addEsData(ElasticData data) throws ElasticException {
         try{
             IndexRequest request =new IndexRequest(data.getIndex(),data.getType(),data.getId());
-            if (data.isMap()){
+            if (data.isMapFlag()){
                 request.source(data.getMapData());
             }else{
                 request.source(data.getData());
@@ -183,7 +183,7 @@ public class ElasticRestSession implements ElasticSession {
         List<IndexRequest> requests = new ArrayList<>();
         for (ElasticData data : elasticData) {
             IndexRequest request = new IndexRequest(data.getIndex(),data.getType(),data.getId());
-            if (data.isMap()){
+            if (data.isMapFlag()){
                 request.source(data.getMapData());
             }else{
                 request.source(data.getData());
@@ -214,8 +214,11 @@ public class ElasticRestSession implements ElasticSession {
             GetRequest request = new GetRequest(data.getIndex(),data.getType(),data.getId());
             GetResponse response = getLevelClient().get(request,RequestOptions.DEFAULT);
             if (response!=null){
-                Map<String,Object> info =response.getSourceAsMap();
-                data.setData(info);
+                if (data.isMapFlag()){
+                    data.setData(response.getSourceAsString());
+                }else{
+                    data.setMapData(response.getSourceAsMap());
+                }
             }
             return data;
         }catch(Exception e){

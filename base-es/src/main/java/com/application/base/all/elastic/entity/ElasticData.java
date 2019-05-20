@@ -27,7 +27,7 @@ public class ElasticData<T> implements Serializable {
 	/**
 	 * 表中的数据.
 	 */
-	private T data;
+	private String data;
 	/**
 	 * 表中的数据.
 	 * 表中的数据.
@@ -37,41 +37,41 @@ public class ElasticData<T> implements Serializable {
 	/**
 	 * 是否是map集合
 	 */
-	private boolean map=false;
+	private boolean mapFlag =false;
 	
 	public ElasticData() {
 	}
 	
-	public ElasticData(String index, String type, String id, T data) {
+	public ElasticData(String index, String type, String id, String data) {
 		this.index = index;
 		this.type = type;
 		this.id = id;
 		this.data = data;
 	}
 	
-	public ElasticData(String index, String type, String id, T data, boolean map) {
+	public ElasticData(String index, String type, String id, String data, boolean mapFlag) {
 		this.index = index;
 		this.type = type;
 		this.id = id;
 		this.data = data;
-		this.map = map;
+		this.mapFlag = mapFlag;
 	}
 	
-	public ElasticData(String index, String type, String id, Map<String, Object> mapData, boolean map) {
+	public ElasticData(String index, String type, String id, Map<String, Object> mapData, boolean mapFlag) {
 		this.index = index;
 		this.type = type;
 		this.id = id;
 		this.mapData = mapData;
-		this.map = map;
+		this.mapFlag = mapFlag;
 	}
 	
-	public ElasticData(String index, String type, String id, T data, Map<String, Object> mapData, boolean map) {
+	public ElasticData(String index, String type, String id, String data, Map<String, Object> mapData, boolean mapFlag) {
 		this.index = index;
 		this.type = type;
 		this.id = id;
 		this.data = data;
 		this.mapData = mapData;
-		this.map = map;
+		this.mapFlag = mapFlag;
 	}
 	
 	public String getIndex() {
@@ -98,11 +98,11 @@ public class ElasticData<T> implements Serializable {
 		this.id = id;
 	}
 	
-	public T getData() {
+	public String getData() {
 		return data;
 	}
 	
-	public void setData(T data) {
+	public void setData(String data) {
 		this.data = data;
 	}
 	
@@ -114,11 +114,11 @@ public class ElasticData<T> implements Serializable {
 		this.mapData = mapData;
 	}
 	
-	public boolean isMap() {
-		return map;
+	public boolean isMapFlag() {
+		return mapFlag;
 	}
 	
-	public void setMap(boolean map) {
-		this.map = map;
+	public void setMapFlag(boolean mapFlag) {
+		this.mapFlag = mapFlag;
 	}
 }
