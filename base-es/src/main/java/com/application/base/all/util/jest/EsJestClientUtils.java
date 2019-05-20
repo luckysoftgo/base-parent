@@ -1,8 +1,7 @@
 package com.application.base.all.util.jest;
 
+import com.application.base.all.elastic.entity.ElasticData;
 import com.application.base.all.elastic.exception.ElasticException;
-import com.application.base.all.util.ElasticData;
-import com.application.base.utils.json.JsonConvertUtils;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -160,11 +159,11 @@ public class EsJestClientUtils {
 	
 	public boolean addEsData(RestHighLevelClient client, ElasticData data) throws ElasticException {
 		try{
-			IndexRequest request =new IndexRequest(data.getDbName(),data.getTableName(),data.getDocumentId());
-			if (data.isJson()){
-				request.source(XContentType.JSON,data.getJsonStr());
+			IndexRequest request =new IndexRequest(data.getIndex(),data.getType(),data.getId());
+			if (data.isMap()){
+				request.source(data.getMapData());
 			}else{
-				request.source(data.getJsonStr());
+				request.source(data.getData());
 			}
 			IndexResponse response = client.index(request,RequestOptions.DEFAULT);
 			if (response!=null && response.status().equals(RestStatus.CREATED)){
@@ -181,7 +180,7 @@ public class EsJestClientUtils {
 	
 	public boolean addEsDataList(RestHighLevelClient client,List<ElasticData> elasticData) throws ElasticException {
 		BulkRequest bulkRequest = new BulkRequest();
-		List<IndexRequest> requests = getDbNameRequest(client,elasticData);
+		List<IndexRequest> requests = getIndexRequest(client,elasticData);
 		for (IndexRequest indexRequest : requests) {
 			bulkRequest.add(indexRequest);
 		}
@@ -205,14 +204,14 @@ public class EsJestClientUtils {
 		return false;
 	}
 	
-	private List<IndexRequest> getDbNameRequest(RestHighLevelClient client,List<ElasticData> elasticData) {
+	private List<IndexRequest> getIndexRequest(RestHighLevelClient client,List<ElasticData> elasticData) {
 		List<IndexRequest> requests = new ArrayList<>();
 		for (ElasticData data : elasticData) {
-			IndexRequest request =new IndexRequest(data.getDbName(),data.getTableName(),data.getDocumentId());
-			if (data.isJson()){
-				request.source(XContentType.JSON,data.getJsonStr());
+			IndexRequest request =new IndexRequest(data.getIndex(),data.getType(),data.getId());
+			if (data.isMap()){
+				request.source(data.getMapData());
 			}else{
-				request.source(data.getJsonStr());
+				request.source(data.getData());
 			}
 			requests.add(request);
 		}
@@ -222,7 +221,7 @@ public class EsJestClientUtils {
 	
 	public String getDataById(RestHighLevelClient client,ElasticData data) throws ElasticException {
 		try{
-			GetRequest request = new GetRequest(data.getDbName(),data.getTableName(),data.getDocumentId());
+			GetRequest request = new GetRequest(data.getIndex(),data.getType(),data.getId());
 			GetResponse response = client.get(request,RequestOptions.DEFAULT);
 			if (response!=null){
 				return response.getSourceAsString();
@@ -237,11 +236,15 @@ public class EsJestClientUtils {
 	
 	public ElasticData getDataInfoById(RestHighLevelClient client,ElasticData data) throws ElasticException {
 		try{
-			GetRequest request = new GetRequest(data.getDbName(),data.getTableName(),data.getDocumentId());
+			GetRequest request = new GetRequest(data.getIndex(),data.getType(),data.getId());
 			GetResponse response = client.get(request,RequestOptions.DEFAULT);
 			if (response!=null){
 				Map<String,Object> info=response.getSourceAsMap();
-				data.setJsonStr(info);
+				if (data.isMap()){
+					data.setMapData(info);
+				}else{
+					data.setData(info);
+				}
 			}
 			return data;
 		}catch(Exception e){
@@ -253,7 +256,7 @@ public class EsJestClientUtils {
 	
 	public boolean deleteEsData(RestHighLevelClient client,ElasticData data) throws ElasticException {
 		try{
-			DeleteRequest deleteRequest = new DeleteRequest(data.getDbName(), data.getTableName(), data.getDocumentId());
+			DeleteRequest deleteRequest = new DeleteRequest(data.getIndex(), data.getType(), data.getId());
 			//同步执行
 			DeleteResponse deleteResponse = client.delete(deleteRequest, RequestOptions.DEFAULT);
 			if (deleteResponse!=null && deleteResponse.status().equals(RestStatus.OK)){
@@ -297,7 +300,7 @@ public class EsJestClientUtils {
 	private List<DeleteRequest> getDeleteRequest(RestHighLevelClient client,List<ElasticData> elasticData) {
 		List<DeleteRequest> requests = new ArrayList<>();
 		for (ElasticData data : elasticData) {
-			requests.add(new DeleteRequest(data.getDbName(),data.getTableName(),data.getDocumentId()));
+			requests.add(new DeleteRequest(data.getIndex(),data.getType(),data.getId()));
 		}
 		return requests;
 	}
@@ -321,7 +324,7 @@ public class EsJestClientUtils {
 	
 	public boolean updateEsData(RestHighLevelClient client,ElasticData data) throws ElasticException {
 		try{
-			UpdateRequest request = new UpdateRequest(data.getDbName(),data.getTableName(),data.getDocumentId());
+			UpdateRequest request = new UpdateRequest(data.getIndex(),data.getType(),data.getId());
 			UpdateResponse response = client.update(request,RequestOptions.DEFAULT);
 			if (response!=null && response.status().equals(RestStatus.OK)){
 				return true;
@@ -444,12 +447,12 @@ public class EsJestClientUtils {
 	 */
 	public void tranList(String dbName, String tableName, SearchHits searchHits, List<ElasticData> dataList) {
 		for (SearchHit searchHit : searchHits) {
-			String json = searchHit.getSourceAsString();
 			ElasticData model = new ElasticData();
-			model.setDocumentId(searchHit.getId());
-			model.setDbName(dbName);
-			model.setTableName(tableName);
-			model.setJsonStr(json);
+			model.setId(searchHit.getId());
+			model.setIndex(dbName);
+			model.setType(tableName);
+			model.setMapData(searchHit.getSourceAsMap());
+			model.setData(searchHit.getSourceAsString());
 			dataList.add(model);
 		}
 	}

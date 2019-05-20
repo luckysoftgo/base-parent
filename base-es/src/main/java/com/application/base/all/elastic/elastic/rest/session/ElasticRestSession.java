@@ -135,10 +135,10 @@ public class ElasticRestSession implements ElasticSession {
     public boolean addEsData(ElasticData data) throws ElasticException {
         try{
             IndexRequest request =new IndexRequest(data.getIndex(),data.getType(),data.getId());
-            if (data.isJson()){
-                request.source(XContentType.JSON,data.getData());
+            if (data.isMap()){
+                request.source(data.getMapData());
             }else{
-                request.source(data);
+                request.source(data.getData());
             }
             IndexResponse response = getLevelClient().index(request,RequestOptions.DEFAULT);
             if (response!=null && response.status().equals(RestStatus.CREATED)){
@@ -183,8 +183,8 @@ public class ElasticRestSession implements ElasticSession {
         List<IndexRequest> requests = new ArrayList<>();
         for (ElasticData data : elasticData) {
             IndexRequest request = new IndexRequest(data.getIndex(),data.getType(),data.getId());
-            if (data.isJson()){
-                request.source(XContentType.JSON,data.getData());
+            if (data.isMap()){
+                request.source(data.getMapData());
             }else{
                 request.source(data.getData());
             }

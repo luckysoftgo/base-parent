@@ -1,6 +1,6 @@
 package com.application.base.all.util.transport;
 
-import com.application.base.all.util.ElasticData;
+import com.application.base.all.elastic.entity.ElasticData;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
@@ -193,8 +193,8 @@ public class EsTransportClientUtils {
 	 */
 	@SuppressWarnings("deprecation")
 	public static boolean addDocument(TransportClient client,String dbName, String tableName, ElasticData data) throws Exception {
-		data.setDbName(dbName);
-		data.setTableName(tableName);
+		data.setIndex(dbName);
+		data.setType(tableName);
 		return addDocument(client,data);
 	}
 
@@ -209,10 +209,10 @@ public class EsTransportClientUtils {
 			logger.info("传递的 ElasticData 的值为空,请重新设置参数.");
 		}
 		IndexResponse response = null;
-		if (data.isJson()){
-			response = client.prepareIndex(data.getDbName(), data.getTableName(), data.getDocumentId()).setSource(data.getJsonStr(), XContentType.JSON).get();
+		if (data.isMap()){
+			response = client.prepareIndex(data.getIndex(), data.getType(), data.getId()).setSource(data.getMapData()).get();
 		}else{
-			response = client.prepareIndex(data.getDbName(), data.getTableName(), data.getDocumentId()).setSource(data.getJsonStr()).get();
+			response = client.prepareIndex(data.getIndex(), data.getType(), data.getId()).setSource(data.getData()).get();
 		}
 		if (response!=null && response.status().equals(RestStatus.CREATED)) {
 			return true;
@@ -234,10 +234,10 @@ public class EsTransportClientUtils {
 		// 批量处理request
 		BulkRequestBuilder bulkRequest = client.prepareBulk();
 		for (ElasticData data : elasticData) {
-			if (data.isJson()){
-				bulkRequest.add(new IndexRequest(data.getDbName(), data.getTableName(), data.getDocumentId()).source(data.getJsonStr(),XContentType.JSON));
+			if (data.isMap()){
+				bulkRequest.add(new IndexRequest(data.getIndex(), data.getType(), data.getId()).source(data.getMapData()));
 			}else{
-				bulkRequest.add(new IndexRequest(data.getDbName(), data.getTableName(), data.getDocumentId()).source(data.getJsonStr()));
+				bulkRequest.add(new IndexRequest(data.getIndex(), data.getType(), data.getId()).source(data.getData()));
 			}
 		}
 		// 执行批量处理request
@@ -282,10 +282,11 @@ public class EsTransportClientUtils {
 		GetResponse response = client.prepareGet(dbName, tableName, docId).get();
 		if (response!=null){
 			ElasticData data = new ElasticData();
-			data.setDbName(response.getIndex());
-			data.setTableName(response.getType());
-			data.setDocumentId(response.getId());
-			data.setJsonStr(response.getSourceAsString());
+			data.setIndex(response.getIndex());
+			data.setType(response.getType());
+			data.setId(response.getId());
+			data.setData(response.getSourceAsString());
+			data.setMapData(response.getSourceAsMap());
 			return data;
 		}else{
 			return null;
@@ -320,7 +321,7 @@ public class EsTransportClientUtils {
 	 * @throws Exception
 	 */
 	public static boolean deleteDocument(TransportClient client, ElasticData data) throws Exception {
-		DeleteResponse response = client.prepareDelete(data.getDbName(), data.getTableName(), data.getDocumentId()).get();
+		DeleteResponse response = client.prepareDelete(data.getIndex(), data.getType(), data.getId()).get();
 		if (response!=null && response.status().equals(RestStatus.OK)){
 			return true;
 		}else{
@@ -336,7 +337,7 @@ public class EsTransportClientUtils {
 	public static boolean deleteDocuments(TransportClient client,List<ElasticData> elasticData) throws Exception {
 		BulkRequestBuilder deleteBulk = client.prepareBulk();
 		for (ElasticData data : elasticData) {
-			deleteBulk.add(client.prepareDelete(data.getDbName(), data.getTableName(), data.getDocumentId()));
+			deleteBulk.add(client.prepareDelete(data.getIndex(), data.getType(), data.getId()));
 		}
 		BulkResponse response=deleteBulk.execute().actionGet();
 		if (response!=null && response.status().equals(RestStatus.OK)){
@@ -393,10 +394,14 @@ public class EsTransportClientUtils {
 	public static boolean updateDocument(TransportClient client, ElasticData data)
 			throws Exception {
 		UpdateRequest updateRequest = new UpdateRequest();
-		updateRequest.index(data.getDbName());
-		updateRequest.type(data.getTableName());
-		updateRequest.id(data.getDocumentId());
-		updateRequest.doc(data.getJsonStr());
+		updateRequest.index(data.getIndex());
+		updateRequest.type(data.getType());
+		updateRequest.id(data.getId());
+		if (data.isMap()){
+			updateRequest.doc(data.getMapData());
+		}else{
+			updateRequest.doc(data.getData());
+		}
 		UpdateResponse response=client.update(updateRequest).get();
 		if (response.status().equals(RestStatus.OK)){
 			return true;
@@ -671,12 +676,12 @@ public class EsTransportClientUtils {
 	 */
 	private static void tranList(String dbName, String tableName, SearchHits searchHits, List<ElasticData> dataList) {
 		for (SearchHit searchHit : searchHits) {
-			String json = searchHit.getSourceAsString();
 			ElasticData model = new ElasticData();
-			model.setDocumentId(searchHit.getId());
-			model.setDbName(dbName);
-			model.setTableName(tableName);
-			model.setJsonStr(json);
+			model.setId(searchHit.getId());
+			model.setIndex(dbName);
+			model.setType(tableName);
+			model.setMapData(searchHit.getSourceAsMap());
+			model.setData(searchHit.getSourceAsString());
 			dataList.add(model);
 		}
 	}

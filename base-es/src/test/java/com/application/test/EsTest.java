@@ -1,6 +1,6 @@
 package com.application.test;
 
-import com.application.base.all.util.ElasticData;
+import com.application.base.all.elastic.entity.ElasticData;
 import com.application.base.all.util.transport.EsTransportClientUtils;
 import com.application.base.utils.date.DateUtils;
 import com.application.base.utils.json.JsonConvertUtils;
@@ -37,7 +37,7 @@ public class EsTest {
 	
 	private static void test2() throws Exception {
 		TransportClient client = EsTransportClientUtils.getSettingClient("/es.properties");
-		ElasticData data = new ElasticData(dbName,tableName, "123456789",createJson1());
+		ElasticData data = new ElasticData(dbName,tableName, "123456789",createJson1(),false);
 		EsTransportClientUtils.addDocument(client, data);
 		System.out.println("添加到ES中成功了...");
 		client.close();
@@ -46,7 +46,7 @@ public class EsTest {
 	private static void test1() throws Exception {
 		
 		TransportClient client = EsTransportClientUtils.getParamClient(clusterName, serverIPs, false);
-		ElasticData data = new ElasticData(dbName,tableName, "123456789",createJson1());
+		ElasticData data = new ElasticData(dbName,tableName, "123456789",createJson1(),false);
 		EsTransportClientUtils.addDocument(client, data);
 		System.out.println("添加到ES中成功了...");
 		client.close();

@@ -37,7 +37,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.rest.RestStatus;
-import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.slf4j.Logger;
@@ -124,11 +123,12 @@ public class ElasticTransportSession implements ElasticSession {
 			logger.info("传递的 ElasticData 的值为空,请重新设置参数.");
 		}
 		IndexResponse response = null;
-		if (data.isJson()){
-			getTransportClient().prepareIndex(data.getIndex(), data.getType(), data.getId()).setSource(data.getData(), XContentType.JSON).get();
+		if (data.isMap()){
+			getTransportClient().prepareIndex(data.getIndex(), data.getType(), data.getId()).setSource(data.getMapData()).get();
 		}else{
 			getTransportClient().prepareIndex(data.getIndex(), data.getType(), data.getId()).setSource(data.getData()).get();
 		}
+		
 		if (response!=null && response.status().equals(RestStatus.CREATED)) {
 			return true;
 		}else {
@@ -144,8 +144,8 @@ public class ElasticTransportSession implements ElasticSession {
 		// 批量处理request
 		BulkRequestBuilder bulkRequest = getTransportClient().prepareBulk();
 		for (ElasticData data : elasticData) {
-			if (data.isJson()){
-				bulkRequest.add(new IndexRequest(data.getIndex(), data.getType(), data.getId()).source(data.getData(),XContentType.JSON));
+			if (data.isMap()){
+				bulkRequest.add(new IndexRequest(data.getIndex(), data.getType(), data.getId()).source(data.getMapData()));
 			}else{
 				bulkRequest.add(new IndexRequest(data.getIndex(), data.getType(), data.getId()).source(data.getData()));
 			}

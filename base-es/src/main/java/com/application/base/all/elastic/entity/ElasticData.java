@@ -1,6 +1,7 @@
 package com.application.base.all.elastic.entity;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * @desc 用于存放在ES中的数据对象
@@ -27,11 +28,16 @@ public class ElasticData<T> implements Serializable {
 	 * 表中的数据.
 	 */
 	private T data;
-	
 	/**
-	 * 是否是json数据.
+	 * 表中的数据.
+	 * 表中的数据.
+	 * 表中的数据.
 	 */
-	private boolean json;
+	private Map<String,Object> mapData;
+	/**
+	 * 是否是map集合
+	 */
+	private boolean map;
 	
 	public ElasticData() {
 	}
@@ -41,6 +47,31 @@ public class ElasticData<T> implements Serializable {
 		this.type = type;
 		this.id = id;
 		this.data = data;
+	}
+	
+	public ElasticData(String index, String type, String id, T data, boolean map) {
+		this.index = index;
+		this.type = type;
+		this.id = id;
+		this.data = data;
+		this.map = map;
+	}
+	
+	public ElasticData(String index, String type, String id, Map<String, Object> mapData, boolean map) {
+		this.index = index;
+		this.type = type;
+		this.id = id;
+		this.mapData = mapData;
+		this.map = map;
+	}
+	
+	public ElasticData(String index, String type, String id, T data, Map<String, Object> mapData, boolean map) {
+		this.index = index;
+		this.type = type;
+		this.id = id;
+		this.data = data;
+		this.mapData = mapData;
+		this.map = map;
 	}
 	
 	public String getIndex() {
@@ -75,11 +106,19 @@ public class ElasticData<T> implements Serializable {
 		this.data = data;
 	}
 	
-	public boolean isJson() {
-		return json;
+	public Map<String, Object> getMapData() {
+		return mapData;
 	}
 	
-	public void setJson(boolean json) {
-		this.json = json;
+	public void setMapData(Map<String, Object> mapData) {
+		this.mapData = mapData;
+	}
+	
+	public boolean isMap() {
+		return map;
+	}
+	
+	public void setMap(boolean map) {
+		this.map = map;
 	}
 }
