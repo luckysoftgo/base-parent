@@ -126,7 +126,7 @@ public class ElasticTransportSession implements ElasticSession {
 		if (data.isMapFlag()){
 			getTransportClient().prepareIndex(data.getIndex(), data.getType(), data.getId()).setSource(data.getMapData()).get();
 		}else{
-			getTransportClient().prepareIndex(data.getIndex(), data.getType(), data.getId()).setSource(data.getData()).get();
+			getTransportClient().prepareIndex(data.getIndex(), data.getType(), data.getId()).setSource(data.getData(),XContentType.JSON).get();
 		}
 		
 		if (response!=null && response.status().equals(RestStatus.CREATED)) {
@@ -147,7 +147,7 @@ public class ElasticTransportSession implements ElasticSession {
 			if (data.isMapFlag()){
 				bulkRequest.add(new IndexRequest(data.getIndex(), data.getType(), data.getId()).source(data.getMapData()));
 			}else{
-				bulkRequest.add(new IndexRequest(data.getIndex(), data.getType(), data.getId()).source(data.getData()));
+				bulkRequest.add(new IndexRequest(data.getIndex(), data.getType(), data.getId()).source(data.getData(),XContentType.JSON));
 			}
 		}
 		// 执行批量处理request

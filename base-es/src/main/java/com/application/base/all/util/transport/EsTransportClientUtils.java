@@ -209,7 +209,7 @@ public class EsTransportClientUtils {
 			logger.info("传递的 ElasticData 的值为空,请重新设置参数.");
 		}
 		IndexResponse response = null;
-		if (data.isMap()){
+		if (data.isMapFlag()){
 			response = client.prepareIndex(data.getIndex(), data.getType(), data.getId()).setSource(data.getMapData()).get();
 		}else{
 			response = client.prepareIndex(data.getIndex(), data.getType(), data.getId()).setSource(data.getData()).get();
@@ -234,7 +234,7 @@ public class EsTransportClientUtils {
 		// 批量处理request
 		BulkRequestBuilder bulkRequest = client.prepareBulk();
 		for (ElasticData data : elasticData) {
-			if (data.isMap()){
+			if (data.isMapFlag()){
 				bulkRequest.add(new IndexRequest(data.getIndex(), data.getType(), data.getId()).source(data.getMapData()));
 			}else{
 				bulkRequest.add(new IndexRequest(data.getIndex(), data.getType(), data.getId()).source(data.getData()));
@@ -397,7 +397,7 @@ public class EsTransportClientUtils {
 		updateRequest.index(data.getIndex());
 		updateRequest.type(data.getType());
 		updateRequest.id(data.getId());
-		if (data.isMap()){
+		if (data.isMapFlag()){
 			updateRequest.doc(data.getMapData());
 		}else{
 			updateRequest.doc(data.getData());

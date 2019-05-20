@@ -160,7 +160,7 @@ public class EsJestClientUtils {
 	public boolean addEsData(RestHighLevelClient client, ElasticData data) throws ElasticException {
 		try{
 			IndexRequest request =new IndexRequest(data.getIndex(),data.getType(),data.getId());
-			if (data.isMap()){
+			if (data.isMapFlag()){
 				request.source(data.getMapData());
 			}else{
 				request.source(data.getData());
@@ -208,7 +208,7 @@ public class EsJestClientUtils {
 		List<IndexRequest> requests = new ArrayList<>();
 		for (ElasticData data : elasticData) {
 			IndexRequest request =new IndexRequest(data.getIndex(),data.getType(),data.getId());
-			if (data.isMap()){
+			if (data.isMapFlag()){
 				request.source(data.getMapData());
 			}else{
 				request.source(data.getData());
@@ -239,11 +239,10 @@ public class EsJestClientUtils {
 			GetRequest request = new GetRequest(data.getIndex(),data.getType(),data.getId());
 			GetResponse response = client.get(request,RequestOptions.DEFAULT);
 			if (response!=null){
-				Map<String,Object> info=response.getSourceAsMap();
-				if (data.isMap()){
-					data.setMapData(info);
+				if (data.isMapFlag()){
+					data.setMapData(response.getSourceAsMap());
 				}else{
-					data.setData(info);
+					data.setData(response.getSourceAsString());
 				}
 			}
 			return data;

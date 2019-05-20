@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author 孤狼
@@ -138,7 +137,7 @@ public class ElasticRestSession implements ElasticSession {
             if (data.isMapFlag()){
                 request.source(data.getMapData());
             }else{
-                request.source(data.getData());
+                request.source(data.getData(),XContentType.JSON);
             }
             IndexResponse response = getLevelClient().index(request,RequestOptions.DEFAULT);
             if (response!=null && response.status().equals(RestStatus.CREATED)){
@@ -186,7 +185,7 @@ public class ElasticRestSession implements ElasticSession {
             if (data.isMapFlag()){
                 request.source(data.getMapData());
             }else{
-                request.source(data.getData());
+                request.source(data.getData(),XContentType.JSON);
             }
             requests.add(request);
         }
