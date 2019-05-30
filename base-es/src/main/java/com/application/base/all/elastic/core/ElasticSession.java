@@ -58,6 +58,13 @@ public interface ElasticSession {
 	public  boolean addEsIndex(String index) throws ElasticException;
 	
 	/**
+	 * 根据索引名称删除索引
+	 * @param index 索引名称
+	 * @throws ElasticException
+	 */
+	public  boolean deleteIndex(String index) throws ElasticException;
+	
+	/**
 	 * 新增 type
 	 *
 	 * @param index
@@ -67,22 +74,6 @@ public interface ElasticSession {
 	 * @throws ElasticException
 	 */
 	public  boolean addEsType(String index,String type) throws ElasticException;
-	
-	/**
-	 * 新增 document
-	 * @param data
-	 * @throws ElasticException
-	 */
-	@SuppressWarnings("deprecation")
-	public  boolean addEsData(ElasticData data) throws ElasticException;
-	
-	/**
-	 * 批量新增
-	 * @param elasticData, es存储模型的列表(具体看EsData)
-	 * @throws ElasticException
-	 */
-	@SuppressWarnings("deprecation")
-	public  boolean addEsDataList(List<ElasticData> elasticData) throws ElasticException;
 	
 	/**
 	 * 通过文档 id 获取文档信息
@@ -99,6 +90,58 @@ public interface ElasticSession {
 	public ElasticData getDataInfoById(ElasticData data) throws ElasticException;
 	
 	/**
+	 * 新增 document
+	 * @param data
+	 * @throws ElasticException
+	 */
+	@SuppressWarnings("deprecation")
+	public  boolean addEsData(ElasticData data) throws ElasticException;
+	
+	/**
+	 * 批量新增
+	 * @param elasticData, es存储模型的列表(具体看EsData)
+	 * @param async, 是否异步执行.
+	 * @throws ElasticException
+	 */
+	@SuppressWarnings("deprecation")
+	public  boolean addEsDataList(List<ElasticData> elasticData,boolean async) throws ElasticException;
+	
+	/**
+	 * 批量处理器批量新增
+	 * @param elasticData, es存储模型的列表(具体看EsData)
+	 * @param async, 是否异步执行.
+	 * @throws ElasticException
+	 */
+	@SuppressWarnings("deprecation")
+	public  boolean addEsDataListByProcessor(List<ElasticData> elasticData,boolean async) throws ElasticException;
+	
+	/**
+	 * 更新document
+	 * @param data
+	 *            商品dto
+	 * @throws ElasticException
+	 */
+	public  boolean updateEsData(ElasticData data) throws ElasticException;
+	
+	/**
+	 * 批量更新
+	 * @param elasticData
+	 * @param async, 是否异步执行.
+	 *            商品dto
+	 * @throws ElasticException
+	 */
+	public  boolean updateEsDataList(List<ElasticData> elasticData,boolean async) throws ElasticException;
+	
+	/**
+	 * 批量处理器批量更新
+	 * @param elasticData
+	 * @param async, 是否异步执行.
+	 *            商品dto
+	 * @throws ElasticException
+	 */
+	public  boolean updateEsDataListByProcessor(List<ElasticData> elasticData,boolean async) throws ElasticException;
+	
+	/**
 	 * 删除document
 	 *
 	 * @param data
@@ -110,24 +153,18 @@ public interface ElasticSession {
 	/**
 	 * 批量刪除索引
 	 * @param elasticData, es存储模型的列表(具体看EsData)
+	 * @param async, 是否异步执行.
 	 * @return
 	 */
-	public  boolean deleteEsDataList(List<ElasticData> elasticData) throws ElasticException;
+	public  boolean deleteEsDataList(List<ElasticData> elasticData,boolean async) throws ElasticException;
 	
 	/**
-	 * 根据索引名称删除索引
-	 * @param index 索引名称
-	 * @throws ElasticException
+	 * 批量处理器批量刪除
+	 * @param elasticData, es存储模型的列表(具体看EsData)
+	 * @param async, 是否异步执行.
+	 * @return
 	 */
-	public  boolean deleteIndex(String index) throws ElasticException;
-	
-	/**
-	 * 更新document
-	 * @param data
-	 *            商品dto
-	 * @throws ElasticException
-	 */
-	public  boolean updateEsData(ElasticData data) throws ElasticException;
+	public  boolean deleteEsDataListByProcessor(List<ElasticData> elasticData,boolean async) throws ElasticException;
 	
 	/**
 	 * 执行搜索

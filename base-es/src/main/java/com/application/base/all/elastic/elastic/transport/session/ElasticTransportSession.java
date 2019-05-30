@@ -137,9 +137,10 @@ public class ElasticTransportSession implements ElasticSession {
 	}
 	
 	@Override
-	public boolean addEsDataList(List<ElasticData> elasticData) throws ElasticException {
+	public boolean addEsDataList(List<ElasticData> elasticData, boolean async) throws ElasticException {
 		if (elasticData.isEmpty()) {
-			logger.info("传递的 List<ElasticData> 的值为空,请重新设置参数.");
+			logger.info("传递的List<ElasticData>的值为空,请重新设置参数.");
+			return false;
 		}
 		// 批量处理request
 		BulkRequestBuilder bulkRequest = getTransportClient().prepareBulk();
@@ -153,7 +154,7 @@ public class ElasticTransportSession implements ElasticSession {
 		// 执行批量处理request
 		BulkResponse bulkResponse = bulkRequest.get();
 		// 处理错误信息
-		if (bulkResponse.hasFailures()) {
+		if (bulkResponse!=null && bulkResponse.hasFailures()) {
 			long count = 0L;
 			for (BulkItemResponse bulkItemResponse : bulkResponse) {
 				logger.debug("发生错误的 索引id为 : " + bulkItemResponse.getId() + " ，错误信息为：" + bulkItemResponse.getFailureMessage());
@@ -164,6 +165,12 @@ public class ElasticTransportSession implements ElasticSession {
 		}else{
 			return true;
 		}
+	}
+	
+	@Override
+	@Deprecated
+	public boolean addEsDataListByProcessor(List<ElasticData> elasticData, boolean async) throws ElasticException {
+		return false;
 	}
 	
 	@Override
@@ -201,7 +208,7 @@ public class ElasticTransportSession implements ElasticSession {
 	}
 	
 	@Override
-	public boolean deleteEsDataList(List<ElasticData> elasticData) throws ElasticException {
+	public boolean deleteEsDataList(List<ElasticData> elasticData, boolean async) throws ElasticException {
 		BulkRequestBuilder deleteBulk = getTransportClient().prepareBulk();
 		for (ElasticData data : elasticData) {
 			deleteBulk.add(getTransportClient().prepareDelete(data.getIndex(), data.getType(), data.getId()));
@@ -212,6 +219,12 @@ public class ElasticTransportSession implements ElasticSession {
 		}else{
 			return false;
 		}
+	}
+	
+	@Override
+	@Deprecated
+	public boolean deleteEsDataListByProcessor(List<ElasticData> elasticData, boolean async) throws ElasticException {
+		return false;
 	}
 	
 	@Override
@@ -250,6 +263,18 @@ public class ElasticTransportSession implements ElasticSession {
 			throw new ElasticException(e);
 		}
 		
+	}
+	
+	@Override
+	@Deprecated
+	public boolean updateEsDataList(List<ElasticData> elasticData, boolean async) throws ElasticException {
+		return false;
+	}
+	
+	@Override
+	@Deprecated
+	public boolean updateEsDataListByProcessor(List<ElasticData> elasticData, boolean async) throws ElasticException {
+		return false;
 	}
 	
 	@Override
