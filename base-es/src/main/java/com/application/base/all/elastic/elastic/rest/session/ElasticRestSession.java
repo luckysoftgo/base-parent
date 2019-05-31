@@ -1,8 +1,10 @@
 package com.application.base.all.elastic.elastic.rest.session;
 
 import com.application.base.all.elastic.core.ElasticSession;
+import com.application.base.all.elastic.elastic.query.EsQueryBuilderInstance;
 import com.application.base.all.elastic.entity.ElasticData;
 import com.application.base.all.elastic.exception.ElasticException;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 import org.elasticsearch.action.bulk.BackoffPolicy;
@@ -33,13 +35,17 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -538,6 +544,48 @@ public class ElasticRestSession implements ElasticSession {
             logger.error("查询index数据异常,异常信息为:{}",e);
         }
         return  null;
+    }
+    
+    @Override
+    public List<ElasticData> searcher(EsQueryBuilderInstance builderInstance, String index, String type) throws ElasticException {
+        if (builderInstance==null){
+            return null;
+        }
+        int MAX = 10000;
+        try {
+            SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+            sourceBuilder.query(builderInstance.listBuilders());
+            //排序
+            if (StringUtils.isNotEmpty(builderInstance.getAsc())) {
+                sourceBuilder.sort(builderInstance.getAsc(), SortOrder.ASC);
+            }
+            if (StringUtils.isNotEmpty(builderInstance.getDesc())) {
+                sourceBuilder.sort(builderInstance.getDesc(), SortOrder.DESC);
+            }
+            int size = builderInstance.getSize();
+            if (size < 0) {
+                size = 0;
+            }
+            if (size > MAX) {
+                size = MAX;
+            }
+            //返回条目数
+            sourceBuilder.size(size);
+            sourceBuilder.from(builderInstance.getFrom()< 0 ? 0 : builderInstance.getFrom());
+            SearchRequest searchRequest = new SearchRequest();
+            searchRequest.indices(index);
+            searchRequest.types(type);
+            searchRequest.source(sourceBuilder);
+            SearchResponse response = getLevelClient().search(searchRequest,RequestOptions.DEFAULT);
+            SearchHits searchHits = response.getHits();
+            logger.info("查询到记录数:{}" + searchHits.getTotalHits());
+            List<ElasticData> dataList = new ArrayList<ElasticData>();
+            tranList(index, type, searchHits, dataList);
+            return dataList;
+        }catch (Exception e){
+            logger.error("查询index数据异常,异常信息为:{}",e);
+            return null;
+        }
     }
     
     public SearchHits searchHits(String index, String type, QueryBuilder boolQuery, List<FieldSortBuilder> sortBuilders, int pageNo, int pageSize) throws ElasticException {

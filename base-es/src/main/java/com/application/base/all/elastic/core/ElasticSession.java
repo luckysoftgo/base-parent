@@ -1,6 +1,7 @@
 package com.application.base.all.elastic.core;
 
 
+import com.application.base.all.elastic.elastic.query.EsQueryBuilderInstance;
 import com.application.base.all.elastic.entity.ElasticData;
 import com.application.base.all.elastic.exception.ElasticException;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -204,6 +205,16 @@ public interface ElasticSession {
 	public  List<ElasticData> searcher(String index, String type, String[] keyWords, String[] keyVals, int pageNo, int pageSize) throws ElasticException;
 	
 	/**
+	 * 执行搜索
+	 * @param builderInstance
+	 * @param index
+	 * @param type
+	 * @return
+	 * @throws ElasticException
+	 */
+	public  List<ElasticData> searcher(EsQueryBuilderInstance builderInstance, String index, String type) throws ElasticException;
+	
+	/**
 	 * 返回处理的对象,需要自己关闭连接
 	 * @return
 	 */
@@ -235,7 +246,5 @@ public interface ElasticSession {
 			dataList.add(model);
 		}
 	}
-	
-	
 
 }

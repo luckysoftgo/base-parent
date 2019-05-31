@@ -1,8 +1,10 @@
 package com.application.base.all.elastic.elastic.transport.session;
 
 import com.application.base.all.elastic.core.ElasticSession;
+import com.application.base.all.elastic.elastic.query.EsQueryBuilderInstance;
 import com.application.base.all.elastic.entity.ElasticData;
 import com.application.base.all.elastic.exception.ElasticException;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
@@ -37,8 +39,10 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.rest.RestStatus;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -317,6 +321,46 @@ public class ElasticTransportSession implements ElasticSession {
 		List<ElasticData> dataList = new ArrayList<ElasticData>();
 		tranList(index, type, searchHits, dataList);
 		return dataList;
+	}
+	
+	@Override
+	public List<ElasticData> searcher(EsQueryBuilderInstance builderInstance, String index, String type) throws ElasticException {
+		if (builderInstance==null){
+			return null;
+		}
+		int MAX = 10000;
+		try {
+			SearchRequestBuilder searchRequestBuilder = getTransportClient().prepareSearch(index).setTypes(type);
+			//排序
+			if (StringUtils.isNotEmpty(builderInstance.getAsc())) {
+				searchRequestBuilder.addSort(builderInstance.getAsc(), SortOrder.ASC);
+			}
+			if (StringUtils.isNotEmpty(builderInstance.getDesc())) {
+				searchRequestBuilder.addSort(builderInstance.getDesc(), SortOrder.DESC);
+			}
+			//设置查询体
+			searchRequestBuilder.setQuery(builderInstance.listBuilders());
+			//返回条目数
+			int size = builderInstance.getSize();
+			if (size < 0) {
+				size = 0;
+			}
+			if (size > MAX) {
+				size = MAX;
+			}
+			//返回条目数
+			searchRequestBuilder.setSize(size);
+			searchRequestBuilder.setFrom(builderInstance.getFrom() < 0 ? 0 : builderInstance.getFrom());
+			SearchResponse searchResponse = searchRequestBuilder.execute().actionGet();
+			SearchHits searchHits = searchResponse.getHits();
+			logger.info("查询到记录数:{}" + searchHits.getTotalHits());
+			List<ElasticData> dataList = new ArrayList<ElasticData>();
+			tranList(index, type, searchHits, dataList);
+			return dataList;
+		}catch (Exception e){
+			logger.error("查询index数据异常,异常信息为:{}",e);
+			return null;
+		}
 	}
 	
 	public SearchHits searchHits(String index, String type, QueryBuilder boolQuery,
