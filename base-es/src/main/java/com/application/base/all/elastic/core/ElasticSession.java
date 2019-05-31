@@ -11,6 +11,7 @@ import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @desc 操作ElasticSearch的接口服务类.
@@ -182,52 +183,25 @@ public interface ElasticSession {
 	 * @param type
 	 * @param boolQuery
 	 * @param sortBuilders
-	 * @param from
-	 * @param size
+	 * @param pageNo
+	 * @param pageSize
 	 * @return
 	 * @throws ElasticException
 	 */
-	public  List<ElasticData> searcher(String index, String type, QueryBuilder boolQuery,
-	                                         List<FieldSortBuilder> sortBuilders, int from, int size) throws ElasticException;
+	public  List<ElasticData> searcher(String index, String type, QueryBuilder boolQuery,List<FieldSortBuilder> sortBuilders, int pageNo, int pageSize) throws ElasticException;
+	
 	/**
 	 *  关键字的分页搜索
 	 * @param index
 	 * @param type
 	 * @param keyWords
-	 * @param channelIdArr
+	 * @param keyVals
 	 * @param pageNo
 	 * @param pageSize
 	 * @return
 	 * @throws ElasticException
 	 */
-	public  List<ElasticData> searcher( String index, String type, String[] keyWords, String[] channelIdArr, int pageNo, int pageSize) throws ElasticException;
-	
-	/**
-	 * 按照条件分页查询数据
-	 * @param index
-	 * @param type
-	 * @param boolQuery
-	 * @param sortBuilders
-	 * @param from
-	 * @param size
-	 * @return
-	 * @throws ElasticException
-	 */
-	public  SearchHits searchHits(String index, String type, QueryBuilder boolQuery,
-	                                    List<FieldSortBuilder> sortBuilders, int from, int size) throws ElasticException;
-	
-	/**
-	 * 按照关键字查询.
-	 * @param index
-	 * @param type
-	 * @param keyWords
-	 * @param channelIdArr
-	 * @param pageNo
-	 * @param pageSize
-	 * @return
-	 * @throws ElasticException
-	 */
-	public  SearchHits search(String index, String type, String[] keyWords, String[] channelIdArr, int pageNo, int pageSize) throws ElasticException;
+	public  List<ElasticData> searcher(String index, String type, String[] keyWords, String[] keyVals, int pageNo, int pageSize) throws ElasticException;
 	
 	/**
 	 * 返回处理的对象,需要自己关闭连接
@@ -241,7 +215,6 @@ public interface ElasticSession {
 	 */
 	public RestHighLevelClient getHighClient();
 	
-	
 	 /**
 	 * 给集合中添加数据
 	 * @param dbName
@@ -251,13 +224,18 @@ public interface ElasticSession {
 	 */
 	 default void tranList(String dbName, String tableName, SearchHits searchHits, List<ElasticData> dataList) {
 		for (SearchHit searchHit : searchHits) {
-			String json = searchHit.getSourceAsString();
-			ElasticData model = new ElasticData();
-			model.setId(searchHit.getId());
+			Map<String,Object> values=searchHit.getSourceAsMap();
+			String json=searchHit.getSourceAsString();
+			ElasticData model=new ElasticData();
 			model.setIndex(dbName);
 			model.setType(tableName);
+			model.setId(searchHit.getId());
 			model.setData(json);
+			model.setMapData(values);
 			dataList.add(model);
 		}
 	}
+	
+	
+
 }

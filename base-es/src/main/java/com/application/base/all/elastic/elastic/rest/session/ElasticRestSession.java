@@ -494,7 +494,7 @@ public class ElasticRestSession implements ElasticSession {
             /**
              * 遍历查询结果输出相关度分值和文档内容
              */
-            SearchHits searchHits =  response.getHits();
+            SearchHits searchHits = response.getHits();
             logger.info("查询到记录数:{}条." ,searchHits.getTotalHits());
             List<ElasticData> dataList = new ArrayList<ElasticData>();
             tranList(index, type, searchHits, dataList);
@@ -540,12 +540,11 @@ public class ElasticRestSession implements ElasticSession {
         return  null;
     }
     
-    @Override
-    public SearchHits searchHits(String index, String type, QueryBuilder boolQuery, List<FieldSortBuilder> sortBuilders, int from, int size) throws ElasticException {
+    public SearchHits searchHits(String index, String type, QueryBuilder boolQuery, List<FieldSortBuilder> sortBuilders, int pageNo, int pageSize) throws ElasticException {
         try {
             SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
-            sourceBuilder.from(from);
-            sourceBuilder.size(size);
+            sourceBuilder.from(pageNo);
+            sourceBuilder.size(pageSize);
             sourceBuilder.query(boolQuery);
             if (sortBuilders!=null && sortBuilders.size()>0){
                 for (FieldSortBuilder builder:sortBuilders) {
@@ -564,7 +563,6 @@ public class ElasticRestSession implements ElasticSession {
         return null;
     }
     
-    @Override
     public SearchHits search(String index, String type, String[] keyWords, String[] keyVals, int pageNo, int pageSize) throws ElasticException {
         try {
             SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();

@@ -319,17 +319,16 @@ public class ElasticTransportSession implements ElasticSession {
 		return dataList;
 	}
 	
-	@Override
 	public SearchHits searchHits(String index, String type, QueryBuilder boolQuery,
-	                             List<FieldSortBuilder> sortBuilders, int from, int size) throws ElasticException {
+	                             List<FieldSortBuilder> sortBuilders,int pageNo, int pageSize) throws ElasticException {
 		TransportClient client = checkIndex(getTransportClient(), index);
 		/**
 		 * 查询请求建立
 		 */
 		SearchRequestBuilder searchRequestBuilder = client.prepareSearch(index).setTypes(type);
 		searchRequestBuilder.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
-		searchRequestBuilder.setFrom(from);
-		searchRequestBuilder.setSize(size);
+		searchRequestBuilder.setFrom(pageNo);
+		searchRequestBuilder.setSize(pageSize);
 		searchRequestBuilder.setExplain(false);
 		if (boolQuery!=null) {
 			searchRequestBuilder.setQuery(boolQuery);
@@ -344,7 +343,6 @@ public class ElasticTransportSession implements ElasticSession {
 	
 	Pattern badPattern = Pattern.compile("\\s*[\\s~!\\^&\\(\\)\\-\\+:\\|\\\\\"\\\\$]+\\s*");
 	
-	@Override
 	public SearchHits search(String index, String type, String[] keyWords, String[] channelIdArr, int pageNo, int pageSize) throws ElasticException {
 		TransportClient client= checkIndex(getTransportClient(), index);
 		/**
