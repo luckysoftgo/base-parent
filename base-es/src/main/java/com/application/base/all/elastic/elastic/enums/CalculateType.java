@@ -35,5 +35,4 @@ public enum  CalculateType {
 	 * 求个数
 	 */
 	COUNT,
-	,
 }

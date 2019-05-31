@@ -76,6 +76,5 @@ public enum  PrefixQuery {
 	 * exists 是否存在查询.
 	 */
 	EXISTS,
-	,
 	
 }

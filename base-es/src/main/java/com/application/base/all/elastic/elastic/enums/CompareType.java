@@ -37,5 +37,4 @@ public enum  CompareType {
 	 */
 	TO,
 	
-	,
 }

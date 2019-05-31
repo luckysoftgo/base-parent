@@ -21,6 +21,5 @@ public enum  MatchMode {
 	 * 何时何地.
 	 */
 	ANYWHERE,
-	,
 	
 }
