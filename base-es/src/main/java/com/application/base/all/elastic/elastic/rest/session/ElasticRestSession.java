@@ -367,6 +367,8 @@ public class ElasticRestSession implements ElasticSession {
                     }
                 };
                 getLevelClient().bulkAsync(bulkRequest, RequestOptions.DEFAULT,listener);
+                //异步需要停止5秒钟再返回
+                Thread.sleep(5000);
                 return true;
             }else{
                 response = getLevelClient().bulk(bulkRequest, RequestOptions.DEFAULT);
@@ -401,7 +403,7 @@ public class ElasticRestSession implements ElasticSession {
                     return true;
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error("批量操作elasticserach异常,异常信息为:{}",e);
             return false;
         }
