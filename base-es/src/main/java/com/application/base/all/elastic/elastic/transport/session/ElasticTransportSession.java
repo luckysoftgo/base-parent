@@ -170,7 +170,7 @@ public class ElasticTransportSession implements ElasticSession {
 	@Override
 	@Deprecated
 	public boolean addEsDataListByProcessor(List<ElasticData> elasticData, boolean async) throws ElasticException {
-		return false;
+		throw new ElasticException("TransportClient Unsupported methods!");
 	}
 	
 	@Override
@@ -224,7 +224,7 @@ public class ElasticTransportSession implements ElasticSession {
 	@Override
 	@Deprecated
 	public boolean deleteEsDataListByProcessor(List<ElasticData> elasticData, boolean async) throws ElasticException {
-		return false;
+		throw new ElasticException("TransportClient Unsupported methods!");
 	}
 	
 	@Override
@@ -268,13 +268,13 @@ public class ElasticTransportSession implements ElasticSession {
 	@Override
 	@Deprecated
 	public boolean updateEsDataList(List<ElasticData> elasticData, boolean async) throws ElasticException {
-		return false;
+		throw new ElasticException("TransportClient Unsupported methods!");
 	}
 	
 	@Override
 	@Deprecated
 	public boolean updateEsDataListByProcessor(List<ElasticData> elasticData, boolean async) throws ElasticException {
-		return false;
+		throw new ElasticException("TransportClient Unsupported methods!");
 	}
 	
 	@Override
@@ -403,7 +403,7 @@ public class ElasticTransportSession implements ElasticSession {
 	@Override
 	@Deprecated
 	public RestHighLevelClient getHighClient() {
-		return null;
+		throw new ElasticException("TransportClient Unsupported methods!");
 	}
 	
 	/**

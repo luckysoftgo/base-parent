@@ -584,7 +584,7 @@ public class ElasticRestSession implements ElasticSession {
     @Override
     @Deprecated
     public TransportClient getTransClient() {
-        return null;
+        throw new ElasticException("TransportClient Unsupported methods!");
     }
     
     @Override
