@@ -24,15 +24,15 @@ public class EsQueryBuilderInstance {
 	/**
 	 * 查询条件容器
 	 */
-	private List<EsCriterion> mustCriterions = new ArrayList<>();
+	private List<EsQueryBuilders> mustCriterions = new ArrayList<>();
 	/**
 	 * 可能条件集合
 	 */
-	private List<EsCriterion> shouldCriterions = new ArrayList<>();
+	private List<EsQueryBuilders> shouldCriterions = new ArrayList<>();
 	/**
 	 * 不可能条件集合
 	 */
-	private List<EsCriterion> mustNotCriterions = new ArrayList<>();
+	private List<EsQueryBuilders> mustNotCriterions = new ArrayList<>();
 	
 	/**
 	 * 构造builder
@@ -46,7 +46,7 @@ public class EsQueryBuilderInstance {
 			 * must容器
 			 */
 			if (!mustCriterions.isEmpty()) {
-				for (EsCriterion criterion : mustCriterions) {
+				for (EsQueryBuilders criterion : mustCriterions) {
 					for (QueryBuilder builder : criterion.listBuilders()) {
 						queryBuilder = boolQueryBuilder.must(builder);
 					}
@@ -56,7 +56,7 @@ public class EsQueryBuilderInstance {
 			 * should容器
 			 */
 			if (!shouldCriterions.isEmpty()) {
-				for (EsCriterion criterion : shouldCriterions) {
+				for (EsQueryBuilders criterion : shouldCriterions) {
 					for (QueryBuilder builder : criterion.listBuilders()) {
 						queryBuilder = boolQueryBuilder.should(builder);
 					}
@@ -67,7 +67,7 @@ public class EsQueryBuilderInstance {
 			 * must not 容器
 			 */
 			if (!mustNotCriterions.isEmpty()) {
-				for (EsCriterion criterion : mustNotCriterions) {
+				for (EsQueryBuilders criterion : mustNotCriterions) {
 					for (QueryBuilder builder : criterion.listBuilders()) {
 						queryBuilder = boolQueryBuilder.mustNot(builder);
 					}
@@ -82,7 +82,7 @@ public class EsQueryBuilderInstance {
 	/**
 	 * 增加简单条件表达式
 	 */
-	public EsQueryBuilderInstance must(EsCriterion criterion){
+	public EsQueryBuilderInstance must(EsQueryBuilders criterion){
 		if(criterion!=null){
 			mustCriterions.add(criterion);
 		}
@@ -91,7 +91,7 @@ public class EsQueryBuilderInstance {
 	/**
 	 * 增加简单条件表达式
 	 */
-	public EsQueryBuilderInstance should(EsCriterion criterion){
+	public EsQueryBuilderInstance should(EsQueryBuilders criterion){
 		if(criterion!=null){
 			shouldCriterions.add(criterion);
 		}
@@ -100,7 +100,7 @@ public class EsQueryBuilderInstance {
 	/**
 	 * 增加简单条件表达式
 	 */
-	public EsQueryBuilderInstance mustNot(EsCriterion criterion){
+	public EsQueryBuilderInstance mustNot(EsQueryBuilders criterion){
 		if(criterion!=null){
 			mustNotCriterions.add(criterion);
 		}

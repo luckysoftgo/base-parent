@@ -12,7 +12,7 @@ import java.util.List;
  * @DESC:
  * @USER: 孤狼
  **/
-public class EsQueryBuilders implements EsCriterion{
+public class EsQueryBuilders{
 	
 	/**
 	 * 返回的结果集合.
@@ -144,7 +144,6 @@ public class EsQueryBuilders implements EsCriterion{
 		return this;
 	}
 
-	@Override
 	public List<QueryBuilder> listBuilders() {
 		return resultList;
 	}
