@@ -31,7 +31,7 @@ public class JDelegateDistributedLock implements JDistributedLock {
 
     @Override
     public boolean loopLock(String uniqueKey) throws JDistributedLockException, RedissonException {
-       return loopLock(uniqueKey,5,TimeUnit.SECONDS);
+       return loopLock(uniqueKey,5,TimeUnit.MILLISECONDS);
     }
     
     @Override
@@ -63,7 +63,7 @@ public class JDelegateDistributedLock implements JDistributedLock {
 
     @Override
     public boolean tryLock(String uniqueKey) throws JDistributedLockException, RedissonException {
-        return tryLock(uniqueKey, 5, TimeUnit.SECONDS);
+        return tryLock(uniqueKey, 5, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -71,24 +71,17 @@ public class JDelegateDistributedLock implements JDistributedLock {
         RedissonSession session = null;
         try {
             session = lockFactory.getRedissonSession();
-            long nano = System.nanoTime();
-            do {
-                logger.debug("try lock key: " + uniqueKey);
-                RLock rLock = session.getRLock(uniqueKey);
-                boolean flag = rLock.isLocked();
-                if (!flag){
-                    if (unit == null || timeout==0 ){
-                        rLock.tryLock();
-                    }else{
-                        rLock.tryLock(timeout,unit);
-                    }
-                    return true;
+            logger.debug("try lock key: " + uniqueKey);
+            RLock rLock = session.getRLock(uniqueKey);
+            boolean flag = rLock.isLocked();
+            if (!flag){
+                if (unit == null || timeout==0 ){
+                    rLock.tryLock();
+                }else{
+                    rLock.tryLock(timeout,unit);
                 }
-                if (timeout==0) {
-                    break;
-                }
-                Thread.sleep(300);
-            } while ((System.nanoTime() - nano) < unit.toNanos(timeout));
+                return true;
+            }
             return Boolean.FALSE;
         } catch (RedissonException e) {
             throw e;
