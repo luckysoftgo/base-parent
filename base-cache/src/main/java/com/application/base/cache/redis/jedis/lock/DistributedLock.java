@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @desc 分布式锁
+ * https://redis.io/commands/set set命令详解.
  * @author 孤狼
  */
 public interface DistributedLock {
