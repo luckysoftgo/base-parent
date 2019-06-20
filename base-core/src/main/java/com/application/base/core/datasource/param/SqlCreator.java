@@ -147,7 +147,7 @@ class DefaultCustomerSql implements CustomSql {
 	@Override
 	public CustomSql operator(ESQLOperator operator) {
 		if (builder == null) {
-			throw new IllegalArgumentException("Operator can't be in the first!");
+			throw new IllegalArgumentException("PrefixQuery can't be in the first!");
 		}
 		builder.append(operator);
 		return this;
