@@ -14,10 +14,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
- * @desc redis 集群工厂 session 设置
+ * @desc redis 哨兵工厂 session 设置
  * @author 孤狼
  */
-public class JedisSentinelSessionFactory implements RedisSessionFactory {
+public class  JedisSentinelSessionFactory implements RedisSessionFactory {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 	

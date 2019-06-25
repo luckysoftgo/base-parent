@@ -4,6 +4,7 @@ import com.application.base.cache.redis.api.RedisSession;
 import com.application.base.cache.redis.api.ShardedSession;
 import com.application.base.cache.redis.exception.RedisException;
 import com.application.base.cache.redis.factory.RedisSessionFactory;
+import com.application.base.cache.redis.jedis.factory.cluster.RedisClusterPool;
 import com.application.base.cache.redis.jedis.session.JedisClusterSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,16 +23,28 @@ public class JedisClusterSessionFactory implements RedisSessionFactory {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	/**
-	 * 集群工厂对象.
+	 * 集群实例
 	 */
-	private JedisClusterFactory jedisCluster;
-
-	public JedisClusterFactory getClusterPool() {
-		return jedisCluster;
+	private RedisClusterPool clusterPool;
+	
+	public RedisClusterPool getClusterPool() {
+		return clusterPool;
 	}
-
-	public void setClusterPool(JedisClusterFactory jedisCluster) {
-		this.jedisCluster = jedisCluster;
+	
+	public void setClusterPool(RedisClusterPool clusterPool) {
+		this.clusterPool = clusterPool;
+	}
+	
+	/**
+	 * 构造方法
+	 */
+	public JedisClusterSessionFactory() {}
+	
+	/**
+	 * 构造方法
+	 */
+	public JedisClusterSessionFactory(RedisClusterPool clusterPool) {
+		this.clusterPool = clusterPool;
 	}
 
 	@Override
@@ -73,7 +86,7 @@ public class JedisClusterSessionFactory implements RedisSessionFactory {
 			logger.debug("获取redis链接");
 			JedisCluster jedis = null;
 			try {
-				jedis = JedisClusterSessionFactory.this.getClusterPool().getClusterResource();
+				jedis = JedisClusterSessionFactory.this.clusterPool.getResource();
 			}
 			catch (Exception e) {
 				logger.error("获取redis链接错误,{}", e);
@@ -100,7 +113,7 @@ public class JedisClusterSessionFactory implements RedisSessionFactory {
 			JedisCluster jedisCluster = null;
 			boolean success = true;
 			try {
-				if (getClusterPool() == null) {
+				if (clusterPool == null) {
 					logger.error("获取Jedi连接池失败");
 					throw new RedisException("获取Jedi连接池失败");
 				}

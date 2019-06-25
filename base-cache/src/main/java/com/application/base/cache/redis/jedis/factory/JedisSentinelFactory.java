@@ -41,15 +41,6 @@ public class JedisSentinelFactory extends Pool<Jedis> {
 	 */
 	private int timeout = 2000;
 	/**
-	 * 超时
-	 */
-	private int sotimeout = 3000;
-	/**
-	 * 最大尝试次数
-	 */
-	private int maxattempts = 10;
-	
-	/**
 	 * 存放 ip 和 port 的 Str
 	 */
 	private String hostInfos="127.0.0.1:6379";
@@ -71,12 +62,10 @@ public class JedisSentinelFactory extends Pool<Jedis> {
 	/**
 	 * 构造方法
 	 */
-	public JedisSentinelFactory(String masterName, JedisPoolConfig poolConfig, int timeout, int sotimeout, int maxattempts, String hostInfos) {
+	public JedisSentinelFactory(String masterName, JedisPoolConfig poolConfig, int timeout,String hostInfos) {
 		this.masterName=masterName;
 		this.poolConfig =poolConfig;
 		this.timeout = timeout;
-		this.sotimeout = sotimeout;
-		this.maxattempts = maxattempts;
 		this.hostInfos = hostInfos;
 		initFactory();
 	}
@@ -84,16 +73,16 @@ public class JedisSentinelFactory extends Pool<Jedis> {
 	/**
 	 * 构造方法
 	 */
-	public JedisSentinelFactory(String masterName, JedisPoolConfig poolConfig, int timeout, int sotimeout, int maxattempts, String passWords, String hostInfos) {
+	public JedisSentinelFactory(String masterName, JedisPoolConfig poolConfig, int timeout, String passWords, String hostInfos) {
 		this.masterName=masterName;
 		this.poolConfig =poolConfig;
 		this.timeout = timeout;
-		this.sotimeout = sotimeout;
-		this.maxattempts = maxattempts;
 		this.passWords = passWords;
 		this.hostInfos = hostInfos;
 		initFactory();
 	}
+	
+	
 	
 	@SuppressWarnings("deprecation")
 	public void initFactory() {
@@ -111,11 +100,14 @@ public class JedisSentinelFactory extends Pool<Jedis> {
 			for (int i = 0; i <ipAndPorts.length ; i++) {
 				sentinels.add(ipAndPorts[i]);
 			}
-			//得到实例.
-			if (isAuth) {
-				jedisPool=new JedisSentinelPool(getMasterName(),sentinels,getPoolConfig(),getPassWords());
-			} else {
-				jedisPool=new JedisSentinelPool(getMasterName(),sentinels,getPoolConfig());
+			//初始化连接池.
+			if (jedisPool==null || jedisPool.isClosed()) {
+				//得到实例.
+				if (isAuth) {
+					jedisPool = new JedisSentinelPool(getMasterName(), sentinels, getPoolConfig(), timeout, getPassWords());
+				} else {
+					jedisPool = new JedisSentinelPool(getMasterName(), sentinels, getPoolConfig(), timeout);
+				}
 			}
 		}
 		catch (Exception ex) {
@@ -157,22 +149,6 @@ public class JedisSentinelFactory extends Pool<Jedis> {
 	
 	public void setTimeout(int timeout) {
 		this.timeout = timeout;
-	}
-	
-	public int getSotimeout() {
-		return sotimeout;
-	}
-	
-	public void setSotimeout(int sotimeout) {
-		this.sotimeout = sotimeout;
-	}
-	
-	public int getMaxattempts() {
-		return maxattempts;
-	}
-	
-	public void setMaxattempts(int maxattempts) {
-		this.maxattempts = maxattempts;
 	}
 	
 	public String getPassWords() {

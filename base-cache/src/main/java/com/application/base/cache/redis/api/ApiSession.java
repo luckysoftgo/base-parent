@@ -16,7 +16,7 @@ public interface ApiSession {
 	 */
 	long LOCK_SUCCESS = 1;
     
-    /*
+    /**
         EX seconds -- Set the specified expire time, in seconds.
         PX milliseconds -- Set the specified expire time, in milliseconds.
         NX -- Only set the key if it does not already exist.

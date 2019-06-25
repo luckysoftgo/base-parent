@@ -12,7 +12,7 @@ import java.util.Set;
  * @desc codis 缓存顶级接口
  * @author 孤狼
  */
-public abstract interface AbstractCacheClient {
+public interface AbstractCacheClient {
 	
 	/**
 	 * set value

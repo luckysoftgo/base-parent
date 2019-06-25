@@ -13,7 +13,7 @@ import redis.clients.jedis.JedisCluster;
 import java.util.Collections;
 
 /**
- * @desc 分布式锁实现.
+ * @desc 分布式锁实现. 分布式锁,按道理说只适用单机或者哨兵模式,集群性能欠佳
  * https://redis.io/topics/distlock
  * @author 孤狼
  */

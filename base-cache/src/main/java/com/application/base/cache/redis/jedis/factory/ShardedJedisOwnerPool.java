@@ -23,11 +23,11 @@ import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.util.Hashing;
 
 /**
- * @desc 集群设置pool,该方案的关键是：使用 sentinel 做 HA 操作.
+ * @desc 集群设置pool,该方案的关键是：使用 sharded 做 HA 操作.
  * @author 孤狼
  * 实现分片的原子性.
  */
-public class ShardedJedisSentinelPool extends Pool<ShardedJedis> {
+public class ShardedJedisOwnerPool extends Pool<ShardedJedis> {
 	
 	public static final int MAX_RETRY_SENTINEL = 30;
 	
@@ -47,31 +47,31 @@ public class ShardedJedisSentinelPool extends Pool<ShardedJedis> {
 	
 	private volatile List<HostAndPort> currentHostMasters;
 	
-	public ShardedJedisSentinelPool(List<String> masters, Set<String> sentinels) {
+	public ShardedJedisOwnerPool(List<String> masters, Set<String> sentinels) {
 		this(masters, sentinels, new GenericObjectPoolConfig(),Protocol.DEFAULT_TIMEOUT, null, Protocol.DEFAULT_DATABASE);
 	}
 	
-	public ShardedJedisSentinelPool(List<String> masters, Set<String> sentinels, String password) {
+	public ShardedJedisOwnerPool(List<String> masters, Set<String> sentinels, String password) {
 		this(masters, sentinels, new GenericObjectPoolConfig(),Protocol.DEFAULT_TIMEOUT, password);
 	}
 	
-	public ShardedJedisSentinelPool(final GenericObjectPoolConfig poolConfig, List<String> masters, Set<String> sentinels) {
+	public ShardedJedisOwnerPool(final GenericObjectPoolConfig poolConfig, List<String> masters, Set<String> sentinels) {
 		this(masters, sentinels, poolConfig, Protocol.DEFAULT_TIMEOUT, null,Protocol.DEFAULT_DATABASE);
 	}
 	
-	public ShardedJedisSentinelPool(List<String> masters, Set<String> sentinels,final GenericObjectPoolConfig poolConfig, int timeout,final String password) {
+	public ShardedJedisOwnerPool(List<String> masters, Set<String> sentinels, final GenericObjectPoolConfig poolConfig, int timeout, final String password) {
 		this(masters, sentinels, poolConfig, timeout, password,Protocol.DEFAULT_DATABASE);
 	}
 	
-	public ShardedJedisSentinelPool(List<String> masters, Set<String> sentinels, final GenericObjectPoolConfig poolConfig, final int timeout) {
+	public ShardedJedisOwnerPool(List<String> masters, Set<String> sentinels, final GenericObjectPoolConfig poolConfig, final int timeout) {
 		this(masters, sentinels, poolConfig, timeout, null,Protocol.DEFAULT_DATABASE);
 	}
 	
-	public ShardedJedisSentinelPool(List<String> masters, Set<String> sentinels,final GenericObjectPoolConfig poolConfig, final String password) {
+	public ShardedJedisOwnerPool(List<String> masters, Set<String> sentinels, final GenericObjectPoolConfig poolConfig, final String password) {
 		this(masters, sentinels, poolConfig, Protocol.DEFAULT_TIMEOUT,password);
 	}
 	
-	public ShardedJedisSentinelPool(List<String> masters, Set<String> sentinels,final GenericObjectPoolConfig poolConfig, int timeout,final String password, final int database) {
+	public ShardedJedisOwnerPool(List<String> masters, Set<String> sentinels, final GenericObjectPoolConfig poolConfig, int timeout, final String password, final int database) {
 		this.poolConfig = poolConfig;
 		this.timeout = timeout;
 		this.password = password;
@@ -99,7 +99,7 @@ public class ShardedJedisSentinelPool extends Pool<ShardedJedis> {
 				sb.append(master.toString());
 				sb.append(" ");
 			}
-			log.info("Created ShardedJedisPool to master at [" + sb.toString() + "]");
+			log.info("Created ShardedJedisOwnerPool to master at [" + sb.toString() + "]");
 			List<JedisShardInfo> shardMasters = makeShardInfoList(masters);
 			initPool(poolConfig, new ShardedJedisFactory(shardMasters, Hashing.MURMUR_HASH, null));
 			currentHostMasters = masters;

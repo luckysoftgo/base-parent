@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @desc 分片的 pool，实现分片的原子性，数据会根据 hashing 算法，放入到不同的片(机器)上
+ * @desc 分片的工厂,实现分片的原子性，数据会根据 hashing 算法，放入到不同的片(机器)上
  * @author 孤狼
  */
 public class JedisShardedFactory extends Pool<ShardedJedis> {
@@ -23,13 +23,9 @@ public class JedisShardedFactory extends Pool<ShardedJedis> {
 	/**
 	 * 分片集群实例:它只会选择一个服务器存放你set的数据，选择是根据你的key值按哈希算法决定哪台服务器。
 	 * 所以只会有一台有数据，而且一样的key，基本是只会在某台redis服务器存放;
-	 * 如果采用的是：使用 sentinel 做 HA 操作.则换成 : ShardedJedisSentinelPool .
+	 * 如果采用的是：使用 sharded 做 HA 操作.则换成 : ShardedJedisOwnerPool .
 	 */
 	private ShardedJedisPool shardedPool;
-	/**
-	 * redis结点列表
-	 */
-	private List<JedisShardInfo> clusterNodes = new ArrayList<JedisShardInfo>();
 	
 	/**
 	 * 连接池参数 spring 注入
@@ -93,6 +89,7 @@ public class JedisShardedFactory extends Pool<ShardedJedis> {
 	
 	@SuppressWarnings("deprecation")
 	public void initFactory() {
+		List<JedisShardInfo> clusterNodes = new ArrayList<JedisShardInfo>();
 		try {
 			if (!StringUtils.isNotBlank(hostInfos)) {
 				logger.info("初始化 Redis 集群的IP和端口,没有传入IP和端口的字符串.");
@@ -113,7 +110,11 @@ public class JedisShardedFactory extends Pool<ShardedJedis> {
 				if (isAuth && StringUtils.isNotBlank(tmpAuth)){
 					instance.setPassword(tmpAuth);
 				}
-				instance=new JedisShardInfo(ipAndPortArray[0],Integer.parseInt(ipAndPortArray[1]));
+				if (ipAndPortArray.length>=3){
+					instance=new JedisShardInfo(ipAndPortArray[0],Integer.parseInt(ipAndPortArray[1]),Integer.parseInt(ipAndPortArray[2]));
+				}else{
+					instance=new JedisShardInfo(ipAndPortArray[0],Integer.parseInt(ipAndPortArray[1]));
+				}
 				clusterNodes.add(instance);
 			}
 			//得到实例.
