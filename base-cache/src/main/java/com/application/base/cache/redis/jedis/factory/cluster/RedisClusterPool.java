@@ -4,7 +4,7 @@ import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPoolConfig;
 
 /**
- * @NAME: RedisClusterPool
+ * @NAME: RedissonInstancePool
  * @DESC: es连接池.
  * @USER: 孤狼.
  **/

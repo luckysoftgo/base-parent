@@ -6,7 +6,7 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 /**
- * @NAME: ClusterPool
+ * @NAME: RedissonPool
  * @DESC: 连接池接口.
  * @USER: 孤狼
  **/
