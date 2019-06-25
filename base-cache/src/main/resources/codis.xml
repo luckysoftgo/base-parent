@@ -38,7 +38,7 @@
    <!--
    <bean id="mutilCodisFactory" class="com.application.base.cache.codis.factory.MutilCodisSessionFactory">
        <property name="client" ref="cacheClinet"/>
-       <property name="pool" ref="jedisPool"/>
+       <property name="clusterPool" ref="redisFactory"/>
    </bean>
    <bean id="distributedLock" class="com.application.base.cache.redis.jedis.lock.DelegateDistributedLock">
        <property name="factory" ref="mutilCodisFactory"/>
