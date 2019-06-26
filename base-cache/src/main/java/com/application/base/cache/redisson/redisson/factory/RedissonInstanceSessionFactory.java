@@ -4,8 +4,8 @@ import com.application.base.cache.redis.exception.RedisException;
 import com.application.base.cache.redisson.api.RedissonSession;
 import com.application.base.cache.redisson.exception.RedissonException;
 import com.application.base.cache.redisson.factory.RedissonSessionFactory;
-import com.application.base.cache.redisson.redisson.session.RedissonSentinelSession;
-import com.application.base.cache.redisson.redisson.session.RedissonSimpleSession;
+import com.application.base.cache.redisson.redisson.pool.RedissonInstancePool;
+import com.application.base.cache.redisson.redisson.session.RedissonInstanceSession;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,31 +18,43 @@ import java.lang.reflect.Proxy;
  * @desc 简单工厂 模式
  * @author 孤狼.
  */
-public class RedissonSimpleSessionFactory implements RedissonSessionFactory {
+public class RedissonInstanceSessionFactory implements RedissonSessionFactory {
 	
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	/**
+	 * 连接池
+	 */
+	private RedissonInstancePool instancePool;
+	/**
 	 * 操作实例.
 	 */
-	private RedissonClient simpleClient;
+	private RedissonClient instanceClient;
 	
-	public RedissonClient getSimpleClient() {
-		if (null==simpleClient){
+	public RedissonInstancePool getInstancePool() {
+		if (null==instancePool){
 			logger.error("[redisson错误:{}]","获得redisson简单工厂实例对象为空");
 			throw new RedisException("获得redisson简单工厂实例对象为空");
 		}
-		return simpleClient;
+		return instancePool;
 	}
 	
-	public void setSimpleClient(RedissonClient simpleClient) {
-		this.simpleClient = simpleClient;
+	public void setInstancePool(RedissonInstancePool instancePool) {
+		this.instancePool = instancePool;
 	}
 	
-	public RedissonSimpleSessionFactory(){}
+	public RedissonClient getInstanceClient() {
+		return instanceClient;
+	}
 	
-	public RedissonSimpleSessionFactory(RedissonClient simpleClient){
-		this.simpleClient = simpleClient;
+	public void setInstanceClient(RedissonClient instanceClient) {
+		this.instanceClient = instanceClient;
+	}
+	
+	public RedissonInstanceSessionFactory(){}
+	
+	public RedissonInstanceSessionFactory(RedissonClient instanceClient){
+		this.instanceClient = instanceClient;
 	}
 	
 	@Override
@@ -50,7 +62,7 @@ public class RedissonSimpleSessionFactory implements RedissonSessionFactory {
 		RedissonSession session = null;
 		try {
 			session = (RedissonSession) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-					new Class[]{RedissonSession.class},new RedissonSimpleSessionProxy(new RedissonSimpleSession())
+					new Class[]{RedissonSession.class},new RedissonInstanceSessionProxy(new RedissonInstanceSession())
 			);
 		} catch (Exception e) {
 			logger.error("出現的异常是: {}", e);
@@ -65,14 +77,14 @@ public class RedissonSimpleSessionFactory implements RedissonSessionFactory {
 	/**
 	 * 代理实现处理.
 	 */
-	private class RedissonSimpleSessionProxy implements InvocationHandler {
+	private class RedissonInstanceSessionProxy implements InvocationHandler {
 		
 		private Logger logger = LoggerFactory.getLogger(getClass());
 		
-		private RedissonSimpleSession simpleSession;
+		private RedissonInstanceSession instanceSession;
 		
-		public RedissonSimpleSessionProxy(RedissonSimpleSession simpleSession) {
-			this.simpleSession = simpleSession;
+		public RedissonInstanceSessionProxy(RedissonInstanceSession instanceSession) {
+			this.instanceSession = instanceSession;
 		}
 		
 		/**
@@ -83,7 +95,7 @@ public class RedissonSimpleSessionFactory implements RedissonSessionFactory {
 			logger.debug("获取 redisson 链接");
 			RedissonClient client = null;
 			try {
-				client = RedissonSimpleSessionFactory.this.getSimpleClient();
+				client = RedissonInstanceSessionFactory.this.instancePool.getResource();
 			}
 			catch (Exception e) {
 				logger.error("获取 redisson 链接错误,{}", e);
@@ -106,8 +118,8 @@ public class RedissonSimpleSessionFactory implements RedissonSessionFactory {
 			RedissonClient client = null;
 			try {
 				client = getClient();
-				simpleSession.setClient(client);
-				return method.invoke(simpleSession, args);
+				instanceSession.setCurrentClient(client);
+				return method.invoke(instanceSession, args);
 			}
 			catch (RuntimeException e) {
 				if (client != null) {

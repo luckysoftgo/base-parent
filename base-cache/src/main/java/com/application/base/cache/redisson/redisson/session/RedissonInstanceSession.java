@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  * @desc 抽象类的设置.
  * @author 孤狼.
  */
-public class CommonSession implements RedissonSession {
+public class RedissonInstanceSession implements RedissonSession {
 	
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -513,5 +513,4 @@ public class CommonSession implements RedissonSession {
 	public boolean isShutdown() throws RedissonException {
 		return getCurrentClient().isShutdown();
 	}
-	
 }
