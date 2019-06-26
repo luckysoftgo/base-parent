@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+   http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans.xsd
+   http://www.springframework.org/schema/context
+   http://www.springframework.org/schema/context/spring-context.xsd">
+    
+    
+    <!-- 连接池基础信息配置 (公共使用) -->
+    <bean id="commonConfig" class="org.apache.commons.pool2.impl.GenericObjectPoolConfig">
+        <property name="maxTotal" value="${redis.pool.maxTotal}"/>
+        <property name="maxIdle" value="${redis.pool.maxIdle}"/>
+        <property name="minIdle" value="${redis.pool.minIdle}"/>
+        <property name="maxWaitMillis" value="${redis.pool.maxWaitMillis}"/>
+        <property name="testOnBorrow" value="${redis.pool.testOnBorrow}"/>
+        <property name="testOnReturn" value="${redis.pool.testOnReturn}"/>
+        <property name="testWhileIdle" value="${redis.pool.testWhileIdle}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${redis.pool.timeBetweenEvictionRunsMillis}"/>
+        <property name="numTestsPerEvictionRun" value="${redis.pool.numTestsPerEvictionRun}"/>
+    </bean>
+    
+    
+    
+    <!-- 单节点部署应用 -->
+    <bean id="simpleConfig" class="com.application.base.cache.redisson.redisson.pool.config.SimpleConfig">
+        <property name="connectionPoolSize" value="${redisson.simple.connectionPoolSize}"/>
+        <property name="idleConnectionTimeout" value="${redisson.simple.idleConnectionTimeout}"/>
+        <property name="connectTimeout" value="${redisson.simple.connectTimeout}"/>
+        <property name="timeout" value="${redisson.simple.timeout}"/>
+        <property name="pingTimeout" value="${redisson.simple.pingTimeout}"/>
+        <property name="reconnectionTimeout" value="${redisson.simple.reconnectionTimeout}"/>
+        <property name="address" value="${redisson.simple.address}"/>
+    </bean>
+    <bean id="instancePool" class="com.application.base.cache.redisson.redisson.pool.RedissonInstancePool">
+        <property name="config" ref="simpleConfig"/>
+        <property name="poolConfig" ref="commonConfig"/>
+        <constructor-arg name="config" ref="simpleConfig"/>
+        <constructor-arg name="poolConfig" ref="commonConfig"/>
+    </bean>
+    <bean id="redissonFactory" class="com.application.base.cache.redisson.redisson.factory.RedissonInstanceSessionFactory">
+        <property name="instancePool" ref="instancePool"/>
+    </bean>
+    <bean id="redissonDistLock" class="com.application.base.cache.redisson.redisson.lock.JDelegateDistributedLock">
+        <property name="lockFactory" ref="redissonFactory"/>
+    </bean>
+    
+    
+    <!-- 哨兵部署应用 -->
+    <bean id="sentinelConfig" class="com.application.base.cache.redisson.redisson.pool.config.SentinelConfig">
+        <property name="masterConnectionPoolSize" value="${redisson.sentinel.masterConnectionPoolSize}"/>
+        <property name="slaveConnectionPoolSize" value="${redisson.sentinel.slaveConnectionPoolSize}"/>
+        <property name="idleConnectionTimeout" value="${redisson.sentinel.idleConnectionTimeout}"/>
+        <property name="connectTimeout" value="${redisson.sentinel.connectTimeout}"/>
+        <property name="timeout" value="${redisson.sentinel.timeout}"/>
+        <property name="pingTimeout" value="${redisson.sentinel.pingTimeout}"/>
+        <property name="reconnectionTimeout" value="${redisson.sentinel.reconnectionTimeout}"/>
+        <property name="hostInfos" value="${redisson.sentinel.hostInfos}"/>
+        <property name="masterName" value="${redisson.sentinel.masterName}"/>
+    </bean>
+    <bean id="instancePool" class="com.application.base.cache.redisson.redisson.pool.RedissonInstancePool">
+        <property name="config" ref="sentinelConfig"/>
+        <property name="poolConfig" ref="commonConfig"/>
+        <constructor-arg name="config" ref="sentinelConfig"/>
+        <constructor-arg name="poolConfig" ref="commonConfig"/>
+    </bean>
+    <bean id="redissonFactory" class="com.application.base.cache.redisson.redisson.factory.RedissonInstanceSessionFactory">
+        <property name="instancePool" ref="instancePool"/>
+    </bean>
+    <bean id="redissonDistLock" class="com.application.base.cache.redisson.redisson.lock.JDelegateDistributedLock">
+        <property name="lockFactory" ref="redissonFactory"/>
+    </bean>
+    
+    
+    
+    <!-- 主从部署应用 -->
+    <bean id="masterSlavelConfig" class="com.application.base.cache.redisson.redisson.pool.config.MasterSlaveConfig">
+        <property name="masterConnectionPoolSize" value="${redisson.masterslave.masterConnectionPoolSize}"/>
+        <property name="slaveConnectionPoolSize" value="${redisson.masterslave.slaveConnectionPoolSize}"/>
+        <property name="idleConnectionTimeout" value="${redisson.masterslave.idleConnectionTimeout}"/>
+        <property name="connectTimeout" value="${redisson.masterslave.connectTimeout}"/>
+        <property name="timeout" value="${redisson.masterslave.timeout}"/>
+        <property name="pingTimeout" value="${redisson.masterslave.pingTimeout}"/>
+        <property name="reconnectionTimeout" value="${redisson.masterslave.reconnectionTimeout}"/>
+        <property name="hostInfos" value="${redisson.masterslave.hostInfos}"/>
+        <property name="masterAddr" value="${redisson.masterslave.masterAddr}"/>
+    </bean>
+    <bean id="instancePool" class="com.application.base.cache.redisson.redisson.pool.RedissonInstancePool">
+        <property name="config" ref="masterSlavelConfig"/>
+        <property name="poolConfig" ref="commonConfig"/>
+        <constructor-arg name="config" ref="masterSlavelConfig"/>
+        <constructor-arg name="poolConfig" ref="commonConfig"/>
+    </bean>
+    <bean id="redissonFactory" class="com.application.base.cache.redisson.redisson.factory.RedissonInstanceSessionFactory">
+        <property name="instancePool" ref="instancePool"/>
+    </bean>
+    <bean id="redissonDistLock" class="com.application.base.cache.redisson.redisson.lock.JDelegateDistributedLock">
+        <property name="lockFactory" ref="redissonFactory"/>
+    </bean>
+
+
+
+    <!-- 集群部署应用 -->
+    <bean id="clusterConfig" class="com.application.base.cache.redisson.redisson.pool.config.ClusterConfig">
+        <property name="masterConnectionPoolSize" value="${redisson.cluster.masterConnectionPoolSize}"/>
+        <property name="slaveConnectionPoolSize" value="${redisson.cluster.slaveConnectionPoolSize}"/>
+        <property name="idleConnectionTimeout" value="${redisson.cluster.idleConnectionTimeout}"/>
+        <property name="connectTimeout" value="${redisson.cluster.connectTimeout}"/>
+        <property name="timeout" value="${redisson.cluster.timeout}"/>
+        <property name="pingTimeout" value="${redisson.cluster.pingTimeout}"/>
+        <property name="reconnectionTimeout" value="${redisson.cluster.reconnectionTimeout}"/>
+        <property name="hostInfos" value="${redisson.cluster.hostInfos}"/>
+    </bean>
+    <bean id="instancePool" class="com.application.base.cache.redisson.redisson.pool.RedissonInstancePool">
+        <property name="config" ref="clusterConfig"/>
+        <property name="poolConfig" ref="commonConfig"/>
+        <constructor-arg name="config" ref="clusterConfig"/>
+        <constructor-arg name="poolConfig" ref="commonConfig"/>
+    </bean>
+    <bean id="redissonFactory" class="com.application.base.cache.redisson.redisson.factory.RedissonInstanceSessionFactory">
+        <property name="instancePool" ref="instancePool"/>
+    </bean>
+    <bean id="redissonDistLock" class="com.application.base.cache.redisson.redisson.lock.JDelegateDistributedLock">
+        <property name="lockFactory" ref="redissonFactory"/>
+    </bean>
+    
+    
+    
+    <!-- 云托部署应用 -->
+    <bean id="cloudConfig" class="com.application.base.cache.redisson.redisson.pool.config.CloudConfig">
+        <property name="masterConnectionPoolSize" value="${redisson.cloud.masterConnectionPoolSize}"/>
+        <property name="slaveConnectionPoolSize" value="${redisson.cloud.slaveConnectionPoolSize}"/>
+        <property name="idleConnectionTimeout" value="${redisson.cloud.idleConnectionTimeout}"/>
+        <property name="connectTimeout" value="${redisson.cloud.connectTimeout}"/>
+        <property name="timeout" value="${redisson.cloud.timeout}"/>
+        <property name="pingTimeout" value="${redisson.cloud.pingTimeout}"/>
+        <property name="reconnectionTimeout" value="${redisson.cloud.reconnectionTimeout}"/>
+        <property name="hostInfos" value="${redisson.cloud.hostInfos}"/>
+    </bean>
+    <bean id="instancePool" class="com.application.base.cache.redisson.redisson.pool.RedissonInstancePool">
+        <property name="config" ref="cloudConfig"/>
+        <property name="poolConfig" ref="commonConfig"/>
+        <constructor-arg name="config" ref="cloudConfig"/>
+        <constructor-arg name="poolConfig" ref="commonConfig"/>
+    </bean>
+    <bean id="redissonFactory" class="com.application.base.cache.redisson.redisson.factory.RedissonInstanceSessionFactory">
+        <property name="instancePool" ref="instancePool"/>
+    </bean>
+    <bean id="redissonDistLock" class="com.application.base.cache.redisson.redisson.lock.JDelegateDistributedLock">
+        <property name="lockFactory" ref="redissonFactory"/>
+    </bean>
+
+
+</beans>
+
