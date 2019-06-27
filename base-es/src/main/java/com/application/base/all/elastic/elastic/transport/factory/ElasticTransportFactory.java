@@ -2,6 +2,7 @@ package com.application.base.all.elastic.elastic.transport.factory;
 
 import com.application.base.all.elastic.elastic.transport.config.EsTransportNodeConfig;
 import com.application.base.all.elastic.exception.ElasticException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.PooledObjectFactory;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
@@ -40,22 +41,48 @@ public class ElasticTransportFactory implements PooledObjectFactory<TransportCli
 	 */
 	private String clusterName;
 	
+	/**
+	 * 登录连接串
+	 */
+	private String loginAuth;
+	
 	
 	public ElasticTransportFactory(String clusterName, Set<EsTransportNodeConfig> clusterNodes) {
 		this.clusterName = clusterName;
 		this.nodesReference.set(clusterNodes);
 	}
 	
+	public ElasticTransportFactory(String clusterName, Set<EsTransportNodeConfig> clusterNodes,String loginAuth) {
+		this.clusterName = clusterName;
+		this.nodesReference.set(clusterNodes);
+		this.loginAuth = loginAuth;
+	}
+	
 	@Override
 	public PooledObject<TransportClient> makeObject() throws Exception {
-		Settings settings = Settings.builder()
-				// 集群名
-				.put("cluster.name", clusterName)
-				// 自动把集群下的机器添加到列表中:true.是;false.否
-				//.put("client.transport.sniff", isAppend)
-				// 忽略集群名字验证, 打开后集群名字不对也能连接上
-				//.put("client.transport.ignore_cluster_name", true)
-				.build();
+		Settings settings = null;
+		//开启 x-pack 安全校验.
+		if (StringUtils.isNotBlank(loginAuth)) {
+			settings = Settings.builder()
+					// 集群名
+					.put("cluster.name", clusterName)
+					.put("xpack.security.user",loginAuth)
+					// 自动把集群下的机器添加到列表中:true.是;false.否
+					//.put("client.transport.sniff", isAppend)
+					// 忽略集群名字验证, 打开后集群名字不对也能连接上
+					//.put("client.transport.ignore_cluster_name", true)
+					.build();
+		}else{
+			settings = Settings.builder()
+			// 集群名
+			.put("cluster.name", clusterName)
+			// 自动把集群下的机器添加到列表中:true.是;false.否
+			//.put("client.transport.sniff", isAppend)
+			// 忽略集群名字验证, 打开后集群名字不对也能连接上
+			//.put("client.transport.ignore_cluster_name", true)
+			.build();
+		}
+		
 		TransportClient settingClient = new PreBuiltTransportClient(settings);
 		try {
 			for (EsTransportNodeConfig each : nodesReference.get()) {
@@ -110,5 +137,13 @@ public class ElasticTransportFactory implements PooledObjectFactory<TransportCli
 	
 	public void setClusterName(String clusterName) {
 		this.clusterName = clusterName;
+	}
+	
+	public String getLoginAuth() {
+		return loginAuth;
+	}
+	
+	public void setLoginAuth(String loginAuth) {
+		this.loginAuth = loginAuth;
 	}
 }

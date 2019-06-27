@@ -22,10 +22,25 @@ public class ElasticTransportPool extends TransportPool<TransportClient> {
 	 */
 	private Set<EsTransportNodeConfig> clusterNodes;
 	
+	/**
+	 * 登录连接串
+	 */
+	private String loginAuth;
+	
+	public ElasticTransportPool(){
+	}
+	
 	public ElasticTransportPool(EsTransportPoolConfig transportPoolConfig){
 		super(transportPoolConfig, new ElasticTransportFactory(transportPoolConfig.getClusterName(), transportPoolConfig.getEsNodes()));
 		this.clusterName=transportPoolConfig.getClusterName();
 		this.clusterNodes=transportPoolConfig.getEsNodes();
+	}
+	
+	public ElasticTransportPool(EsTransportPoolConfig transportPoolConfig,String loginAuth){
+		super(transportPoolConfig, new ElasticTransportFactory(transportPoolConfig.getClusterName(), transportPoolConfig.getEsNodes(),loginAuth));
+		this.clusterName=transportPoolConfig.getClusterName();
+		this.clusterNodes=transportPoolConfig.getEsNodes();
+		this.loginAuth=loginAuth;
 	}
 	
 	public String getClusterName() {
@@ -44,4 +59,11 @@ public class ElasticTransportPool extends TransportPool<TransportClient> {
 		this.clusterNodes = clusterNodes;
 	}
 	
+	public String getLoginAuth() {
+		return loginAuth;
+	}
+	
+	public void setLoginAuth(String loginAuth) {
+		this.loginAuth = loginAuth;
+	}
 }
