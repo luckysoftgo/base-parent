@@ -10,6 +10,7 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
+import org.elasticsearch.xpack.client.PreBuiltXPackTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,18 +62,21 @@ public class ElasticTransportFactory implements PooledObjectFactory<TransportCli
 	@Override
 	public PooledObject<TransportClient> makeObject() throws Exception {
 		Settings settings = null;
+		TransportClient settingClient = null;
 		//开启 x-pack 安全校验.
 		if (StringUtils.isNotBlank(loginAuth)) {
 			settings = Settings.builder()
 					// 集群名
 					.put("cluster.name", clusterName)
 					.put("xpack.security.user",loginAuth)
-					.put("xpack.security.transport.ssl.enabled", false)
+					//SSL 校验.
+					//.put("xpack.security.transport.ssl.enabled", false)
 					// 自动把集群下的机器添加到列表中:true.是;false.否
 					.put("client.transport.sniff", true)
 					// 忽略集群名字验证, 打开后集群名字不对也能连接上
-					//.put("client.transport.ignore_cluster_name", true)
+					.put("client.transport.ignore_cluster_name", true)
 					.build();
+			settingClient = new PreBuiltXPackTransportClient(settings);
 		}else{
 			settings = Settings.builder()
 			// 集群名
@@ -80,11 +84,10 @@ public class ElasticTransportFactory implements PooledObjectFactory<TransportCli
 			// 自动把集群下的机器添加到列表中:true.是;false.否
 			//.put("client.transport.sniff", isAppend)
 			// 忽略集群名字验证, 打开后集群名字不对也能连接上
-			//.put("client.transport.ignore_cluster_name", true)
+			.put("client.transport.ignore_cluster_name", true)
 			.build();
+			settingClient = new PreBuiltTransportClient(settings);
 		}
-		
-		TransportClient settingClient = new PreBuiltTransportClient(settings);
 		try {
 			for (EsTransportNodeConfig each : nodesReference.get()) {
 				try {
