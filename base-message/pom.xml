@@ -15,7 +15,7 @@
 		<base-utils.version>1.0.0-RELEASE</base-utils.version>
         <!-- 下载需要的 jar  -->
         <xbean-spring.version>4.5</xbean-spring.version>
-		<activemq.version>5.10.0</activemq.version>
+		<activemq.version>5.15.9</activemq.version>
 		<activemq-core.version>5.7.0</activemq-core.version>
 		<!-- spring rabbitmq 消息 -->
 		<amqp-client.version>3.6.5</amqp-client.version>

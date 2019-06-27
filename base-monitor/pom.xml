@@ -17,7 +17,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<dubbo.version>2.6.2</dubbo.version>
-		<zookeeper.version>3.4.6</zookeeper.version>
+		<zookeeper.version>3.5.5</zookeeper.version>
 		<zkclient.version>0.1</zkclient.version>
 		<curator.version>4.0.0</curator.version>
 		<servlet.version>2.5</servlet.version>
