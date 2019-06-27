@@ -73,7 +73,7 @@ public class ActiveMqJmsCommonUtil {
 	}
 	
 	/**
-	 * 初始化消息工厂
+	 * 初始化消息工厂失败
 	 */
 	public ConnectionFactory getConnectionFactory() {
 		ConnectionFactory nconnectionFactory = null;
