@@ -94,7 +94,7 @@
 		<dependency>
 			<groupId>org.elasticsearch.client</groupId>
 			<artifactId>x-pack-transport</artifactId>
-			<version>${x-pack.version}</version>
+			<version>${elasticsearch.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.elasticsearch</groupId>
@@ -165,6 +165,17 @@
 		<repository>
 			<id>aliyun-repos</id>
 			<url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<!-- x-pack依赖包 -->
+		<repository>
+			<id>elasticsearch-releases</id>
+			<url>https://artifacts.elastic.co/maven</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
