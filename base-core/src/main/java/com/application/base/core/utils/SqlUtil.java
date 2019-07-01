@@ -38,8 +38,7 @@ public class SqlUtil {
 		StringBuilder builder = new StringBuilder();
 		if (value instanceof String) {
 			builder.delete(0, builder.length());
-			builder.append(CoreConstants.Separator.SINGLE_QUOTES).append(String.valueOf(value))
-					.append(CoreConstants.Separator.SINGLE_QUOTES);
+			builder.append(CoreConstants.Separator.SINGLE_QUOTES).append(String.valueOf(value)).append(CoreConstants.Separator.SINGLE_QUOTES);
 			return builder.toString();
 		} else if (value instanceof Date) {
 			builder.delete(0, builder.length());
@@ -47,8 +46,7 @@ public class SqlUtil {
 			if (StringUtils.isEmpty(dateStr)) {
 				throw new IllegalArgumentException("Date value can't be null or date value can't be formated!");
 			}
-			builder.append(CoreConstants.Separator.BLANK).append(CoreConstants.Separator.SINGLE_QUOTES).append(dateStr)
-					.append(CoreConstants.Separator.SINGLE_QUOTES).append(CoreConstants.Separator.BLANK);
+			builder.append(CoreConstants.Separator.BLANK).append(CoreConstants.Separator.SINGLE_QUOTES).append(dateStr).append(CoreConstants.Separator.SINGLE_QUOTES).append(CoreConstants.Separator.BLANK);
 			return builder.toString();
 		} else if (value instanceof Number) {
 			builder.delete(0, builder.length());
@@ -169,7 +167,7 @@ public class SqlUtil {
     public static  String getSql(SqlSession sqlSession, String sqlId, Map<String, Object> map) {
         Configuration configuration = sqlSession.getConfiguration();
         String sql = MyBatisSqlUtils.getSql(configuration, configuration.getMappedStatement(sqlId).getBoundSql(map));
-        logger.debug("printlnSQL 【{}】", sql);
+        logger.debug("printlnSQL [{}]", sql);
         return sql;
     }
 
