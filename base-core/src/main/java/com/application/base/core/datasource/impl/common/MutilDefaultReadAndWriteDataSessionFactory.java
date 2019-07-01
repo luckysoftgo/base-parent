@@ -1,12 +1,15 @@
 package com.application.base.core.datasource.impl.common;
 
 
-import com.application.base.utils.common.BaseStringUtil;
-import org.springframework.util.StringUtils;
-
+import com.application.base.all.elastic.factory.ElasticSessionFactory;
 import com.application.base.core.datasource.api.ReadAndWriteDataSessionFactory;
 import com.application.base.core.datasource.api.SqlSessionFactorySupport;
+import com.application.base.core.datasource.cons.DefaultConst;
 import com.application.base.core.datasource.session.DataSession;
+import com.application.base.utils.common.BaseStringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 /**
  * @desc 读写dataSessionFactory实现
@@ -15,10 +18,12 @@ import com.application.base.core.datasource.session.DataSession;
  */
 public class MutilDefaultReadAndWriteDataSessionFactory implements ReadAndWriteDataSessionFactory {
 	
+	Logger logger = LoggerFactory.getLogger(getClass());
+	
 	/**
 	 * 数据源配置的类.
 	 */
-	private SqlSessionFactorySupport support;
+	private SqlSessionFactorySupport factorySupport;
 	
 	/**
 	 * 数据的 xml 中的标识A,B,C,D,E,F...
@@ -40,15 +45,18 @@ public class MutilDefaultReadAndWriteDataSessionFactory implements ReadAndWriteD
 	 */
 	private DataSession writeDataSession;
 	
-	String defaultSession = "sqlSessionFactoryDefault";
+	/**
+	 * elasticsearch 工厂.
+	 */
+	private ElasticSessionFactory elasticSessionFactory;
 	
 	/**
 	 * DataSession 创建.
 	 */
 	@Override
 	public DataSession getDaoByDataSourceName(String dataSourceName) {
-		System.out.println("=============================="+dataSourceName+"==============================");
-		DataSession dataSession = new DefaultDataSession(support.getSqlSessionFacotry(dataSourceName));
+		logger.info("默认的数据名称是:"+dataSourceName+"");
+		DataSession dataSession = new DefaultDataSession(factorySupport.getSqlSessionFacotry(dataSourceName));
 		return dataSession;
 	}
 	
@@ -62,9 +70,9 @@ public class MutilDefaultReadAndWriteDataSessionFactory implements ReadAndWriteD
 		}else{
 			String dataSource = getReadDataSource();
 			if (StringUtils.isEmpty(dataSource)) {
-				readDataSession = new DefaultDataSession(support.getSqlSessionFacotry(getDefaultDataSource()));
+				readDataSession = new DefaultDataSession(factorySupport.getSqlSessionFacotry(getDefaultDataSource()));
 			}else{
-				readDataSession = new DefaultDataSession(support.getSqlSessionFacotry(dataSource));
+				readDataSession = new DefaultDataSession(factorySupport.getSqlSessionFacotry(dataSource));
 			}
 			return readDataSession;
 		}
@@ -80,22 +88,22 @@ public class MutilDefaultReadAndWriteDataSessionFactory implements ReadAndWriteD
 		}else{
 			String dataSource = getWriteDataSource();
 			if (StringUtils.isEmpty(dataSource)) {
-				writeDataSession = new DefaultDataSession(support.getSqlSessionFacotry(getDefaultDataSource()));
+				writeDataSession = new DefaultDataSession(factorySupport.getSqlSessionFacotry(getDefaultDataSource()));
 			}else{
-				writeDataSession = new DefaultDataSession(support.getSqlSessionFacotry(dataSource));
+				writeDataSession = new DefaultDataSession(factorySupport.getSqlSessionFacotry(dataSource));
 			}
 			return writeDataSession;
 		}
 	}
 
-	public SqlSessionFactorySupport getSupport() {
-		return support;
+	public SqlSessionFactorySupport getFactorySupport() {
+		return factorySupport;
 	}
-
-	public void setSupport(SqlSessionFactorySupport support) {
-		this.support = support;
+	
+	public void setFactorySupport(SqlSessionFactorySupport factorySupport) {
+		this.factorySupport = factorySupport;
 	}
-
+	
 	/**
 	 * 读数据 tag.
 	 * @return
@@ -104,9 +112,9 @@ public class MutilDefaultReadAndWriteDataSessionFactory implements ReadAndWriteD
 		String factoryTag = getFactoryTag();
 		if (StringUtils.isEmpty(factoryTag)) {
 			//不指定具体的数据源
-			return defaultSession;
+			return DefaultConst.DEFAULT_SQL_SESSION_FACTORY_NAME;
 		}
-		return "sqlSessionFactory"+factoryTag+"read";
+		return DefaultConst.SQL_SESSION_FACTORY_NAME_HEAD +factoryTag+DefaultConst.SQL_SESSION_FACTORY_NAME_AFTER_READ;
 	}
 
 	/**
@@ -117,9 +125,9 @@ public class MutilDefaultReadAndWriteDataSessionFactory implements ReadAndWriteD
 		String factoryTag = getFactoryTag();
 		if (StringUtils.isEmpty(factoryTag)) {
 			//不指定具体的数据源
-			return defaultSession;
+			return DefaultConst.DEFAULT_SQL_SESSION_FACTORY_NAME;
 		}
-		return "sqlSessionFactory"+factoryTag+"write";
+		return DefaultConst.SQL_SESSION_FACTORY_NAME_HEAD +factoryTag+DefaultConst.SQL_SESSION_FACTORY_NAME_AFTER_WRITE;
 	}
 
     public String getFactoryTag() {
@@ -147,7 +155,7 @@ public class MutilDefaultReadAndWriteDataSessionFactory implements ReadAndWriteD
 	public String getDefaultDataSource() {
 		//default setting for one datasource
 		if (BaseStringUtil.isEmpty(defaultDataSource)) {
-			return defaultSession;
+			return DefaultConst.DEFAULT_SQL_SESSION_FACTORY_NAME;
 		}else{
 			return defaultDataSource;
 		}
@@ -156,5 +164,12 @@ public class MutilDefaultReadAndWriteDataSessionFactory implements ReadAndWriteD
 	public void setDefaultDataSource(String defaultDataSource) {
 		this.defaultDataSource = defaultDataSource;
 	}
-
+	
+	public ElasticSessionFactory getElasticSessionFactory() {
+		return elasticSessionFactory;
+	}
+	
+	public void setElasticSessionFactory(ElasticSessionFactory elasticSessionFactory) {
+		this.elasticSessionFactory = elasticSessionFactory;
+	}
 }

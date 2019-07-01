@@ -1,5 +1,6 @@
 package com.application.base.core.datasource.impl.common;
 
+import com.application.base.all.elastic.factory.ElasticSessionFactory;
 import com.application.base.core.datasource.api.ReadAndWriteDataSessionFactory;
 import com.application.base.core.datasource.api.SqlSessionFactorySupport;
 import com.application.base.core.datasource.session.DataSession;
@@ -15,7 +16,7 @@ public class SingleDefaultReadAndWriteDataSessionFactory implements ReadAndWrite
 	/**
 	 * 数据源配置的类.
 	 */
-	private SqlSessionFactorySupport support;
+	private SqlSessionFactorySupport factorySupport;
 	
 	/**
 	 * 默认的数据源设置.
@@ -41,11 +42,15 @@ public class SingleDefaultReadAndWriteDataSessionFactory implements ReadAndWrite
 	 * 写的数据源
 	 */
 	private DataSession writeDataSession;
-
+	
+	/**
+	 * elasticsearch 工厂.
+	 */
+	private ElasticSessionFactory elasticSessionFactory;
 	
 	@Override
 	public DataSession getDaoByDataSourceName(String dataSourceName) {
-		DataSession dataSession = new DefaultDataSession(support.getSqlSessionFacotry(dataSourceName));
+		DataSession dataSession = new DefaultDataSession(factorySupport.getSqlSessionFacotry(dataSourceName));
 		return dataSession;
 	}
 
@@ -55,10 +60,10 @@ public class SingleDefaultReadAndWriteDataSessionFactory implements ReadAndWrite
 		if (readDataSession != null) {
 			return readDataSession;
 		}
-		if (BaseStringUtil.isEmpty(readDataSource) && !BaseStringUtil.isEmpty(defaultDataSource)) {
+		if (BaseStringUtil.isEmpty(readDataSource) && BaseStringUtil.isNotEmpty(defaultDataSource)) {
 			readDataSource = defaultDataSource;
 		}
-		readDataSession = new DefaultDataSession(support.getSqlSessionFacotry(readDataSource));
+		readDataSession = new DefaultDataSession(factorySupport.getSqlSessionFacotry(readDataSource));
 		return readDataSession;
 	}
 	
@@ -68,21 +73,21 @@ public class SingleDefaultReadAndWriteDataSessionFactory implements ReadAndWrite
 		if (writeDataSession != null) {
 			return writeDataSession;
 		}
-		if (BaseStringUtil.isEmpty(writeDataSource) && !BaseStringUtil.isEmpty(defaultDataSource)) {
+		if (BaseStringUtil.isEmpty(writeDataSource) && BaseStringUtil.isNotEmpty(defaultDataSource)) {
 			writeDataSource = defaultDataSource;
 		}
-		writeDataSession = new DefaultDataSession(support.getSqlSessionFacotry(writeDataSource));
+		writeDataSession = new DefaultDataSession(factorySupport.getSqlSessionFacotry(writeDataSource));
 		return writeDataSession;
 	}
-
-	public SqlSessionFactorySupport getSupport() {
-		return support;
+	
+	public SqlSessionFactorySupport getFactorySupport() {
+		return factorySupport;
 	}
-
-	public void setSupport(SqlSessionFactorySupport support) {
-		this.support = support;
+	
+	public void setFactorySupport(SqlSessionFactorySupport factorySupport) {
+		this.factorySupport = factorySupport;
 	}
-
+	
 	public String getDefaultDataSource() {
 		return defaultDataSource;
 	}
@@ -106,5 +111,12 @@ public class SingleDefaultReadAndWriteDataSessionFactory implements ReadAndWrite
 	public void setWriteDataSource(String writeDataSource) {
 		this.writeDataSource = writeDataSource;
 	}
-
+	
+	public ElasticSessionFactory getElasticSessionFactory() {
+		return elasticSessionFactory;
+	}
+	
+	public void setElasticSessionFactory(ElasticSessionFactory elasticSessionFactory) {
+		this.elasticSessionFactory = elasticSessionFactory;
+	}
 }

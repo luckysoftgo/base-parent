@@ -1,12 +1,11 @@
 package com.application.base.core.datasource.impl.cache;
 
+import com.application.base.cache.redis.factory.RedisSessionFactory;
+import com.application.base.core.datasource.api.CacheReadAndWriteDataSessionFactory;
 import com.application.base.core.datasource.impl.common.MutilDefaultReadAndWriteDataSessionFactory;
+import com.application.base.core.datasource.session.CacheDataSession;
 import com.application.base.utils.common.BaseStringUtil;
 import org.springframework.stereotype.Service;
-
-import com.application.base.core.datasource.api.CacheReadAndWriteDataSessionFactory;
-import com.application.base.core.datasource.session.CacheDataSession;
-import com.application.base.cache.redis.factory.RedisSessionFactory;
 
 /**
  * @desc 默认的带有缓存功能的读写分离CacheDataSession工厂,用于获取带有缓存功能的数据库访问会话。
@@ -20,7 +19,7 @@ public class MutilDefaultCacheReadAndWriteDataSessionFactory extends MutilDefaul
 	 * redis 工厂
 	 */
     private RedisSessionFactory redisSessionFactory;
-	
+    
 	/**
 	 * cache read session
 	 */
@@ -67,7 +66,7 @@ public class MutilDefaultCacheReadAndWriteDataSessionFactory extends MutilDefaul
 			}
 		}
     }
-    
+	
 	/**
 	 * 创建缓存 session.
 	 * @param tag:true
@@ -75,18 +74,17 @@ public class MutilDefaultCacheReadAndWriteDataSessionFactory extends MutilDefaul
 	 */
 	private CacheDataSession createDefaultCacheDataSession(boolean tag) {
 		if (tag) {
-			cacheReadDataSession = new DefaultCacheDataSession(getSupport().getSqlSessionFacotry(getReadDataSource()),redisSessionFactory);
+			cacheReadDataSession = new DefaultCacheDataSession(getFactorySupport().getSqlSessionFacotry(getReadDataSource()),redisSessionFactory);
         	//设置当前的缓存tag.
         	setCacheTag(getFactoryTag());
         	return cacheReadDataSession;
 		}else {
-			cacheWriteDataSession = new DefaultCacheDataSession(getSupport().getSqlSessionFacotry(getWriteDataSource()),redisSessionFactory);
+			cacheWriteDataSession = new DefaultCacheDataSession(getFactorySupport().getSqlSessionFacotry(getWriteDataSource()),redisSessionFactory);
         	//设置当前的缓存tag.
         	setCacheTag(getFactoryTag());
         	return cacheWriteDataSession;			
 		}
 	}
-	
 
     @Override
 	public RedisSessionFactory getRedisSessionFactory() {
@@ -96,8 +94,8 @@ public class MutilDefaultCacheReadAndWriteDataSessionFactory extends MutilDefaul
     public void setRedisSessionFactory(RedisSessionFactory redisSessionFactory) {
         this.redisSessionFactory = redisSessionFactory;
     }
-  	
-    /**
+	
+	/**
      * 获取读取数据库的数据源信息
      * @return
      */

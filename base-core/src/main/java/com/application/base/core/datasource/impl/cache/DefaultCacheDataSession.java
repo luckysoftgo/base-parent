@@ -1,30 +1,29 @@
 package com.application.base.core.datasource.impl.cache;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.application.base.core.datasource.param.CustomSql;
-import com.application.base.core.datasource.param.SqlCreator;
-import com.application.base.core.datasource.impl.common.DefaultDataSession;
-import com.application.base.core.exception.DataAccessException;
-import com.application.base.core.utils.SqlUtil;
 import com.application.base.cache.redis.api.RedisSession;
 import com.application.base.cache.redis.exception.RedisException;
 import com.application.base.cache.redis.factory.RedisSessionFactory;
+import com.application.base.core.datasource.impl.common.DefaultDataSession;
+import com.application.base.core.datasource.param.CustomSql;
+import com.application.base.core.datasource.param.ESQL;
+import com.application.base.core.datasource.param.Param;
+import com.application.base.core.datasource.param.SqlCreator;
+import com.application.base.core.datasource.session.CacheDataSession;
+import com.application.base.core.exception.DataAccessException;
+import com.application.base.core.utils.CacheKeyUtils;
+import com.application.base.core.utils.SqlUtil;
 import com.application.base.utils.common.BaseStringUtil;
+import com.application.base.utils.common.Constants;
+import com.application.base.utils.common.UUIDProvider;
 import com.application.base.utils.json.JsonConvertUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 
-import com.application.base.core.datasource.param.ESQL;
-import com.application.base.core.datasource.param.Param;
-import com.application.base.core.datasource.session.CacheDataSession;
-import com.application.base.core.utils.CacheKeyUtils;
-import com.application.base.utils.common.Constants;
-import com.application.base.utils.common.UUIDProvider;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @desc 默认的缓存 Session 数据源.
@@ -40,6 +39,7 @@ public class DefaultCacheDataSession extends DefaultDataSession implements Cache
      * redis 数据源设置.
      */
     private RedisSessionFactory redisSessionFactory;
+   
     /**
      * sql session设置.
      */
