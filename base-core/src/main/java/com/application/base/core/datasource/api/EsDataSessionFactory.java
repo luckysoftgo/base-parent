@@ -13,6 +13,6 @@ public interface EsDataSessionFactory {
 	 * 获取操作的实例
 	 * @return
 	 */
-	EsSession getSession();
+	EsSession getElasticSession();
 	
 }

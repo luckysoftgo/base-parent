@@ -6,9 +6,8 @@ import com.application.base.core.datasource.session.EsSession;
 
 /**
  * @NAME: ElasticSearchInstanceDataSessionFactory
- * @DESC:
+ * @DESC: 操作elastic的服务接口实现.
  * @USER: 孤狼
- * @DATE: 2019年7月1日
  **/
 public class ElasticSearchInstanceDataSessionFactory implements EsDataSessionFactory {
 	
@@ -18,7 +17,7 @@ public class ElasticSearchInstanceDataSessionFactory implements EsDataSessionFac
 	private ElasticSessionFactory sessionFactory;
 	
 	@Override
-	public EsSession getSession() {
+	public EsSession getElasticSession() {
 		DefaultEsDataSession session = new DefaultEsDataSession(sessionFactory);
 		return session;
 	}
