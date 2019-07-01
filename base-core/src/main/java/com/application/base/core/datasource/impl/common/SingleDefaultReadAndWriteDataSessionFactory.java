@@ -7,7 +7,7 @@ import com.application.base.core.datasource.session.DataSession;
 import com.application.base.utils.common.BaseStringUtil;
 
 /**
- * @desc 读写dataSessionFactory实现
+ * @desc 读写dataSessionFactory实现,同时具备操作es的能力
  * @ClassName:  DefaultReadAndWriteDataSessionFactory
  * @author 孤狼
  */

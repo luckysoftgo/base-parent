@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 /**
- * @desc 读写dataSessionFactory实现
+ * @desc 读写dataSessionFactory实现,同时具备操作es的能力
  * @ClassName: MutilDefaultReadAndWriteDataSessionFactory   
  * @author 孤狼
  */
