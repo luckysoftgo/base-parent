@@ -54,6 +54,11 @@
 			<artifactId>base-cache</artifactId>
 			<version>1.0.0-RELEASE</version>
 		</dependency>
+		<dependency>
+			<groupId>com.application.base</groupId>
+			<artifactId>base-es</artifactId>
+			<version>1.0.0-RELEASE</version>
+		</dependency>
 		<!--内部工具引用 end -->
 		
 		<!-- jackson setting start -->

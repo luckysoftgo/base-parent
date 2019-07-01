@@ -37,7 +37,7 @@ public class ParamBuilder {
 }
 
 /**
- * @author DefaultParam
+ * @author 孤狼
  */
 class DefaultParam implements Param {
 	private Map<String, Object> param;

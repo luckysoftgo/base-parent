@@ -1,14 +1,13 @@
 package com.application.base.core.apisupport.impl;
 
+import com.application.base.core.datasource.dao.BaseSystemDao;
+import com.application.base.utils.page.PageView;
+import org.mybatis.spring.support.SqlSessionDaoSupport;
+
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.application.base.core.datasource.dao.BaseSystemDao;
-import org.mybatis.spring.support.SqlSessionDaoSupport;
-
-import com.application.base.utils.page.PageView;
 
 /**
  * 集合持久层的公用的增，删，改，查类
@@ -36,17 +35,17 @@ public class BaseSystemDaoImpl<T> extends SqlSessionDaoSupport implements BaseSy
 	
 	@Override
 	public T findById(String pk){
-		return getSqlSession().selectOne(this.getClassName()+".findById",pk); 
+		return getSqlSession().selectOne(this.getClassName()+"."+OperateMethodName.FINDBYID.getName(),pk);
 	}
 	
 	@Override
 	public T findByName(String objName) {
-		return getSqlSession().selectOne(this.getClassName()+".findByName",objName); 
+		return getSqlSession().selectOne(this.getClassName()+"."+OperateMethodName.FINDBYNAME.getName(),objName);
 	}
 	
 	@Override
 	public T findByProps(T t) {
-		return getSqlSession().selectOne(this.getClassName()+".findByProps",t); 
+		return getSqlSession().selectOne(this.getClassName()+"."+OperateMethodName.FINDBYPROPS.getName(),t);
 	}
 	
 	@Override
@@ -54,29 +53,29 @@ public class BaseSystemDaoImpl<T> extends SqlSessionDaoSupport implements BaseSy
 		Map<Object, Object> map = new HashMap<Object, Object>(mapSize);
 		map.put("paging", pageView);
 		map.put("t", t);
-		return getSqlSession().selectList(this.getClassName()+".find",map);  
+		return getSqlSession().selectList(this.getClassName()+"."+OperateMethodName.FIND.getName(),map);
 	}
 	
 	@Override
 	public List<T> findAll() {
-		return getSqlSession().selectList(this.getClassName()+".findAll"); 
+		return getSqlSession().selectList(this.getClassName()+"."+OperateMethodName.FINDALL.getName());
 	}
 	
 	@Override
 	public List<T> findAllByPros(T t) {
 		Map<Object, Object> map = new HashMap<Object, Object>(mapSize);
 		map.put("t", t);
-		return getSqlSession().selectList(this.getClassName()+".findAllByPros",map); 
+		return getSqlSession().selectList(this.getClassName()+"."+OperateMethodName.FINDALLBYPROS.getName(),map);
 	}
 	
 	@Override
 	public int addOne(T t) {
-		return getSqlSession().insert(this.getClassName()+".addOne",t); 
+		return getSqlSession().insert(this.getClassName()+"."+OperateMethodName.ADDONE.getName(),t);
 	}
 	
 	@Override
 	public boolean addAll(List<T> ts) {
-		int count =  getSqlSession().insert(this.getClassName()+".addAll",ts); 
+		int count =  getSqlSession().insert(this.getClassName()+"."+OperateMethodName.ADDALL.getName(),ts);
 		if (count>0) {
 			return true;
 		}else {
@@ -86,12 +85,12 @@ public class BaseSystemDaoImpl<T> extends SqlSessionDaoSupport implements BaseSy
 	
 	@Override
 	public int updateOne(T t) {
-		return getSqlSession().update(this.getClassName()+".updateOne",t);  
+		return getSqlSession().update(this.getClassName()+"."+OperateMethodName.UPDATEONE.getName(),t);
 	}
 	
 	@Override
 	public boolean updateAll(List<T> ts) {
-		int count = getSqlSession().update(this.getClassName()+".updateAll",ts);  
+		int count = getSqlSession().update(this.getClassName()+"."+OperateMethodName.UPDATEALL.getName(),ts);
 		if (count>0) {
 			return true;
 		}else {
@@ -101,12 +100,12 @@ public class BaseSystemDaoImpl<T> extends SqlSessionDaoSupport implements BaseSy
 	
 	@Override
 	public int deleteById(String pk) {
-		return getSqlSession().delete(this.getClassName()+".deleteById",pk); 
+		return getSqlSession().delete(this.getClassName()+"."+OperateMethodName.DELETEBYID.getName(),pk);
 	}
 	
 	@Override
 	public boolean deleteAll(List<String> pks) {
-		int count = getSqlSession().delete(this.getClassName()+".deleteAll",pks); 
+		int count = getSqlSession().delete(this.getClassName()+"."+OperateMethodName.DELETEALL.getName(),pks);
 		if (count>0) {
 			return true;
 		}else {
@@ -116,12 +115,12 @@ public class BaseSystemDaoImpl<T> extends SqlSessionDaoSupport implements BaseSy
 	
 	@Override
 	public int getObjsCount() {
-		return getSqlSession().selectOne(this.getClassName()+".getObjsCount"); 
+		return getSqlSession().selectOne(this.getClassName()+"."+OperateMethodName.GETOBJSCOUNT.getName());
 	}
 	
 	@Override
 	public int getObjsByProsCount(T t) {
-		return getSqlSession().selectOne(this.getClassName()+".getObjsByProsCount",t); 
+		return getSqlSession().selectOne(this.getClassName()+"."+OperateMethodName.GETOBJSBYPROSCOUNT.getName(),t);
 	}
 
 }

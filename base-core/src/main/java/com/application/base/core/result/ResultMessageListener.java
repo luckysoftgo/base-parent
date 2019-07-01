@@ -24,7 +24,12 @@ public class ResultMessageListener extends BaseSpringContextRefreshListener {
 	public void setResultMessage(String resultMessage) {
 		this.resultMessage = resultMessage;
 	}
-
+	
+	/**
+	 * 消息 bean 处理.
+	 */
+	private static final String MESSAGEBEAN="resultMessageContext";
+	
 	/**
 	 * 向系统的结果消息容器中添加自定义配置
 	 * <p>Title: doListen</p>   
@@ -34,7 +39,7 @@ public class ResultMessageListener extends BaseSpringContextRefreshListener {
 	@Override
 	protected void doListen(ContextRefreshedEvent event) {
 		//获得集合中的对象bean
-		MessageContext result = event.getApplicationContext().getBean("resultMessageContext", MessageContext.class);
+		MessageContext result = event.getApplicationContext().getBean(MESSAGEBEAN, MessageContext.class);
 		logger.debug("[<============初始化子系统结果信息开始============>]");
 		result.addMessageResource(resultMessage);
 		logger.debug("[<============初始化子系统结果信息结束============>]");
