@@ -23,7 +23,7 @@
 		<mongo-java-driver.version>3.3.0</mongo-java-driver.version>
 		<spring-data-mongodb.version>1.9.2.RELEASE</spring-data-mongodb.version>
 		<spring-data-mongodb-cross-store.version>1.9.2.RELEASE</spring-data-mongodb-cross-store.version>
-		<spring-data-commons.version>1.13.11.RELEASE</spring-data-commons.version>
+		<spring-data-commons.version>1.13.12.RELEASE</spring-data-commons.version>
 		<spring-data-commons-core.version>1.4.1.RELEASE</spring-data-commons-core.version>
 		
 		 <!-- 下载需要的 jar  -->
