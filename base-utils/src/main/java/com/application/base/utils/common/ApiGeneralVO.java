@@ -3,11 +3,11 @@ package com.application.base.utils.common;
 import org.apache.poi.ss.formula.functions.T;
 
 /**
- * @NAME= ApiResultData
+ * @NAME= ApiGeneralVO
  * @DESC= 数据返回描述
  * @USER= 孤狼
  **/
-public final class ApiResultData {
+public final class ApiGeneralVO {
 	
 	public static void main(String[] args) {
 	
