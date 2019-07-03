@@ -1,7 +1,5 @@
 package com.application.base.utils.common;
 
-import org.apache.poi.ss.formula.functions.T;
-
 /**
  * @NAME= ApiGeneralVO
  * @DESC= 数据返回描述
@@ -331,7 +329,7 @@ public final class ApiGeneralVO {
 	/**
 	 * 请求体的描述.
 	 */
-	final class Body{
+	final class Body<T>{
 		/**
 		 * 结果返回码
 		 */
