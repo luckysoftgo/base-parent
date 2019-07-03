@@ -1,5 +1,7 @@
 package com.application.base.utils.common;
 
+import com.application.base.utils.json.JsonConvertUtils;
+
 /**
  * @NAME= ApiGeneralVO
  * @DESC= 数据返回描述
@@ -8,7 +10,18 @@ package com.application.base.utils.common;
 public final class ApiGeneralVO {
 	
 	public static void main(String[] args) {
-	
+		ApiGeneralVO vo =new ApiGeneralVO();
+		Header header = vo.new Header();
+		header.setChannel("1");
+		Body body = vo.new Body();
+		body.setCode("200");
+		body.setMsg("ok");
+		body.setData(null);
+		vo.setBody(body);
+		vo.setHeader(header);
+		String result =JsonConvertUtils.toJson(vo);
+		ApiGeneralVO apiGeneralVO = JsonConvertUtils.fromJson(result,ApiGeneralVO.class);
+		System.out.println(apiGeneralVO.getBody().getCode());
 	}
 	
 	/**
@@ -19,6 +32,14 @@ public final class ApiGeneralVO {
 	 * 请求体的描述.
 	 */
 	private Body body;
+	
+	public ApiGeneralVO() {
+	}
+	
+	public ApiGeneralVO(Header header, Body body) {
+		this.header = header;
+		this.body = body;
+	}
 	
 	public Header getHeader() {
 		return header;
