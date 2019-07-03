@@ -1,11 +1,17 @@
 package com.application.base.utils.common;
 
+import org.apache.poi.ss.formula.functions.T;
+
 /**
  * @NAME= ApiResultData
  * @DESC= 数据返回描述
  * @USER= 孤狼
  **/
 public final class ApiResultData {
+	
+	public static void main(String[] args) {
+	
+	}
 	
 	/**
 	 * 请求头中的信息.
@@ -35,7 +41,7 @@ public final class ApiResultData {
 	/**
 	 * 请求头中的信息.
 	 */
-	class Header{
+	final class Header{
 		/**
 		 * 访问语音
 		 */
@@ -325,8 +331,58 @@ public final class ApiResultData {
 	/**
 	 * 请求体的描述.
 	 */
-	class Body{
-		//Todo 请求或返回的数据.
+	final class Body{
+		/**
+		 * 结果返回码
+		 */
+		private String code;
+		
+		/**
+		 * 结果返回信息
+		 */
+		private String msg;
+		/**
+		 * 结果返回内容
+		 */
+		private T data;
+		
+		public Body() {
+		}
+		
+		public Body(String code, String msg) {
+			this.code = code;
+			this.msg = msg;
+		}
+		
+		public Body(String code, String msg, T data) {
+			this.code = code;
+			this.msg = msg;
+			this.data = data;
+		}
+		
+		public String getCode() {
+			return code;
+		}
+		
+		public void setCode(String code) {
+			this.code = code;
+		}
+		
+		public String getMsg() {
+			return msg;
+		}
+		
+		public void setMsg(String msg) {
+			this.msg = msg;
+		}
+		
+		public T getData() {
+			return data;
+		}
+		
+		public void setData(T data) {
+			this.data = data;
+		}
 	}
 	
 }
