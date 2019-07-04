@@ -21,3 +21,6 @@ base-api-demo : 是对本框架上的操作实现;
 F12(点击铅笔),编辑xxx:war exploded的相关信息 ——> Output directory(target 生成的目录) ——>
 左边(编辑Facets),设置访问的WEB目录 ——> 在Web Resource Directory目录下编辑项目的 Web目录 ——> 点击OK,保存设置 ——> 启动tomcat
 
+
+二.操作数据的工具,可以做参考!
+https://github.com/winstonelei/BigDataTools
