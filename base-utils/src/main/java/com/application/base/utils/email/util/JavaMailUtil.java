@@ -1,9 +1,8 @@
 package com.application.base.utils.email.util;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sun.misc.BASE64Encoder;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -17,14 +16,14 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import sun.misc.BASE64Encoder;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
 
 /**
- * @desc 邮件发送 测试是 OK 的.
+ * @desc 邮件发送
+ *
  * @author  孤狼
  *
  */
