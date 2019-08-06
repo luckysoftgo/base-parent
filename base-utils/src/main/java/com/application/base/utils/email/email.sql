@@ -19,7 +19,6 @@ CREATE TABLE email_info (
   bcc_to varchar(500) NOT NULL DEFAULT '' COMMENT '密送给谁(使用";"分隔)',
   bcc_nicks varchar(500) NOT NULL DEFAULT '' COMMENT '密送给昵称(使用";"分隔)',
   files_path varchar(500) NOT NULL DEFAULT '' COMMENT '抄送文件路径(使用";"分隔)',
-  files_path varchar(500) NOT NULL DEFAULT '' COMMENT '抄送文件路径',
   create_user varchar(20) DEFAULT '' COMMENT '创建者',
   create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (id)
