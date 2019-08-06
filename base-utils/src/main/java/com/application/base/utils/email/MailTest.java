@@ -26,11 +26,11 @@ public class MailTest {
 		String auth = "true";
 		String check = "true";
 		
-		String from = "370066781@qq.com";
-		String user = "370066781@qq.com";
+		String from = "376666781@qq.com";
+		String user = "376666781@qq.com";
 		String password = "zdsyhnlxrmfhcbdi";
-		String[] toList = { "supingemail@126.com" };
-		String[] ccList = { "supingemail@163.com" };
+		String[] toList = { "pingemail@126.com" };
+		String[] ccList = { "pingemail@163.com" };
 		String title = "新邮件测试";
 		String content = "这是新版的邮件测试";
 		String[] files = { "e:\\大厂面试题.txt","e:\\软件资源.txt","e:\\西部资信.txt" };
@@ -52,7 +52,7 @@ public class MailTest {
 		info.setCcList(ccList);
 		info.setCcNicks(new String[]{"163-test"});
 		
-		info.setBccList(new String[]{"1577620678@qq.com"});
+		info.setBccList(new String[]{"2577620678@qq.com"});
 		info.setBccNicks(new String[]{"678qq"});
 		
 		info.setSubject(title);
