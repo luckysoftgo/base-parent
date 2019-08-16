@@ -35,7 +35,13 @@ public class ${poName} extends BaseEntity {
 		 this.${obj.name} = ${obj.name};
 		</#list>
 	}
-	
+
+	public ${poName} (Builder builder) {
+	<#list poColumnList as obj>
+		set${obj.firstUpperName}(builder.${obj.name});
+	</#list>
+	}
+
 <#list poColumnList as obj>
 	public ${obj.type} get${obj.firstUpperName}() {
 		return ${obj.name};
@@ -44,4 +50,48 @@ public class ${poName} extends BaseEntity {
 		this.${obj.name} = ${obj.name};
 	}
 </#list>
+
+	@Override
+	public String toString(){
+		StringBuffer buffer = new StringBuffer("${poName} info:[");
+	<#list poColumnList as obj>
+		<#if obj_has_next>
+		buffer.append("${obj.name}="+${obj.name}+",");
+		</#if>
+		<#if !obj_has_next>
+		buffer.append("${obj.name}="+${obj.name});
+		</#if>
+	</#list>
+		buffer.append("]");
+		return buffer.toString();
+	}
+
+	/**
+	* 构造者模式
+	*/
+	public static final class Builder extends BaseEntity {
+
+	<#list poColumnList as obj>
+		/**${obj.remarks}*/
+		private ${obj.type} ${obj.name};
+	</#list>
+
+		/**
+		* 空构造器
+		*/
+		public Builder() {
+		}
+
+	<#list poColumnList as obj>
+		public Builder ${obj.name}(${obj.type} val) {
+			this.${obj.name} = val;
+			return this;
+		}
+	</#list>
+
+		public ${poName} build() {
+			return new ${poName}(this);
+		}
+
+	}
 }
