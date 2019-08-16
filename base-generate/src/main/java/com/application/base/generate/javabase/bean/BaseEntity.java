@@ -282,18 +282,6 @@ public class BaseEntity implements Serializable,Cloneable {
 		/** 描述 */
 		private String infoDesc;
 		
-		
-		/**学校对应的ID*/
-		private String schoolId;
-		/**学校名字*/
-		private String name;
-		/**学校地址*/
-		private String address;
-		/**联系方式*/
-		private String phone;
-		/**地区*/
-		private String area;
-		
 		/**
 		 * 空构造器
 		 */
