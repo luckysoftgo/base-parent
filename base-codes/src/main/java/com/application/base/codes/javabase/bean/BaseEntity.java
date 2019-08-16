@@ -19,6 +19,7 @@ import java.util.Map;
  */
 public class BaseEntity implements Serializable,Cloneable {
 	
+
 	/**
 	 * @Fields serialVersionUID : TODO
 	 */
@@ -127,7 +128,7 @@ public class BaseEntity implements Serializable,Cloneable {
 		this.infoDesc = infoDesc;
 	}
 	
-	public BaseEntity(Builder builder) {
+	public BaseEntity(BasicBuilder builder) {
 		setId(builder.id);
 		setUuid(builder.uuid);
 		setCreateUser(builder.createUser);
@@ -264,7 +265,7 @@ public class BaseEntity implements Serializable,Cloneable {
 	/**
 	 * 构造者模式
 	 */
-	public static final class Builder {
+	public static class BasicBuilder {
 		/** 唯一标识 */
 		private Integer id ;
 		/** 唯一标识uuid */
@@ -285,39 +286,51 @@ public class BaseEntity implements Serializable,Cloneable {
 		/**
 		 * 空构造器
 		 */
-		public Builder() {
+		public BasicBuilder() {
 		}
 		
-		public Builder id(Integer val) {
+		public BasicBuilder(Integer id, String uuid, String createUser, Date createTime, String updateUser, Date updateTime
+				, Integer disabled, String infoDesc) {
+			this.id = id;
+			this.uuid = uuid;
+			this.createUser = createUser;
+			this.createTime = createTime;
+			this.updateUser = updateUser;
+			this.updateTime = updateTime;
+			this.disabled = disabled;
+			this.infoDesc = infoDesc;
+		}
+		
+		public BasicBuilder id(Integer val) {
 			this.id = val;
 			return this;
 		}
-		public Builder uuid(String val) {
+		public BasicBuilder uuid(String val) {
 			this.uuid = val;
 			return this;
 		}
-		public Builder createUser(String val) {
+		public BasicBuilder createUser(String val) {
 			this.createUser = val;
 			return this;
 		}
-		public Builder createTime(Date val) {
+		public BasicBuilder createTime(Date val) {
 			this.createTime = val;
 			return this;
 		}
-		public Builder updateUser(String val) {
+		public BasicBuilder updateUser(String val) {
 			this.updateUser = val;
 			return this;
 		}
-		public Builder updateTime(Date val) {
+		public BasicBuilder updateTime(Date val) {
 			this.updateTime = val;
 			return this;
 		}
-		public Builder disabled(Integer val) {
+		public BasicBuilder disabled(Integer val) {
 			this.disabled = val;
 			return this;
 		}
 		
-		public Builder infoDesc(String val) {
+		public BasicBuilder infoDesc(String val) {
 			this.infoDesc = val;
 			return this;
 		}

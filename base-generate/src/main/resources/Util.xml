@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Util">
+
+	<!-- 排序条件 -->
+	<sql id="orderCriteria">
+		order by 
+		<if test="orderColumn != null and orderColumn != '' ">
+			${orderColumn}
+		</if>
+		<if test="orderColumn == null or orderColumn == '' ">
+			u.create_time
+		</if>
+		<if test="orderType != null and orderType != '' ">
+			${orderType}
+		</if>
+	</sql>
+	
+	<!-- 分页设置 -->
+	<sql id="mysqlPage">
+		<if test="pageNo != null and pageNo != '' and pageNo >0  and pageSize != null  and pageSize != '' and pageSize >0 ">
+			limit ${(pageNo - 1) * pageSize}, ${pageSize}
+		</if>
+	</sql>
+
+
+	<!-- 公共查询 -->
+	<sql id="baseSelect">
+		<if test="id != null and id !=-1  ">
+			and u.id = #{id,jdbcType=NUMERIC}
+		</if>
+		<if test="uuid != null and uuid != ''">
+			and u.uuid = #{uuid,jdbcType=VARCHAR}
+		</if>
+		<if test="uuidLike != null and uuidLike != ''">
+			and u.uuid like CONCAT('%',#{uuidLike,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="disabled != null and disabled !=-1  ">
+			and u.disabled = #{disabled,jdbcType=NUMERIC}
+		</if>
+		<if test="infoDesc != null and infoDesc != ''">
+			and u.info_desc = #{infoDesc,jdbcType=VARCHAR}
+		</if>
+		<if test="infoDescLike != null and infoDescLike != ''">
+			and u.info_desc like CONCAT('%',#{infoDescLike,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="createUser != null and createUser != ''">
+			and u.create_user = #{createUser,jdbcType=VARCHAR}
+		</if>
+		<if test="createUserLike != null and createUserLike != ''">
+			and u.create_user like CONCAT('%',#{createUserLike,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="createTime != null ">
+			and DATE_FORMAT(u.create_time,'%Y-%d-%m') = #{createTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="startCreateTime != null ">
+			and  <![CDATA[  u.create_time >= #{startCreateTime,jdbcType=TIMESTAMP} ]]>
+		</if>
+		<if test="endCreateTime != null ">
+			and  <![CDATA[  u.create_time <= #{endCreateTime,jdbcType=TIMESTAMP} ]]>
+		</if>
+		<if test="updateUser != null and updateUser != ''">
+			and u.update_user = #{updateUser,jdbcType=VARCHAR}
+		</if>
+		<if test="updateUserLike != null and updateUserLike != ''">
+			and u.update_user like CONCAT('%',#{updateUserLike,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="updateTime != null ">
+			and DATE_FORMAT(u.update_time,'%Y-%d-%m') = #{createTime,jdbcType=TIMESTAMP}
+		</if>
+		<if test="startUpdateTime != null ">
+			and  <![CDATA[  u.update_time >= #{startUpdateTime,jdbcType=TIMESTAMP} ]]>
+		</if>
+		<if test="endUpdateTime != null ">
+			and  <![CDATA[  u.update_time <= #{endUpdateTime,jdbcType=TIMESTAMP} ]]>
+		</if>
+	</sql>
+
+</mapper>

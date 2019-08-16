@@ -21,6 +21,7 @@ public class SyncProducer {
 		DefaultMQProducer producer = new DefaultMQProducer("Producer");
 		producer.setNamesrvAddr("127.0.0.1:9876");
 		
+	
 		/*
 		try {
 			producer.start();
@@ -42,6 +43,7 @@ public class SyncProducer {
 			producer.shutdown();
 		}
 		*/
+		
 		try {
 			producer.start();
 		} catch (Exception e) {
@@ -49,7 +51,7 @@ public class SyncProducer {
 		}
 		for (int i = 0; i <Integer.MAX_VALUE ; i++) {
 			try {
-				Message msg = new Message("PushTopic","push",i+"",("这是测试消息"+i).getBytes());
+				Message msg = new Message("1","2","3","4".getBytes());
 				SendResult result = producer.send(msg);
 				logger.info("id:" + result.getMsgId() + " result:" + result.getSendStatus()+",sendMsg:"+msg.toString());
 				Thread.sleep(50);

@@ -36,7 +36,8 @@ public class ${poName} extends BaseEntity {
 		</#list>
 	}
 
-	public ${poName} (Builder builder) {
+	public ${poName} (InstanceBuilder builder) {
+		super(builder);
 	<#list poColumnList as obj>
 		set${obj.firstUpperName}(builder.${obj.name});
 	</#list>
@@ -69,7 +70,7 @@ public class ${poName} extends BaseEntity {
 	/**
 	* 构造者模式
 	*/
-	public static final class Builder extends BaseEntity {
+	public static class InstanceBuilder extends BasicBuilder {
 
 	<#list poColumnList as obj>
 		/**${obj.remarks}*/
@@ -79,11 +80,11 @@ public class ${poName} extends BaseEntity {
 		/**
 		* 空构造器
 		*/
-		public Builder() {
+		public InstanceBuilder() {
 		}
 
 	<#list poColumnList as obj>
-		public Builder ${obj.name}(${obj.type} val) {
+		public InstanceBuilder ${obj.name}(${obj.type} val) {
 			this.${obj.name} = val;
 			return this;
 		}
