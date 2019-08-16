@@ -6,7 +6,12 @@ import com.application.base.utils.common.UUIDProvider;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @desc 所有类的基类
@@ -105,6 +110,32 @@ public class BaseEntity implements Serializable,Cloneable {
 	
 	public void setInfoDesc(String infoDesc) {
 		this.infoDesc = infoDesc;
+	}
+	
+	public BaseEntity() {
+	}
+	
+	public BaseEntity(Integer id, String uuid, String createUser, Date createTime, String updateUser, Date updateTime,
+	                  Integer disabled, String infoDesc) {
+		this.id = id;
+		this.uuid = uuid;
+		this.createUser = createUser;
+		this.createTime = createTime;
+		this.updateUser = updateUser;
+		this.updateTime = updateTime;
+		this.disabled = disabled;
+		this.infoDesc = infoDesc;
+	}
+	
+	public BaseEntity(Builder builder) {
+		setId(builder.id);
+		setUuid(builder.uuid);
+		setCreateUser(builder.createUser);
+		setCreateTime(builder.createTime);
+		setUpdateUser(builder.updateUser);
+		setUpdateTime(builder.updateTime);
+		setDisabled(builder.disabled);
+		setInfoDesc(builder.infoDesc);
 	}
 	
 	/**
@@ -228,6 +259,85 @@ public class BaseEntity implements Serializable,Cloneable {
 			ex.printStackTrace();
 		}
 		return resultMap;
+	}
+	
+	/**
+	 * 构造者模式
+	 */
+	public static final class Builder {
+		/** 唯一标识 */
+		private Integer id ;
+		/** 唯一标识uuid */
+		private String uuid;
+		/** 创建人 */
+		private String createUser;
+		/** 创建时间 */
+		private Date createTime;
+		/** 修改人 */
+		private String updateUser;
+		/** 修改人时间 */
+		private Date updateTime;
+		/** 是否删除：0启用;1删除 */
+		private Integer disabled;
+		/** 描述 */
+		private String infoDesc;
+		
+		
+		/**学校对应的ID*/
+		private String schoolId;
+		/**学校名字*/
+		private String name;
+		/**学校地址*/
+		private String address;
+		/**联系方式*/
+		private String phone;
+		/**地区*/
+		private String area;
+		
+		/**
+		 * 空构造器
+		 */
+		public Builder() {
+		}
+		
+		public Builder id(Integer val) {
+			this.id = val;
+			return this;
+		}
+		public Builder uuid(String val) {
+			this.uuid = val;
+			return this;
+		}
+		public Builder createUser(String val) {
+			this.createUser = val;
+			return this;
+		}
+		public Builder createTime(Date val) {
+			this.createTime = val;
+			return this;
+		}
+		public Builder updateUser(String val) {
+			this.updateUser = val;
+			return this;
+		}
+		public Builder updateTime(Date val) {
+			this.updateTime = val;
+			return this;
+		}
+		public Builder disabled(Integer val) {
+			this.disabled = val;
+			return this;
+		}
+		
+		public Builder infoDesc(String val) {
+			this.infoDesc = val;
+			return this;
+		}
+		
+		public BaseEntity build() {
+			return new BaseEntity(this);
+		}
+		
 	}
 	
 }
