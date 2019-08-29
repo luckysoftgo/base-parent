@@ -9,9 +9,7 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
-import org.elasticsearch.action.admin.indices.exists.types.TypesExistsAction;
 import org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest;
-import org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequestBuilder;
 import org.elasticsearch.action.admin.indices.exists.types.TypesExistsResponse;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
@@ -39,7 +37,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.rest.RestStatus;
-import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
@@ -47,6 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -114,11 +112,17 @@ public class ElasticTransportSession implements ElasticSession {
 	
 	@Override
 	public boolean addEsType(String index, String type) throws ElasticException {
-		TypesExistsAction action = TypesExistsAction.INSTANCE;
-		TypesExistsRequestBuilder requestBuilder  = new TypesExistsRequestBuilder(getTransportClient(), action, index);
-		requestBuilder.setTypes(type);
-		TypesExistsResponse response = requestBuilder.get();
-		return response.isExists();
+		boolean result = judgeTypeExist(index,type);
+		if (!result){
+			IndexRequest request=new IndexRequest(index,type).source(new HashMap(16));
+			IndexResponse response=getTransportClient().index(request).actionGet();
+			if (response!=null && response.status().equals(RestStatus.CREATED)) {
+				return true;
+			}else {
+				return false;
+			}
+		}
+		return false;
 	}
 	
 	@Override

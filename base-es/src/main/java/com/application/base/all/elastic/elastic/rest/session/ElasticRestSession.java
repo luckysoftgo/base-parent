@@ -6,6 +6,7 @@ import com.application.base.all.elastic.entity.ElasticData;
 import com.application.base.all.elastic.exception.ElasticException;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.ActionListener;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 import org.elasticsearch.action.bulk.BackoffPolicy;
 import org.elasticsearch.action.bulk.BulkItemResponse;
@@ -22,10 +23,13 @@ import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.support.ActiveShardCount;
 import org.elasticsearch.action.support.WriteRequest;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.indices.CreateIndexRequest;
+import org.elasticsearch.client.indices.CreateIndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
@@ -35,8 +39,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
@@ -45,7 +47,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -117,9 +119,9 @@ public class ElasticRestSession implements ElasticSession {
     @Override
     public boolean addEsIndex(String index) throws ElasticException {
         try{
-            IndexRequest request = new IndexRequest(index);
-            IndexResponse response = getLevelClient().index(request,RequestOptions.DEFAULT);
-            if (response!=null && response.status().equals(RestStatus.CREATED)){
+            CreateIndexRequest request = new CreateIndexRequest(index);
+            CreateIndexResponse response = getLevelClient().indices().create(request,RequestOptions.DEFAULT);
+            if (response!=null && response.isAcknowledged()){
                 return true;
             }else{
                 return false;
@@ -133,9 +135,9 @@ public class ElasticRestSession implements ElasticSession {
     @Override
     public boolean deleteIndex(String index) throws ElasticException {
         try{
-            DeleteRequest request = new DeleteRequest(index);
-            DeleteResponse response = getLevelClient().delete(request,RequestOptions.DEFAULT);
-            if (response!=null && response.status().equals(RestStatus.OK)){
+            DeleteIndexRequest request = new DeleteIndexRequest(index);
+            AcknowledgedResponse response = getLevelClient().indices().delete(request,RequestOptions.DEFAULT);
+            if (response!=null && response.isAcknowledged()){
                 return true;
             }else{
                 return false;
@@ -149,7 +151,7 @@ public class ElasticRestSession implements ElasticSession {
     @Override
     public boolean addEsType(String index, String type) throws ElasticException {
         try{
-            IndexRequest request =new IndexRequest(index,type);
+            IndexRequest request =new IndexRequest(index,type).source(new HashMap(16));
             IndexResponse response = getLevelClient().index(request,RequestOptions.DEFAULT);
             if (response!=null && response.status().equals(RestStatus.CREATED)){
                 return true;
