@@ -32,11 +32,11 @@ public class JavaMailInfo implements Serializable {
 	/**
 	 * 客户端登录用户名
 	 */
-	private String loginUser;
+	private String sendUser;
 	/**
 	 * 客户端登陆密码(腾讯需要生成授权码,用授权码登录)
 	 */
-	private String loginPwd;
+	private String sendPass;
 	
 	/**
 	 * 邮件发送者
@@ -82,7 +82,7 @@ public class JavaMailInfo implements Serializable {
 	/**
 	 * 抄送文件路径
 	 */
-	private String[] filePaths;
+	private String[] filesPath;
 	
 	public JavaMailInfo() {
 	}
@@ -92,8 +92,8 @@ public class JavaMailInfo implements Serializable {
 		this.mailHost = mailHost;
 		this.mailPort = mailPort;
 		this.mailProtocol = mailProtocol;
-		this.loginUser = loginUser;
-		this.loginPwd = loginPwd;
+		this.sendUser = loginUser;
+		this.sendPass = loginPwd;
 		this.sendFrom = sendFrom;
 		this.toList = toList;
 		this.subject = subject;
@@ -102,32 +102,32 @@ public class JavaMailInfo implements Serializable {
 	
 	public JavaMailInfo(String mailHost, String mailPort, String mailProtocol, String mailAuth, String mailCheck,
 	                    String loginUser, String loginPwd, String sendFrom, String[] toList, String subject,
-	                    String content, String[] filePaths) {
+	                    String content, String[] filesPath) {
 		this.mailHost = mailHost;
 		this.mailPort = mailPort;
 		this.mailProtocol = mailProtocol;
 		this.mailAuth = mailAuth;
 		this.mailCheck = mailCheck;
-		this.loginUser = loginUser;
-		this.loginPwd = loginPwd;
+		this.sendUser = loginUser;
+		this.sendPass = loginPwd;
 		this.sendFrom = sendFrom;
 		this.toList = toList;
 		this.subject = subject;
 		this.content = content;
-		this.filePaths = filePaths;
+		this.filesPath = filesPath;
 	}
 	
 	public JavaMailInfo(String mailHost, String mailPort, String mailProtocol, String mailAuth, String mailCheck,
 	                    String loginUser, String loginPwd, String sendFrom, String sendNick, String[] toList,
 	                    String[] toNicks, String[] ccList, String[] ccNicks, String[] bccList, String[] bccNicks,
-	                    String subject, String content, String[] filePaths) {
+	                    String subject, String content, String[] filesPath) {
 		this.mailHost = mailHost;
 		this.mailPort = mailPort;
 		this.mailProtocol = mailProtocol;
 		this.mailAuth = mailAuth;
 		this.mailCheck = mailCheck;
-		this.loginUser = loginUser;
-		this.loginPwd = loginPwd;
+		this.sendUser = loginUser;
+		this.sendPass = loginPwd;
 		this.sendFrom = sendFrom;
 		this.sendNick = sendNick;
 		this.toList = toList;
@@ -138,7 +138,7 @@ public class JavaMailInfo implements Serializable {
 		this.bccNicks = bccNicks;
 		this.subject = subject;
 		this.content = content;
-		this.filePaths = filePaths;
+		this.filesPath = filesPath;
 	}
 	
 	public String getMailHost() {
@@ -181,20 +181,20 @@ public class JavaMailInfo implements Serializable {
 		this.mailCheck = mailCheck;
 	}
 	
-	public String getLoginUser() {
-		return loginUser;
+	public String getSendUser() {
+		return sendUser;
 	}
 	
-	public void setLoginUser(String loginUser) {
-		this.loginUser = loginUser;
+	public void setSendUser(String sendUser) {
+		this.sendUser = sendUser;
 	}
 	
-	public String getLoginPwd() {
-		return loginPwd;
+	public String getSendPass() {
+		return sendPass;
 	}
 	
-	public void setLoginPwd(String loginPwd) {
-		this.loginPwd = loginPwd;
+	public void setSendPass(String sendPass) {
+		this.sendPass = sendPass;
 	}
 	
 	public String getSendFrom() {
@@ -277,11 +277,11 @@ public class JavaMailInfo implements Serializable {
 		this.content = content;
 	}
 	
-	public String[] getFilePaths() {
-		return filePaths;
+	public String[] getFilesPath() {
+		return filesPath;
 	}
 	
-	public void setFilePaths(String[] filePaths) {
-		this.filePaths = filePaths;
+	public void setFilesPath(String[] filesPath) {
+		this.filesPath = filesPath;
 	}
 }
