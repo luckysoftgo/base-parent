@@ -41,8 +41,8 @@ public class MailTest {
 		info.setMailProtocol(protocol);
 		info.setMailAuth(auth);
 		info.setMailCheck(check);
-		info.setLoginUser(user);
-		info.setLoginPwd(password);
+		info.setSendUser(user);
+		info.setSendPass(password);
 		info.setSendFrom(from);
 		
 		info.setSendNick("孤狼");
@@ -57,7 +57,7 @@ public class MailTest {
 		
 		info.setSubject(title);
 		info.setContent(content);
-		info.setFilePaths(files);
+		info.setFilesPath(files);
 		
 		boolean result=JavaMailSender.sendMail(info);
 		if (result){
