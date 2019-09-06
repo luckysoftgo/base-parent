@@ -45,7 +45,7 @@ public class JavaMailSender {
 	 * @param mailInfo
 	 * @return
 	 */
-	public static boolean sendMail(JavaMailInfo mailInfo) {
+	public static boolean sendMail(JavaMailInfo mailInfo,boolean auth) {
 		//content設置.
 		mailInfo.setContent(HEADER+mailInfo.getContent());
 		
@@ -59,11 +59,19 @@ public class JavaMailSender {
 			props.put("mail.smtp.auth", mailInfo.getMailAuth());
 			props.put("mail.smtp.check", mailInfo.getMailCheck());
 			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-			// 使用验证，创建一个Authenticator
-			Authenticator authenticator = new MailAuthenticator(mailInfo.getSendUser(), mailInfo.getSendPass());
-			//建立线程安全的会话
-			Session session = Session.getDefaultInstance(props,authenticator);
-			msg = new MimeMessage(session);
+			Session session = null;
+			if (auth){
+				// 使用验证，创建一个Authenticator
+				Authenticator authenticator = new MailAuthenticator(mailInfo.getSendUser(), mailInfo.getSendPass());
+				//建立线程安全的会话
+				session = Session.getDefaultInstance(props,authenticator);
+				msg = new MimeMessage(session);
+			}else{
+				//建立线程安全的会话
+				session = Session.getDefaultInstance(props,null);
+				msg = new MimeMessage(session);
+				msg.setFrom(new InternetAddress(mailInfo.getSendUser(), mailInfo.getSendPass()));
+			}
 			//处理发送者信息.
 			dealSendInfo(msg,mailInfo);
 			//处理发送给

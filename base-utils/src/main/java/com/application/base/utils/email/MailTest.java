@@ -59,7 +59,7 @@ public class MailTest {
 		info.setContent(content);
 		info.setFilesPath(files);
 		
-		boolean result=JavaMailSender.sendMail(info);
+		boolean result=JavaMailSender.sendMail(info,true);
 		if (result){
 			System.out.println("发送邮件成功!");
 		}else{
