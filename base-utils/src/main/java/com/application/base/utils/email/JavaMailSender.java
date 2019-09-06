@@ -126,6 +126,9 @@ public class JavaMailSender {
 		if (mailInfo.getFilesPath()!= null && mailInfo.getFilesPath().length>0) {
 			for (int i = 0; i < mailInfo.getFilesPath().length; i++) {
 				String filePath = mailInfo.getFilesPath()[i];
+				if (StringUtils.isBlank(filePath) || StringUtils.isEmpty(filePath)){
+					continue;
+				}
 				MimeBodyPart mailArchieve = new MimeBodyPart();
 				FileDataSource fds = new FileDataSource(filePath);
 				mailArchieve.setDataHandler(new DataHandler(fds));
