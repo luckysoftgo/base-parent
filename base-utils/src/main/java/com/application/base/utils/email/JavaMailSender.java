@@ -60,7 +60,7 @@ public class JavaMailSender {
 			props.put("mail.smtp.check", mailInfo.getMailCheck());
 			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 			// 使用验证，创建一个Authenticator
-			Authenticator authenticator = new MailAuthenticator(mailInfo.getLoginUser(), mailInfo.getLoginPwd());
+			Authenticator authenticator = new MailAuthenticator(mailInfo.getSendUser(), mailInfo.getSendPass());
 			//建立线程安全的会话
 			Session session = Session.getDefaultInstance(props,authenticator);
 			msg = new MimeMessage(session);
@@ -91,7 +91,7 @@ public class JavaMailSender {
 			// 邮件服务器进行验证
 			Transport transport = session.getTransport();
 			//建立连接.
-			transport.connect(mailInfo.getMailHost(), mailInfo.getLoginUser(), mailInfo.getLoginPwd());
+			transport.connect(mailInfo.getMailHost(), mailInfo.getSendUser(), mailInfo.getSendPass());
 			//发送信息
 			transport.sendMessage(msg, msg.getAllRecipients());
 			//关闭连接.
@@ -116,9 +116,9 @@ public class JavaMailSender {
 	 * @param mailInfo
 	 */
 	private static void dealSendFiles(Multipart multipart, JavaMailInfo mailInfo) throws Exception {
-		if (mailInfo.getFilePaths() != null) {
-			for (int i = 0; i < mailInfo.getFilePaths().length; i++) {
-				String filePath = mailInfo.getFilePaths()[i];
+		if (mailInfo.getFilesPath() != null) {
+			for (int i = 0; i < mailInfo.getFilesPath().length; i++) {
+				String filePath = mailInfo.getFilesPath()[i];
 				MimeBodyPart mailArchieve = new MimeBodyPart();
 				FileDataSource fds = new FileDataSource(filePath);
 				mailArchieve.setDataHandler(new DataHandler(fds));
