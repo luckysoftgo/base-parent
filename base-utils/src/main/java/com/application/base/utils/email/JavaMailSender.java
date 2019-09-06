@@ -70,7 +70,6 @@ public class JavaMailSender {
 				//建立线程安全的会话
 				session = Session.getDefaultInstance(props,null);
 				msg = new MimeMessage(session);
-				msg.setFrom(new InternetAddress(mailInfo.getSendUser(), mailInfo.getSendPass()));
 			}
 			//处理发送者信息.
 			dealSendInfo(msg,mailInfo);
@@ -124,7 +123,7 @@ public class JavaMailSender {
 	 * @param mailInfo
 	 */
 	private static void dealSendFiles(Multipart multipart, JavaMailInfo mailInfo) throws Exception {
-		if (mailInfo.getFilesPath() != null) {
+		if (mailInfo.getFilesPath()!= null && mailInfo.getFilesPath().length>0) {
 			for (int i = 0; i < mailInfo.getFilesPath().length; i++) {
 				String filePath = mailInfo.getFilesPath()[i];
 				MimeBodyPart mailArchieve = new MimeBodyPart();
