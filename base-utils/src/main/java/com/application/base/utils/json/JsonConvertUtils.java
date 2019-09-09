@@ -1118,4 +1118,45 @@ public class JsonConvertUtils {
 		}
 	}
 	
+	/**
+	 * 对比json是否相同,转换的是JsonObject对象比较.
+	 * @param source
+	 * @param compare
+	 * @return
+	 */
+	public static boolean compareParser(String source,String compare){
+		JsonParser sourceParser = new JsonParser();
+		JsonObject jsonSource = (JsonObject) sourceParser.parse(source);
+		JsonParser compareParser = new JsonParser();
+		JsonObject jsonTarget = (JsonObject) compareParser.parse(compare);
+		return jsonSource.equals(jsonTarget);
+	}
+	
+	/**
+	 * 对比json是否相同,转换的是JsonElement对象比较.
+	 * @param source
+	 * @param compare
+	 * @return
+	 */
+	public static boolean compareElement(String source,String compare){
+		Gson gson = new Gson();
+		JsonElement jsonSource = gson.toJsonTree(source);
+		JsonElement jsonTarget = gson.toJsonTree(compare);
+		return jsonSource.equals(jsonTarget);
+	}
+	
+	/**
+	 * 对比json是否相同,转换的是JsonArray对象比较.
+	 * @param source
+	 * @param compare
+	 * @return
+	 */
+	public static boolean compareArrayParser(String source,String compare){
+		JsonParser sourceParser = new JsonParser();
+		JsonArray jsonSource = (JsonArray) sourceParser.parse(source);
+		JsonParser compareParser = new JsonParser();
+		JsonArray jsonTarget = (JsonArray) compareParser.parse(compare);
+		return jsonSource.equals(jsonTarget);
+	}
+	
 }
