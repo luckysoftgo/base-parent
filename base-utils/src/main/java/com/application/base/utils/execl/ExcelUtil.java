@@ -48,7 +48,8 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Excel相关处理
+ * @desc: Excel相关处理
+ * 使用时候使用 @Excel 注解,注解和字段必须一一对应,详细看test中测试.
  * @author 孤狼
  */
 public class ExcelUtil<T>{
