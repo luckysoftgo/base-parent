@@ -1,13 +1,12 @@
-package com.application.base.codes.javabase.utils;
-
+package com.application.base.utils.common;
 
 /**
  * 字符串格式化
  * 
  * @author admin
  */
-public class StrFormatter
-{
+public class StrFormatter{
+    
     public static final String EMPTY_JSON = "{}";
     public static final char C_BACKSLASH = '\\';
     public static final char C_DELIM_START = '{';
@@ -28,7 +27,7 @@ public class StrFormatter
      */
     public static String format(final String strPattern, final Object... argArray)
     {
-        if (StringUtils.isEmpty(strPattern) || StringUtils.isEmpty(argArray))
+        if (BaseStringUtil.isEmpty(strPattern) || BaseStringUtil.isEmpty(argArray))
         {
             return strPattern;
         }
@@ -62,7 +61,7 @@ public class StrFormatter
                     {
                         // 转义符之前还有一个转义符，占位符依旧有效
                         sbuf.append(strPattern, handledPosition, delimIndex - 1);
-                        sbuf.append(Convert.utf8Str(argArray[argIndex]));
+                        sbuf.append(ConvertUitl.utf8Str(argArray[argIndex]));
                         handledPosition = delimIndex + 2;
                     }
                     else
@@ -78,7 +77,7 @@ public class StrFormatter
                 {
                     // 正常占位符
                     sbuf.append(strPattern, handledPosition, delimIndex);
-                    sbuf.append(Convert.utf8Str(argArray[argIndex]));
+                    sbuf.append(ConvertUitl.utf8Str(argArray[argIndex]));
                     handledPosition = delimIndex + 2;
                 }
             }

@@ -1,4 +1,4 @@
-package com.application.base.codes.javabase.utils;
+package com.application.base.utils.common;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -6,10 +6,9 @@ import java.nio.charset.StandardCharsets;
 /**
  * 字符集工具类
  * 
- * @author admin
+ * @author 孤狼
  */
-public class CharsetKit
-{
+public class CharsetKit{
     /** ISO-8859-1 */
     public static final String ISO_8859_1 = "ISO-8859-1";
     /** UTF-8 */
@@ -32,7 +31,7 @@ public class CharsetKit
      */
     public static Charset charset(String charset)
     {
-        return StringUtils.isEmpty(charset) ? Charset.defaultCharset() : Charset.forName(charset);
+        return BaseStringUtil.isEmpty(charset) ? Charset.defaultCharset() : Charset.forName(charset);
     }
 
     /**
@@ -68,7 +67,7 @@ public class CharsetKit
             srcCharset = StandardCharsets.UTF_8;
         }
 
-        if (StringUtils.isEmpty(source) || srcCharset.equals(destCharset))
+        if (BaseStringUtil.isEmpty(source) || srcCharset.equals(destCharset))
         {
             return source;
         }

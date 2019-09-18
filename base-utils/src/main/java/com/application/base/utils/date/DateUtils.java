@@ -1,15 +1,20 @@
 
 package com.application.base.utils.date;
 
+import java.lang.management.ManagementFactory;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 /**
  * @desc 日期工具类
- * @author bruce
+ * @author 孤狼
  */
-public class DateUtils {
+public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 	
 	/**
 	 * 时间格式定义
@@ -74,6 +79,11 @@ public class DateUtils {
 	 * 带毫秒数据.
 	 */
 	public static final String YEAR_MONTH_DAY_HOUR_MINUTE_SECOND_SIMPLE_S = "yyyyMMddHHmmssS";
+	
+	private static final String[] PARSE_PATTERNS = {
+			"yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM",
+			"yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd HH:mm", "yyyy/MM",
+			"yyyy.MM.dd", "yyyy.MM.dd HH:mm:ss", "yyyy.MM.dd HH:mm", "yyyy.MM"};
 	
 	/**
 	 * 时间字符串.
@@ -1017,5 +1027,116 @@ public class DateUtils {
 		String dateStr = sdf.format(date);
 		return dateStr;
 	}
-
+	
+	/**
+	 * 获取服务器启动时间
+	 */
+	public static Date getServerStartDate()
+	{
+		long time = ManagementFactory.getRuntimeMXBean().getStartTime();
+		return new Date(time);
+	}
+	
+	public static final String parseDateToStr(final String format, final Date date)
+	{
+		return new SimpleDateFormat(format).format(date);
+	}
+	
+	public static final Date dateTime(final String format, final String ts)
+	{
+		try
+		{
+			return new SimpleDateFormat(format).parse(ts);
+		}
+		catch (ParseException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
+	 * 日期型字符串转化为日期 格式
+	 */
+	public static Date parseDate(Object str)
+	{
+		if (str == null)
+		{
+			return null;
+		}
+		try
+		{
+			return parseDate(str.toString(), PARSE_PATTERNS);
+		}
+		catch (ParseException e)
+		{
+			return null;
+		}
+	}
+	
+	/**
+	 * 计算两个时间差
+	 */
+	public static String getDatePoor(Date endDate, Date nowDate)
+	{
+		long nd = 1000 * 24 * 60 * 60;
+		long nh = 1000 * 60 * 60;
+		long nm = 1000 * 60;
+		// long ns = 1000;
+		// 获得两个时间的毫秒时间差异
+		long diff = endDate.getTime() - nowDate.getTime();
+		// 计算差多少天
+		long day = diff / nd;
+		// 计算差多少小时
+		long hour = diff % nd / nh;
+		// 计算差多少分钟
+		long min = diff % nd % nh / nm;
+		// 计算差多少秒//输出结果
+		// long sec = diff % nd % nh % nm / ns;
+		return day + "天" + hour + "小时" + min + "分钟";
+	}
+	
+	/**
+	 * 对比时间.
+	 * @param source
+	 * @param target
+	 */
+	public static String compareDate(String source,String target){
+		DateFormat dateFormat=new SimpleDateFormat(YEAR_MONTH_DAY);
+		try {
+			Date d1 = dateFormat.parse(source);
+			Date d2 = dateFormat.parse(target);
+			if(d1.equals(d2)){
+				return source;
+			}else if(d1.before(d2)){
+				return target;
+			}else if(d1.after(d2)){
+				return source;
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * 对比时间.
+	 * @param before
+	 * @param after
+	 */
+	public static boolean compareAfter(String before,String after){
+		DateFormat dateFormat=new SimpleDateFormat(YEAR_MONTH_DAY);
+		try {
+			Date d1 = dateFormat.parse(before);
+			Date d2 = dateFormat.parse(after);
+			if(d1.before(d2)){
+				return true;
+			}else{
+				return false;
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 }

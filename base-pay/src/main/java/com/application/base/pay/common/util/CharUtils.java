@@ -164,7 +164,7 @@ public class CharUtils {
     }
 
     /**
-     * Convert hex string to byte[]
+     * ConvertUitl hex string to byte[]
      *
      * @param hexString
      *            the hex string
@@ -190,7 +190,7 @@ public class CharUtils {
     }
 
     /**
-     * Convert char to byte
+     * ConvertUitl char to byte
      *
      * @param c  char
      * @return byte
