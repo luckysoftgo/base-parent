@@ -49,7 +49,7 @@ import java.util.UUID;
 
 /**
  * @desc: Excel相关处理
- * 使用时候使用 @Excel 注解,注解和字段必须一一对应,详细看test中测试.
+ * 使用时候使用 @Excel 注解,注解字段和excel中的字段必须一一对应,尤其是()（）都必须一致,否则就可能会出问题,详细看test中测试.
  * @author 孤狼
  */
 public class ExcelUtil<T>{
@@ -338,27 +338,18 @@ public class ExcelUtil<T>{
             log.error("导出Excel异常{}", e.getMessage());
             throw new BusinessException("导出Excel失败，请联系网站管理员！");
         }
-        finally
-        {
-            if (wb != null)
-            {
-                try
-                {
+        finally{
+            if (wb != null){
+                try{
                     wb.close();
-                }
-                catch (IOException e1)
-                {
+                }catch (IOException e1){
                     e1.printStackTrace();
                 }
             }
-            if (out != null)
-            {
-                try
-                {
+            if (out != null){
+                try{
                     out.close();
-                }
-                catch (IOException e1)
-                {
+                }catch (IOException e1){
                     e1.printStackTrace();
                 }
             }
