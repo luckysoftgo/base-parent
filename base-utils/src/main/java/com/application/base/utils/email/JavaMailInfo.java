@@ -10,7 +10,22 @@ import java.io.Serializable;
 public class JavaMailInfo implements Serializable {
 	
 	/**
-	 * 邮箱服务器ip/域名
+	 * http://www.163qiyeyun.cn/news/80585.html
+	 * http://www.163em.cc/NewsDetail/913853.html
+	 *
+	 * 邮箱服务器ip/域名:
+	 * 免费: smtp.ym.163.com 25   pop.ym.163.com 110
+	 * 收费: smtp.qiye.163.com 25 pop.qiye.163.com 110
+	 *
+	 * 普通qq: smtp.qq.com
+	 *
+	 * 企业qq: smtp.exmail.qq.com
+	 *
+	 * 个人126: smtp.126.com
+	 *
+	 * 个人163: smtp.163.com
+	 * 企业163: smtp.ym.163.com 免费
+	 * 企业163: smtp.qiye.163.com 付费
 	 */
 	private String mailHost;
 	/**
