@@ -173,6 +173,8 @@ public class XmlSettingUtil {
 				for (Element field : fields) {
 					ColumnInfo info = new ColumnInfo();
 					info.setName(field.attributeValue("name"));
+					//自己表的定义.
+					info.setOwner(field.attributeValue("owner"));
 					info.setType(field.attributeValue("type"));
 					info.setLength(field.attributeValue("length"));
 					info.setDefaultValue(field.attributeValue("defaultValue"));
@@ -250,6 +252,7 @@ public class XmlSettingUtil {
 					for (Element field : fields) {
 						ColumnInfo info = new ColumnInfo();
 						info.setName(field.attributeValue("name"));
+						info.setOwner(field.attributeValue("owner"));
 						info.setType(field.attributeValue("type"));
 						info.setLength(field.attributeValue("length"));
 						info.setDefaultValue(field.attributeValue("defaultValue"));
@@ -296,6 +299,10 @@ public class XmlSettingUtil {
 		orgin.setSourceDesc(dest.attributeValue("name"));
 		Element url = dest.element("url");
 		orgin.setUrl(url.getText());
+		Element extendUrl = dest.element("extendUrl");
+		if (extendUrl!=null){
+			orgin.setExtendUrl(extendUrl.getText());
+		}
 		Element auth = dest.element("auth");
 		orgin.setClientId(auth.attributeValue("clientId"));
 		orgin.setClientSecret(auth.attributeValue("clientSecret"));

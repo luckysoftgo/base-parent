@@ -21,7 +21,10 @@ public class OrginInfo {
 	 * 请求地址.
 	 */
 	private String url;
-	
+	/**
+	 * 扩展的url地址.
+	 */
+	private String extendUrl;
 	/**
 	 * 请求的用户.
 	 */

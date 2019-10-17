@@ -19,6 +19,10 @@ public class ColumnInfo implements Serializable {
 	 */
 	private String name;
 	/**
+	 * 已经定义好的列名
+	 */
+	private String owner;
+	/**
 	 * 列类型
 	 */
 	private String type;

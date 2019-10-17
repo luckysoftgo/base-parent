@@ -64,20 +64,20 @@
 		<datas>
 			<!--
 			<data apiKey="branch" key="items" uniqueKey="branch" path="$.result.items[*]" dataKey="result,items" dataArray="true" tableName="tianyancha_branch" comments="天眼查企业分支结构信息" global="true" autoPk="false" columnLen="200" textField="logo," primKey="tId" primType="String" primLen="500">
-				<field name="regStatus" type="varchar" length="500" defaultValue="" comments="统一社会信用代码" required="true"/>
-				<field name="estiblishTime" type="varchar" length="500" defaultValue="" comments="注册资本" required="true"/>
-				<field name="regCapital" type="varchar" length="500" defaultValue="" comments="经营状态" required="true"/>
-				<field name="pencertileScore" type="varchar" length="500" defaultValue="" comments="开业日期" required="true"/>
-				<field name="type" type="varchar" length="500" defaultValue="" comments="经营期限自" required="true"/>
-				<field name="legalPersonName" type="varchar" length="200" defaultValue="" comments="住址" required="true"/>
-				<field name="toco" type="varchar" length="500" defaultValue="" comments="许可经营项目" required="true"/>
-				<field name="legalPersonId" type="varchar" length="500" defaultValue="" comments="经营(业务)范围" required="true"/>
-				<field name="name" type="varchar" length="500" defaultValue="" comments="注销日期" required="true"/>
-				<field name="alias" type="varchar" length="200" defaultValue="" comments="经营场所" required="true"/>
-				<field name="id" type="varchar" length="500" defaultValue="" comments="国民经济行业分类" required="true"/>
-				<field name="category" type="varchar" length="500" defaultValue="" comments="注册号" required="true"/>
-				<field name="personType" type="varchar" length="100" defaultValue="" comments="法定代表人" required="true"/>
-				<field name="base" type="varchar" length="500" defaultValue="" comments="币种" required="true"/>
+				<field name="regStatus" owner="name1" type="varchar" length="500" defaultValue="" comments="统一社会信用代码" required="true"/>
+				<field name="estiblishTime" owner="name2" type="varchar" length="500" defaultValue="" comments="注册资本" required="true"/>
+				<field name="regCapital" owner="name3" type="varchar" length="500" defaultValue="" comments="经营状态" required="true"/>
+				<field name="pencertileScore" owner="name4" type="varchar" length="500" defaultValue="" comments="开业日期" required="true"/>
+				<field name="type" owner="name5" type="varchar" length="500" defaultValue="" comments="经营期限自" required="true"/>
+				<field name="legalPersonName" owner="name6" type="varchar" length="200" defaultValue="" comments="住址" required="true"/>
+				<field name="toco" owner="name7" type="varchar" length="500" defaultValue="" comments="许可经营项目" required="true"/>
+				<field name="legalPersonId" owner="name8" type="varchar" length="500" defaultValue="" comments="经营(业务)范围" required="true"/>
+				<field name="name" owner="name9" type="varchar" length="500" defaultValue="" comments="注销日期" required="true"/>
+				<field name="alias" owner="name10" type="varchar" length="200" defaultValue="" comments="经营场所" required="true"/>
+				<field name="id" owner="name11" type="varchar" length="500" defaultValue="" comments="国民经济行业分类" required="true"/>
+				<field name="category" owner="name12" type="varchar" length="500" defaultValue="" comments="注册号" required="true"/>
+				<field name="personType" owner="name13" type="varchar" length="100" defaultValue="" comments="法定代表人" required="true"/>
+				<field name="base" owner="name14" type="varchar" length="500" defaultValue="" comments="币种" required="true"/>
 			</data>
 			
 			<data apiKey="changeinfo" key="items" uniqueKey="changeinfo" path="$.result.items[*]" dataKey="result,items" dataArray="true" tableName="tianyancha_changeinfo" comments="天眼查企业变更记录信息" global="true" autoPk="false" columnLen="200" textField="contentBefore,contentAfter" primKey="tId" primType="String" primLen="500">
@@ -98,11 +98,11 @@
 			<data apiKey="patents" key="datas" uniqueKey="patents" path="$.result.items[*]" dataKey="result,items" dataArray="true" tableName="tianyancha_patents" comments="天眼查企业主要人员信息" global="true" autoPk="false" columnLen="200" textField="abstracts" primKey="testId" primType="String" primLen="500" deleteItem="lawStatus,">
 				<items>
 					<data-item uniqueKey="lawStatus" path="$.result.items[*].lawStatus[*]" dataKey="result,items,lawStatus" dataArray="true" tableName="tianyancha_patents_item" comments="天眼查企业分支结构信息" autoPk="false" columnLen="200" textField="" primKey="tId" primType="String" primLen="500">
-						<field name="mainId" type="varchar" length="500" defaultValue="" comments="开业日期" required="true"/>
-						<field name="date" type="varchar" length="500" defaultValue="" comments="企业名称" required="true"/>
-						<field name="detail" type="varchar" length="500" defaultValue="" comments="统一社会信用代码" required="true"/>
-						<field name="an" type="varchar" length="500" defaultValue="" comments="注册资本" required="true"/>
-						<field name="status" type="varchar" length="500" defaultValue="" comments="经营状态" required="true"/>
+						<field name="mainId" owner="name1" type="varchar" length="500" defaultValue="" comments="开业日期" required="true"/>
+						<field name="date" owner="name2" type="varchar" length="500" defaultValue="" comments="企业名称" required="true"/>
+						<field name="detail" owner="name3" type="varchar" length="500" defaultValue="" comments="统一社会信用代码" required="true"/>
+						<field name="an" owner="name4" type="varchar" length="500" defaultValue="" comments="注册资本" required="true"/>
+						<field name="status" owner="name5" type="varchar" length="500" defaultValue="" comments="经营状态" required="true"/>
 					</data-item>
 				</items>
 				<field name="agent" type="varchar" length="500" defaultValue="" comments="统一社会信用代码" required="true"/>

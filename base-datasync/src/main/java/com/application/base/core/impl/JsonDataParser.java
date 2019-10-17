@@ -5,7 +5,6 @@ import com.application.base.util.sql.PkProvider;
 import com.application.base.util.xml.ColumnInfo;
 import com.application.base.util.xml.ItemInfo;
 import com.application.base.util.xml.TableInfo;
-import com.application.base.utils.json.JsonConvertUtils;
 import com.jayway.jsonpath.JsonPath;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -33,17 +32,14 @@ public class JsonDataParser extends CommonDataParser {
 	 */
 	private final String  jsonEmpty = "[]";
 	
-	public LinkedList<String> getInsertSql(String jsonContent,String companyId,TableInfo tableInfo){
+	public LinkedList<String> getInsertSql(String jsonContent, String companyId, TableInfo tableInfo){
 		return getInsertSql(jsonContent,companyId,tableInfo,null);
 	}
 	
-	public LinkedList<String> getInsertSql(String jsonContent,String companyId, TableInfo tableInfo,PkProvider provider){
+	public LinkedList<String> getInsertSql(String jsonContent, String companyId, TableInfo tableInfo, PkProvider provider){
 		if (StringUtils.isEmpty(jsonContent) || jsonContent.equals(jsonEmpty)){
 			logger.info("传入的json字符串是:{}",jsonContent);
 			return null;
-		}
-		if (logger.isDebugEnabled()){
-			logger.debug("jsonContent:{},tableInfo:{}",jsonContent, JsonConvertUtils.toJson(tableInfo));
 		}
 		LinkedList<String> sqls = new LinkedList<>();
 		List<Object> dataList = JsonPath.read(jsonContent, tableInfo.getPath());
@@ -61,9 +57,6 @@ public class JsonDataParser extends CommonDataParser {
 	 * @return
 	 */
 	public LinkedList<String> getCreateTableSql(String jsonContent,TableInfo tableInfo) {
-		if (logger.isDebugEnabled()){
-			logger.debug("jsonContent:{},tableInfo:{}",jsonContent, JsonConvertUtils.toJson(tableInfo));
-		}
 		if (tableInfo==null || StringUtils.isEmpty(jsonContent) || jsonContent.equals(jsonEmpty)){
 			logger.info("传入的json字符串是:{}",jsonContent);
 			return null;
@@ -119,7 +112,11 @@ public class JsonDataParser extends CommonDataParser {
 		}else{
 			List<ColumnInfo> columns = tableInfo.getColumns();
 			for (ColumnInfo info : columns ) {
-				buffer.append("\t"+info.getName());
+				if (StringUtils.isNotBlank(info.getOwner())){
+					buffer.append("\t"+info.getOwner());
+				}else{
+					buffer.append("\t"+info.getName());
+				}
 				if (StringUtils.isNotBlank(info.getType())){
 					buffer.append(" "+info.getType()+"("+info.getLength()+")");
 				}else{
@@ -197,6 +194,25 @@ public class JsonDataParser extends CommonDataParser {
 					if (!delColumns.contains(column)){
 						buffer.append("\t"+column).append(" varchar("+itemInfo.getColumnLen()+") default '' comment '',\n");
 					}
+				}
+			}else{
+				//有列的情况
+				List<ColumnInfo> columns = itemInfo.getColumns();
+				for (ColumnInfo info : columns ) {
+					if (StringUtils.isNotBlank(info.getOwner())){
+						buffer.append("\t"+info.getOwner());
+					}else{
+						buffer.append("\t"+info.getName());
+					}
+					if (StringUtils.isNotBlank(info.getType())){
+						buffer.append(" "+info.getType()+"("+info.getLength()+")");
+					}else{
+						buffer.append(" varchar(200) ");
+					}
+					if (info.getRequired().equalsIgnoreCase(DataConstant.FLAG_VALUE)){
+						buffer.append(" not null ");
+					}
+					buffer.append(" default '"+info.getDefaultValue()+"' comment '"+info.getComments()+"',\n");
 				}
 			}
 			buffer.append("\t"+primDesc);
@@ -379,9 +395,17 @@ public class JsonDataParser extends CommonDataParser {
 		for (int i = 0; i < columns.size(); i++) {
 			ColumnInfo info = columns.get(i);
 			if (i == columns.size() - 1) {
-				buffer.append(info.getName());
+				if (StringUtils.isNotBlank(info.getOwner())){
+					buffer.append(info.getOwner());
+				}else{
+					buffer.append(info.getName());
+				}
 			} else {
-				buffer.append(info.getName() + ",");
+				if (StringUtils.isNotBlank(info.getOwner())){
+					buffer.append(info.getOwner() + ",");
+				}else {
+					buffer.append(info.getName() + ",");
+				}
 			}
 		}
 		buffer.append(") values (");
@@ -411,7 +435,16 @@ public class JsonDataParser extends CommonDataParser {
 			}
 		}
 		if (!flag){
-			buffer.append(DataConstant.MAINID+",");
+			LinkedList<ColumnInfo> tmpColums = itemInfo.getColumns();
+			if (tmpColums!=null && tmpColums.size()>0){
+				for (ColumnInfo info :  tmpColums) {
+					if (info.getName().equalsIgnoreCase(DataConstant.MAINID) && StringUtils.isNotBlank(info.getOwner())){
+						buffer.append(info.getOwner()+",");
+					}
+				}
+			}else{
+				buffer.append(DataConstant.MAINID+",");
+			}
 		}
 		for (int i = 0; i < columns.size(); i++) {
 			ColumnInfo info = columns.get(i);
@@ -419,9 +452,17 @@ public class JsonDataParser extends CommonDataParser {
 				continue;
 			}
 			if (i == columns.size() - 1) {
-				buffer.append(info.getName());
+				if (StringUtils.isNotBlank(info.getOwner())){
+					buffer.append(info.getOwner());
+				}else{
+					buffer.append(info.getName());
+				}
 			} else {
-				buffer.append(info.getName() + ",");
+				if (StringUtils.isNotBlank(info.getOwner())){
+					buffer.append(info.getOwner()+",");
+				}else {
+					buffer.append(info.getName() + ",");
+				}
 			}
 		}
 		buffer.append(") values (");

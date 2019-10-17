@@ -4,7 +4,6 @@ import com.application.base.conts.DataConstant;
 import com.application.base.util.xml.ColumnInfo;
 import com.application.base.util.xml.ItemInfo;
 import com.application.base.util.xml.TableInfo;
-import com.application.base.utils.json.JsonConvertUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +27,6 @@ public class CommonDataParser {
 	 * @return
 	 */
 	public LinkedList<String> getCreateTablesSql(List<TableInfo> tableInfos){
-		if (logger.isDebugEnabled()){
-			logger.debug("tableInfos:{}", JsonConvertUtils.toJson(tableInfos));
-		}
 		if (tableInfos.isEmpty()){
 			return null;
 		}
@@ -48,9 +44,6 @@ public class CommonDataParser {
 	 */
 	private LinkedList<String> createTable(TableInfo tableInfo) {
 		LinkedList<String> sqls = new LinkedList<>();
-		if (logger.isDebugEnabled()){
-			logger.debug("tableInfo:{}",JsonConvertUtils.toJson(tableInfo));
-		}
 		StringBuffer buffer = new StringBuffer();
 		LinkedList<String> hearders = getTableHearderInfo(tableInfo, buffer);
 		String primDesc = hearders.get(0);
@@ -58,7 +51,12 @@ public class CommonDataParser {
 		List<ColumnInfo> columns = tableInfo.getColumns();
 		if (columns!=null && columns.size()>0){
 			for (ColumnInfo info : tableInfo.getColumns()) {
-				buffer.append("\t"+info.getName()).append(" "+info.getType()).append(" ("+info.getLength()+")");
+				if (StringUtils.isNotBlank(info.getOwner())){
+					buffer.append("\t"+info.getOwner());
+				}else {
+					buffer.append("\t"+info.getName());
+				}
+				buffer.append(" "+info.getType()).append(" ("+info.getLength()+")");
 				if (DataConstant.FLAG_VALUE.equals(info.getRequired())){
 					buffer.append(" not null ");
 				}
@@ -97,7 +95,12 @@ public class CommonDataParser {
 			List<ColumnInfo> columns = itemInfo.getColumns();
 			if (columns!=null && columns.size()>0){
 				for (ColumnInfo info : columns) {
-					buffer.append("\t"+info.getName()).append(" "+info.getType()).append(" ("+info.getLength()+")");
+					if (StringUtils.isNotBlank(info.getOwner())){
+						buffer.append("\t"+info.getOwner());
+					}else {
+						buffer.append("\t"+info.getName());
+					}
+					buffer.append(" "+info.getType()).append(" ("+info.getLength()+")");
 					if (DataConstant.FLAG_VALUE.equals(info.getRequired())){
 						buffer.append(" not null ");
 					}
@@ -217,8 +220,8 @@ public class CommonDataParser {
 		if (StringUtils.isNotBlank(mainPk)){
 			buffer.append(mainPk);
 		}
-		buffer.append("\tupdateUser varchar(20) default '' comment '更新者',\n");
-		buffer.append("\tupdateTime datetime  default current_timestamp on update current_timestamp comment '更新时间',\n");
+		//buffer.append("\tupdateUser varchar(20) default '' comment '更新者',\n");
+		//buffer.append("\tupdateTime datetime  default current_timestamp on update current_timestamp comment '更新时间',\n");
 		buffer.append("\t\n");
 		return primDesc;
 	}
