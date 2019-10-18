@@ -52,7 +52,7 @@ public class ExtendDataParser {
 		}
 		boolean result =false;
 		if (extendParser!=null){
-			extendParser.setApi(extendInfo.getApiKey());
+			extendParser.setApiKey(extendInfo.getApiKey());
 			extendParser.setTableNames(extendInfo.getTableName());
 			extendParser.setRelationId(relationId);
 			extendParser.setDataJson(data);

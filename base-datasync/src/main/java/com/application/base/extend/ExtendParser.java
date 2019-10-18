@@ -11,9 +11,9 @@ public interface ExtendParser {
 	
 	/**
 	 * 传入具体api的名称
-	 * @param api
+	 * @param apiKey
 	 */
-	public void setApi(String api);
+	public void setApiKey(String apiKey);
 	
 	/**
 	 * 设置数据的关联Id
