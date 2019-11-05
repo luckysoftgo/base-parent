@@ -166,7 +166,7 @@ public class XmlSettingUtil {
 				primLen = "0";
 			}
 			tableInfo.setPrimLen(Integer.parseInt(primLen));
-			//列信息.
+			//要变列信息.
 			LinkedList<ColumnInfo> columns = new LinkedList<>();
 			List<Element> fields = element.elements("field");
 			if (fields!=null && fields.size()>0){
@@ -183,6 +183,10 @@ public class XmlSettingUtil {
 					columns.add(info);
 				}
 				tableInfo.setColumns(columns);
+			}
+			String turnColumn = element.attributeValue("turnColumn");
+			if (StringUtils.isNotBlank(turnColumn)){
+				tableInfo.setTurnColumn(turnColumn.split(","));
 			}
 			//二级项目信息.
 			Element items = element.element("items");
@@ -245,6 +249,11 @@ public class XmlSettingUtil {
 					primLen = "0";
 				}
 				itemInfo.setPrimLen(Integer.parseInt(primLen));
+				//要变列信息.
+				String turnColumn = item.attributeValue("turnColumn");
+				if (StringUtils.isNotBlank(turnColumn)){
+					itemInfo.setTurnColumn(turnColumn.split(","));
+				}
 				//列信息.
 				LinkedList<ColumnInfo> columns = new LinkedList<>();
 				List<Element> fields = item.elements("field");

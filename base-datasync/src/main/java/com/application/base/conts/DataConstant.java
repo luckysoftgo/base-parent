@@ -73,6 +73,11 @@ public class DataConstant {
 	public static final String MYSQL = "mysql";
 	
 	/**
+	 * 前缀.
+	 */
+	public static final String TURN_PREFIX = "t";
+	
+	/**
 	 * 配置文件路径.
 	 */
 	public static final String XML_FILE_PATH = System.getProperty("user.dir") + "/base-datasync/src/main/resources/settings/";

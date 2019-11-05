@@ -52,6 +52,7 @@
 		primType : 主键类型:默认是:String,String 或 Integer
 		primLen : 主键类型长度
 		deleteItem : 建表时候需要从json串中剔除的项目.
+		turnColumn : 要加"t"的列,主要是针对返回的结果中有特殊字符:如 produce,用","分隔.
 		<items>
 			集合中有二级多个list的情况,配置信息如demo所示.基本信息和data的配置是一致的.
 			二级数据里面:主键关联id必须是:mainId
@@ -63,7 +64,7 @@
 		
 		<datas>
 			<!--
-			<data apiKey="branch" key="items" uniqueKey="branch" path="$.result.items[*]" dataKey="result,items" dataArray="true" tableName="tianyancha_branch" comments="天眼查企业分支结构信息" global="true" autoPk="false" columnLen="200" textField="logo," primKey="tId" primType="String" primLen="500">
+			<data apiKey="branch" key="items" uniqueKey="branch" path="$.result.items[*]" dataKey="result,items" dataArray="true" tableName="tianyancha_branch" comments="天眼查企业分支结构信息" global="true" autoPk="false" columnLen="200" textField="logo," primKey="tId" primType="String" primLen="500" turnColumn="">
 				<field name="regStatus" owner="name1" type="varchar" length="500" defaultValue="" comments="统一社会信用代码" required="true"/>
 				<field name="estiblishTime" owner="name2" type="varchar" length="500" defaultValue="" comments="注册资本" required="true"/>
 				<field name="regCapital" owner="name3" type="varchar" length="500" defaultValue="" comments="经营状态" required="true"/>
@@ -80,14 +81,14 @@
 				<field name="base" owner="name14" type="varchar" length="500" defaultValue="" comments="币种" required="true"/>
 			</data>
 			
-			<data apiKey="changeinfo" key="items" uniqueKey="changeinfo" path="$.result.items[*]" dataKey="result,items" dataArray="true" tableName="tianyancha_changeinfo" comments="天眼查企业变更记录信息" global="true" autoPk="false" columnLen="200" textField="contentBefore,contentAfter" primKey="tId" primType="String" primLen="500">
+			<data apiKey="changeinfo" key="items" uniqueKey="changeinfo" path="$.result.items[*]" dataKey="result,items" dataArray="true" tableName="tianyancha_changeinfo" comments="天眼查企业变更记录信息" global="true" autoPk="false" columnLen="200" textField="contentBefore,contentAfter" primKey="tId" primType="String" primLen="500" turnColumn="">
 				<field name="changeTime" type="varchar" length="500" defaultValue="" comments="注册资本" required="true"/>
 				<field name="havePsersion" type="varchar" length="500" defaultValue="" comments="经营状态" required="true"/>
 				<field name="changeItem" type="varchar" length="500" defaultValue="" comments="开业日期" required="true"/>
 				<field name="createTime" type="varchar" length="500" defaultValue="" comments="经营期限自" required="true"/>
 			</data>
 			
-			<data apiKey="equityChange" key="items" uniqueKey="equityChange" path="$.result.items[*]" dataKey="result,items" dataArray="true" tableName="tianyancha_equity_change" comments="天眼查企业股本变动信息" global="true" autoPk="false" columnLen="200" textField="" primKey="tId" primType="String" primLen="500">
+			<data apiKey="equityChange" key="items" uniqueKey="equityChange" path="$.result.items[*]" dataKey="result,items" dataArray="true" tableName="tianyancha_equity_change" comments="天眼查企业股本变动信息" global="true" autoPk="false" columnLen="200" textField="" primKey="tId" primType="String" primLen="500" turnColumn="">
 				<field name="changeDate" type="varchar" length="500" defaultValue="" comments="企业名称" required="true"/>
 				<field name="afterLimit" type="varchar" length="500" defaultValue="" comments="统一社会信用代码" required="true"/>
 				<field name="afterNoLimit" type="varchar" length="500" defaultValue="" comments="注册资本" required="true"/>
@@ -95,9 +96,9 @@
 				<field name="afterAll" type="varchar" length="500" defaultValue="" comments="开业日期" required="true"/>
 			</data>
 			
-			<data apiKey="patents" key="datas" uniqueKey="patents" path="$.result.items[*]" dataKey="result,items" dataArray="true" tableName="tianyancha_patents" comments="天眼查企业主要人员信息" global="true" autoPk="false" columnLen="200" textField="abstracts" primKey="testId" primType="String" primLen="500" deleteItem="lawStatus,">
+			<data apiKey="patents" key="datas" uniqueKey="patents" path="$.result.items[*]" dataKey="result,items" dataArray="true" tableName="tianyancha_patents" comments="天眼查企业主要人员信息" global="true" autoPk="false" columnLen="200" textField="abstracts" primKey="testId" primType="String" primLen="500" deleteItem="lawStatus," turnColumn="">
 				<items>
-					<data-item uniqueKey="lawStatus" path="$.result.items[*].lawStatus[*]" dataKey="result,items,lawStatus" dataArray="true" tableName="tianyancha_patents_item" comments="天眼查企业分支结构信息" autoPk="false" columnLen="200" textField="" primKey="tId" primType="String" primLen="500">
+					<data-item uniqueKey="lawStatus" path="$.result.items[*].lawStatus[*]" dataKey="result,items,lawStatus" dataArray="true" tableName="tianyancha_patents_item" comments="天眼查企业分支结构信息" autoPk="false" columnLen="200" textField="" primKey="tId" primType="String" primLen="500" turnColumn="">
 						<field name="mainId" owner="name1" type="varchar" length="500" defaultValue="" comments="开业日期" required="true"/>
 						<field name="date" owner="name2" type="varchar" length="500" defaultValue="" comments="企业名称" required="true"/>
 						<field name="detail" owner="name3" type="varchar" length="500" defaultValue="" comments="统一社会信用代码" required="true"/>
@@ -133,15 +134,15 @@
 			</data>
 			-->
 			
-			<data apiKey="branch" key="items" uniqueKey="branch" path="$.result.items[*]" dataKey="result,items" dataArray="true" tableName="tianyancha_branch" comments="天眼查企业分支结构信息" global="true" autoPk="false" columnLen="200" textField="logo," primKey="tId" primType="String" primLen="500">
+			<data apiKey="branch" key="items" uniqueKey="branch" path="$.result.items[*]" dataKey="result,items" dataArray="true" tableName="tianyancha_branch" comments="天眼查企业分支结构信息" global="true" autoPk="false" columnLen="200" textField="logo," primKey="tId" primType="String" primLen="500" turnColumn="">
 			</data>
-			<data apiKey="changeinfo" key="items" uniqueKey="changeinfo" path="$.result.items[*]" dataKey="result,items" dataArray="true" tableName="tianyancha_changeinfo" comments="天眼查企业变更记录信息" global="true" autoPk="false" columnLen="200" textField="contentBefore,contentAfter" primKey="tId" primType="String" primLen="500">
+			<data apiKey="changeinfo" key="items" uniqueKey="changeinfo" path="$.result.items[*]" dataKey="result,items" dataArray="true" tableName="tianyancha_changeinfo" comments="天眼查企业变更记录信息" global="true" autoPk="false" columnLen="200" textField="contentBefore,contentAfter" primKey="tId" primType="String" primLen="500" turnColumn="">
 			</data>
-			<data apiKey="equityChange" key="items" uniqueKey="equityChange" path="$.result.items[*]" dataKey="result,items" dataArray="true" tableName="tianyancha_equity_change" comments="天眼查企业股本变动信息" global="true" autoPk="false" columnLen="200" textField="" primKey="tId" primType="String" primLen="500">
+			<data apiKey="equityChange" key="items" uniqueKey="equityChange" path="$.result.items[*]" dataKey="result,items" dataArray="true" tableName="tianyancha_equity_change" comments="天眼查企业股本变动信息" global="true" autoPk="false" columnLen="200" textField="" primKey="tId" primType="String" primLen="500" turnColumn="">
 			</data>
-			<data apiKey="patents" key="datas" uniqueKey="patents" path="$.result.items[*]" dataKey="result,items" dataArray="true" tableName="tianyancha_patents" comments="天眼查企业主要人员信息" global="true" autoPk="false" columnLen="200" textField="abstracts" primKey="testId" primType="String" primLen="500" deleteItem="lawStatus,">
+			<data apiKey="patents" key="datas" uniqueKey="patents" path="$.result.items[*]" dataKey="result,items" dataArray="true" tableName="tianyancha_patents" comments="天眼查企业主要人员信息" global="true" autoPk="false" columnLen="200" textField="abstracts" primKey="testId" primType="String" primLen="500" deleteItem="lawStatus," turnColumn="">
 				<items>
-					<data-item uniqueKey="lawStatus" path="$.result.items[*].lawStatus[*]" dataKey="result,items,lawStatus" dataArray="true" tableName="" comments="天眼查企业分支结构信息" autoPk="false" columnLen="200" textField="" primKey="tId" primType="String" primLen="500">
+					<data-item uniqueKey="lawStatus" path="$.result.items[*].lawStatus[*]" dataKey="result,items,lawStatus" dataArray="true" tableName="" comments="天眼查企业分支结构信息" autoPk="false" columnLen="200" textField="" primKey="tId" primType="String" primLen="500" turnColumn="">
 					</data-item>
 				</items>
 			</data>

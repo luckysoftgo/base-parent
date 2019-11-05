@@ -73,6 +73,10 @@ public class ItemInfo extends BaseInfo {
 	 */
 	private int primLen;
 	/**
+	 * 要变列的项.
+	 */
+	private String[] turnColumn;
+	/**
 	 * 所有的列.
 	 */
 	private LinkedList<ColumnInfo> columns;

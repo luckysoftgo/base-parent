@@ -83,6 +83,11 @@ public class TableInfo extends BaseInfo{
 	 */
 	private String[] deleteItem;
 	/**
+	 * 要变列的项.
+	 */
+	private String[] turnColumn;
+	
+	/**
 	 * 所有的列.
 	 */
 	private LinkedList<ColumnInfo> columns;

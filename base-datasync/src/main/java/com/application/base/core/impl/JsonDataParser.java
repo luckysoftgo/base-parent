@@ -5,12 +5,14 @@ import com.application.base.util.sql.PkProvider;
 import com.application.base.util.xml.ColumnInfo;
 import com.application.base.util.xml.ItemInfo;
 import com.application.base.util.xml.TableInfo;
+import com.application.base.utils.json.JsonConvertUtils;
 import com.jayway.jsonpath.JsonPath;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -32,17 +34,23 @@ public class JsonDataParser extends CommonDataParser {
 	 */
 	private final String  jsonEmpty = "[]";
 	
-	public LinkedList<String> getInsertSql(String jsonContent, String companyId, TableInfo tableInfo){
+	public LinkedList<String> getInsertSql(String jsonContent,String companyId,TableInfo tableInfo){
 		return getInsertSql(jsonContent,companyId,tableInfo,null);
 	}
 	
-	public LinkedList<String> getInsertSql(String jsonContent, String companyId, TableInfo tableInfo, PkProvider provider){
+	public LinkedList<String> getInsertSql(String jsonContent,String companyId, TableInfo tableInfo,PkProvider provider){
 		if (StringUtils.isEmpty(jsonContent) || jsonContent.equals(jsonEmpty)){
 			logger.info("传入的json字符串是:{}",jsonContent);
 			return null;
 		}
+		if (logger.isDebugEnabled()){
+			logger.debug("jsonContent:{},tableInfo:{}",jsonContent, JsonConvertUtils.toJson(tableInfo));
+		}
 		LinkedList<String> sqls = new LinkedList<>();
 		List<Object> dataList = JsonPath.read(jsonContent, tableInfo.getPath());
+		if (dataList==null || dataList.size()==0){
+			return sqls;
+		}
 		for (Object object : dataList) {
 			LinkedHashMap<String,Object> dataMap = (LinkedHashMap<String, Object>) object;
 			sqls.addAll(getSql(dataMap,jsonContent,tableInfo,companyId,provider));
@@ -57,6 +65,9 @@ public class JsonDataParser extends CommonDataParser {
 	 * @return
 	 */
 	public LinkedList<String> getCreateTableSql(String jsonContent,TableInfo tableInfo) {
+		if (logger.isDebugEnabled()){
+			logger.debug("jsonContent:{},tableInfo:{}",jsonContent, JsonConvertUtils.toJson(tableInfo));
+		}
 		if (tableInfo==null || StringUtils.isEmpty(jsonContent) || jsonContent.equals(jsonEmpty)){
 			logger.info("传入的json字符串是:{}",jsonContent);
 			return null;
@@ -91,10 +102,24 @@ public class JsonDataParser extends CommonDataParser {
 					}
 				}
 			}
-			List<Object> dataList = JsonPath.read(jsonContent, tableInfo.getPath());
-			//数据的所有列.
-			//以最多列的数据为准创建表结构.
+			
+			//20191104
+			String[] turnColumn = tableInfo.getTurnColumn();
+			if (turnColumn!=null && turnColumn.length>0){
+				for (String column : turnColumn) {
+					if (StringUtils.isNotBlank(column)){
+						delColumns.add(column);
+						buffer.append("\t"+DataConstant.TURN_PREFIX+column).append(" text comment '' ,\n");
+					}
+				}
+			}
+			
+			List<Object> dataList =JsonPath.read(jsonContent, tableInfo.getPath());
+			if (dataList==null || dataList.size()==0){
+				return null;
+			}
 			LinkedHashMap<String,Object> dataMap = getDataMap(dataList);
+			
 			Set<String> keys = dataMap.keySet();
 			//天眼查接口:http://www.open.com/services/v4/open/patents 返回 applicantname 和 applicantName 同列.
 			LinkedHashSet<String> allColumns = new LinkedHashSet<>();
@@ -186,9 +211,24 @@ public class JsonDataParser extends CommonDataParser {
 						}
 					}
 				}
-				List<Object> dataList = JsonPath.read(jsonContent, itemInfo.getPath());
-				//以最多列的数据为准创建表结构.
+				
+				//20191104
+				String[] turnColumn = itemInfo.getTurnColumn();
+				if (turnColumn!=null && turnColumn.length>0){
+					for (String column : turnColumn) {
+						if (StringUtils.isNotBlank(column)){
+							delColumns.add(column);
+							buffer.append("\t"+DataConstant.TURN_PREFIX+column).append(" text comment '' ,\n");
+						}
+					}
+				}
+				
+				List<Object> dataList =JsonPath.read(jsonContent, itemInfo.getPath());
+				if (dataList==null || dataList.size()==0){
+					return null;
+				}
 				LinkedHashMap<String,Object> dataMap = getDataMap(dataList);
+				
 				Set<String> keys = dataMap.keySet();
 				for (String column:keys) {
 					if (!delColumns.contains(column)){
@@ -352,6 +392,9 @@ public class JsonDataParser extends CommonDataParser {
 		StringBuffer buffer = new StringBuffer();
 		for (ItemInfo itemInfo : itemInfos) {
 			List<Object> dataList = JsonPath.read(jsonContent, itemInfo.getPath());
+			if (dataList==null || dataList.size()==0){
+				continue;
+			}
 			for (Object object : dataList) {
 				LinkedHashMap<String,Object> dataMap = (LinkedHashMap<String, Object>) object;
 				sqls.addAll(getItemsSql(dataMap,itemInfo,companyId,pkValue,provider));
@@ -368,14 +411,28 @@ public class JsonDataParser extends CommonDataParser {
 	 */
 	private LinkedList<ColumnInfo> builderHeaderColumns(TableInfo tableInfo, StringBuffer buffer, LinkedHashMap<String, Object> dataMap) {
 		LinkedList<ColumnInfo> columns = tableInfo.getColumns();
+		String[] turnColumn = null;
 		if (columns==null || columns.size()==0){
 			columns = new LinkedList<>();
 			//列信息.
-			Set<String> keys = dataMap.keySet();
+			Set<String> keys = new HashSet<>();
+			keys.addAll(dataMap.keySet());
 			String[] deleteItem = tableInfo.getDeleteItem();
 			if (deleteItem!=null && deleteItem.length>0){
 				for (String delete : deleteItem) {
 					keys.remove(delete);
+				}
+			}
+			//20191104
+			turnColumn = tableInfo.getTurnColumn();
+			if (turnColumn!=null && turnColumn.length>0){
+				for (String turn : turnColumn) {
+					keys.remove(turn);
+				}
+			}
+			if (turnColumn!=null && turnColumn.length>0){
+				for (String turn : turnColumn) {
+					keys.add(DataConstant.TURN_PREFIX+turn);
 				}
 			}
 			//天眼查接口:http://www.open.com/services/v4/open/patents 返回 applicantname 和 applicantName 同列.
@@ -408,8 +465,26 @@ public class JsonDataParser extends CommonDataParser {
 				}
 			}
 		}
+		
+		//20191105
+		LinkedList<ColumnInfo> finalList=new LinkedList<>();
+		finalList.addAll(columns);
+		if (turnColumn!=null && turnColumn.length>0){
+			for (String turn : turnColumn) {
+				String key = DataConstant.TURN_PREFIX+turn;
+				ColumnInfo info = new ColumnInfo();
+				info.setName(key);
+				if (columns.contains(info)){
+					finalList.remove(info);
+					info = new ColumnInfo();
+					info.setName(turn);
+					finalList.addFirst(info);
+				}
+			}
+		}
+		
 		buffer.append(") values (");
-		return columns;
+		return finalList;
 	}
 	
 	/**
@@ -421,10 +496,25 @@ public class JsonDataParser extends CommonDataParser {
 	private LinkedList<ColumnInfo> builderItemColumns(ItemInfo itemInfo, StringBuffer buffer, LinkedHashMap<String, Object> dataMap) {
 		LinkedList<ColumnInfo> columns = itemInfo.getColumns();
 		boolean flag = false;
+		String[] turnColumn = null;
 		if (columns==null || columns.size()==0){
 			columns = new LinkedList<>();
 			//列信息.
-			Set<String> keys = dataMap.keySet();
+			Set<String> keys = new HashSet<>();
+			keys.addAll(dataMap.keySet());
+			//20191104
+			turnColumn = itemInfo.getTurnColumn();
+			if (turnColumn!=null && turnColumn.length>0){
+				for (String turn : turnColumn) {
+					keys.remove(turn);
+				}
+			}
+			if (turnColumn!=null && turnColumn.length>0){
+				for (String turn : turnColumn) {
+					keys.add(DataConstant.TURN_PREFIX+turn);
+				}
+			}
+			
 			for (String column:keys) {
 				ColumnInfo info = new ColumnInfo();
 				info.setName(column);
@@ -465,8 +555,26 @@ public class JsonDataParser extends CommonDataParser {
 				}
 			}
 		}
+		
+		//20191105
+		LinkedList<ColumnInfo> finalList=new LinkedList<>();
+		finalList.addAll(columns);
+		if (turnColumn!=null && turnColumn.length>0){
+			for (String turn : turnColumn) {
+				String key = DataConstant.TURN_PREFIX+turn;
+				ColumnInfo info = new ColumnInfo();
+				info.setName(key);
+				if (columns.contains(info)){
+					finalList.remove(info);
+					info = new ColumnInfo();
+					info.setName(turn);
+					finalList.addFirst(info);
+				}
+			}
+		}
+		
 		buffer.append(") values (");
-		return columns;
+		return finalList;
 	}
 	
 	/**
@@ -496,7 +604,7 @@ public class JsonDataParser extends CommonDataParser {
 	 * @param columns
 	 */
 	private void builderItemValues(LinkedHashMap<String, Object> dataMap, StringBuffer buffer,
-	                                 LinkedList<ColumnInfo> columns) {
+	                               LinkedList<ColumnInfo> columns) {
 		for (int i = 0; i < columns.size(); i++) {
 			ColumnInfo info = columns.get(i);
 			if (DataConstant.MAINID.equalsIgnoreCase(info.getName())){
