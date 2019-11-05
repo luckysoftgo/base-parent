@@ -103,6 +103,26 @@ public class ExecuateDbPrivder {
 	}
 	
 	/**
+	 * 执行入库操作.
+	 * @param destDbInfo
+	 * @param sql
+	 * @return
+	 */
+	public boolean executeSql(DestDbInfo destDbInfo,String sql) throws SQLException {
+		Connection connection = getConn(destDbInfo);
+		PreparedStatement statement = connection.prepareStatement(sql);
+		int count = statement.executeUpdate();
+		statement.close();
+		connection.close();
+		if (count > 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	
+	/**
 	 * 使用PreparedStatement查询数据
 	 * @param destDbInfo
 	 * @param sql
