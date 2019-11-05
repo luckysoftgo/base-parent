@@ -302,7 +302,7 @@ public class JsonDataParser extends CommonDataParser {
 		if (!tableInfo.getAutoPk().equalsIgnoreCase(DataConstant.FLAG_VALUE)){
 			buffer.append(tableInfo.getPrimKey()+",");
 		}
-		buffer.append("companyId,");
+		buffer.append(DataConstant.UNIQUE_ID+",");
 		LinkedList<ColumnInfo> columns = builderHeaderColumns(tableInfo, buffer,dataMap);
 		Object pkValue="";
 		if (!tableInfo.getAutoPk().equalsIgnoreCase(DataConstant.FLAG_VALUE) && provider!=null){
@@ -352,7 +352,7 @@ public class JsonDataParser extends CommonDataParser {
 		if (!itemInfo.getAutoPk().equalsIgnoreCase(DataConstant.FLAG_VALUE)){
 			buffer.append(itemInfo.getPrimKey()+",");
 		}
-		buffer.append("companyId,");
+		buffer.append(DataConstant.UNIQUE_ID+",");
 		LinkedList<ColumnInfo> columns = builderItemColumns(itemInfo,buffer,dataMap);
 		if (!itemInfo.getAutoPk().equalsIgnoreCase(DataConstant.FLAG_VALUE) && provider!=null){
 			String primType = itemInfo.getPrimType();

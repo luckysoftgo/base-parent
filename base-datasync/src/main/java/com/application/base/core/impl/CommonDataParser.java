@@ -170,7 +170,7 @@ public class CommonDataParser {
 			primDesc = "primary key (" + primaryKey + ")";
 		}
 		buffer.append("\tdisabled tinyint(1)  default 0 comment '删除标志,1删除,0正常使用',\n");
-		buffer.append("\tcompanyId varchar(50) default '' comment '工业库企业Id',\n");
+		buffer.append("\t"+DataConstant.UNIQUE_ID+" varchar(50) default '' comment '工业库企业Id',\n");
 		buffer.append("\tsaveUser varchar(20) default '' comment '创建者',\n");
 		buffer.append("\tsaveTime datetime  default now() comment '创建时间',\n");
 		//buffer.append("\tupdateUser varchar(20) default '' comment '更新者',\n");
@@ -213,7 +213,7 @@ public class CommonDataParser {
 			primDesc = "primary key (" + primaryKey + ")";
 		}
 		buffer.append("\tdisabled tinyint(1)  default 0 comment '删除标志,1删除,0正常使用',\n");
-		buffer.append("\tcompanyId varchar(50) default '' comment '工业库企业Id',\n");
+		buffer.append("\t"+DataConstant.UNIQUE_ID+" varchar(50) default '' comment '工业库企业Id',\n");
 		buffer.append("\tsaveUser varchar(20) default '' comment '创建者',\n");
 		buffer.append("\tsaveTime datetime  default now() comment '创建时间',\n");
 		//主表的主键.

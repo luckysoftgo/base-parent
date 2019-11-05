@@ -78,6 +78,11 @@ public class DataConstant {
 	public static final String TURN_PREFIX = "t";
 	
 	/**
+	 * 唯一Id.
+	 */
+	public static final String UNIQUE_ID = "unique_id";
+	
+	/**
 	 * 配置文件路径.
 	 */
 	public static final String XML_FILE_PATH = System.getProperty("user.dir") + "/base-datasync/src/main/resources/settings/";
