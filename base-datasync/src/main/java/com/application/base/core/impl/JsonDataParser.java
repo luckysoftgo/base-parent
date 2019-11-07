@@ -350,7 +350,7 @@ public class JsonDataParser extends CommonDataParser {
 		if (!itemInfo.getAutoPk().equalsIgnoreCase(DataConstant.FLAG_VALUE)){
 			buffer.append(itemInfo.getPrimKey()+",");
 		}
-		buffer.append("companyId,");
+		buffer.append(DataConstant.UNIQUE_ID+",");
 		LinkedList<ColumnInfo> columns = builderItemColumns(itemInfo,buffer,dataMap);
 		if (!itemInfo.getAutoPk().equalsIgnoreCase(DataConstant.FLAG_VALUE) && provider!=null){
 			String primType = itemInfo.getPrimType();
