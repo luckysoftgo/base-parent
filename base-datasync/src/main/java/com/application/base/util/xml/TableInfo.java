@@ -3,10 +3,11 @@ package com.application.base.util.xml;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 /**
- * @author : 孤狼
+ * @author : admin
  * @NAME: TableInfo
  * @DESC: 表属性描述
  **/
@@ -83,7 +84,7 @@ public class TableInfo extends BaseInfo{
 	 */
 	private String[] deleteItem;
 	/**
-	 * 要变列的项.
+	 * 要编列的项.
 	 */
 	private String[] turnColumn;
 	
@@ -96,5 +97,10 @@ public class TableInfo extends BaseInfo{
 	 * 所有的二级项目.
 	 */
 	private LinkedList<ItemInfo> itemInfos;
+	
+	/**
+	 * 子表和子表关联关系.
+	 */
+	private LinkedHashMap<String,ItemInfo> itemsMap;
 	
 }

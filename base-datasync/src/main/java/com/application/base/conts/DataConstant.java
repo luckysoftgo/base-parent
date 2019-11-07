@@ -85,5 +85,5 @@ public class DataConstant {
 	/**
 	 * 配置文件路径.
 	 */
-	public static final String XML_FILE_PATH = System.getProperty("user.dir") + "/base-datasync/src/main/resources/settings/";
+	public static final String XML_FILE_PATH = System.getProperty("user.dir") + "//base-datasync//src//main//resources//settings//";
 }

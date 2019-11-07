@@ -6,13 +6,18 @@ import lombok.NoArgsConstructor;
 import java.util.LinkedList;
 
 /**
- * @author : 孤狼
+ * @author : admin
  * @NAME: ItemInfo
  * @DESC: 二级结果信息.
  **/
 @Data
 @NoArgsConstructor
 public class ItemInfo extends BaseInfo {
+	
+	/**
+	 * 子表和子表的关联关系.
+	 */
+	private String name;
 	
 	/**
 	 * 用来表示这个接口对应的数据源和表信息 (唯一).
@@ -73,7 +78,7 @@ public class ItemInfo extends BaseInfo {
 	 */
 	private int primLen;
 	/**
-	 * 要变列的项.
+	 * 要编列的项.
 	 */
 	private String[] turnColumn;
 	/**

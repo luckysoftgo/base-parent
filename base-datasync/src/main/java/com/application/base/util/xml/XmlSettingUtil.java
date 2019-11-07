@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -216,10 +217,13 @@ public class XmlSettingUtil {
 		List<Element> itemList = items.elements("data-item");
 		int index=0;
 		if (itemList!=null && itemList.size()>0){
+			LinkedHashMap<String,ItemInfo> itemsMap = new LinkedHashMap<>();
 			for (Element item : itemList) {
 				ItemInfo itemInfo = new ItemInfo();
 				itemInfo.setApiKey(tableInfo.getApiKey());
 				itemInfo.setKey(tableInfo.getKey());
+				String name = item.attributeValue("name");
+				itemInfo.setName(name);
 				itemInfo.setUniqueKey(item.attributeValue("uniqueKey"));
 				itemInfo.setPath(item.attributeValue("path"));
 				String dataKey = item.attributeValue("dataKey");
@@ -271,8 +275,11 @@ public class XmlSettingUtil {
 					}
 					itemInfo.setColumns(columns);
 				}
+				itemsMap.put(name,itemInfo);
 				itemInfos.add(itemInfo);
 			}
+			//子表创建时候的关键点.
+			tableInfo.setItemsMap(itemsMap);
 		}
 		return itemInfos;
 	}

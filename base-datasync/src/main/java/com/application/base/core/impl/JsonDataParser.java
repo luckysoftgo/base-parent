@@ -53,7 +53,7 @@ public class JsonDataParser extends CommonDataParser {
 		}
 		for (Object object : dataList) {
 			LinkedHashMap<String,Object> dataMap = (LinkedHashMap<String, Object>) object;
-			sqls.addAll(getSql(dataMap,jsonContent,tableInfo,companyId,provider));
+			sqls.addAll(getSql(dataMap,tableInfo,companyId,provider));
 		}
 		return sqls;
 	}
@@ -293,7 +293,7 @@ public class JsonDataParser extends CommonDataParser {
 	 * @param companyId
 	 * @return
 	 */
-	private LinkedList<String> getSql(LinkedHashMap<String, Object> dataMap,String jsonContent,TableInfo tableInfo,String companyId,PkProvider provider) {
+	private LinkedList<String> getSql(LinkedHashMap<String, Object> dataMap,TableInfo tableInfo,String companyId,PkProvider provider) {
 		LinkedList<String> sqls = new LinkedList<>();
 		
 		StringBuffer buffer = new StringBuffer();
@@ -331,7 +331,7 @@ public class JsonDataParser extends CommonDataParser {
 		sqls.add(sql);
 		//处理子项的操作.
 		if (tableInfo.isItems()){
-			sqls.addAll(getItemSql(jsonContent,tableInfo.getItemInfos(),companyId,pkValue,provider));
+			sqls.addAll(getItemsSql(dataMap,tableInfo,companyId,pkValue,provider));
 		}
 		return sqls;
 	}
@@ -343,16 +343,14 @@ public class JsonDataParser extends CommonDataParser {
 	 * @param companyId
 	 * @return
 	 */
-	private LinkedList<String> getItemsSql(LinkedHashMap<String, Object> dataMap,ItemInfo itemInfo,String companyId,Object pkValue,PkProvider provider) {
-		LinkedList<String> sqls = new LinkedList<>();
-		
+	private String getOneItemSql(LinkedHashMap<String, Object> dataMap,ItemInfo itemInfo,String companyId,Object pkValue,PkProvider provider) {
 		StringBuffer buffer = new StringBuffer();
 		//INSERT INTO table_name (列1, 列2,...) VALUES (值1, 值2,....)
 		buffer.append("insert into "+itemInfo.getTableName()+" (");
 		if (!itemInfo.getAutoPk().equalsIgnoreCase(DataConstant.FLAG_VALUE)){
 			buffer.append(itemInfo.getPrimKey()+",");
 		}
-		buffer.append(DataConstant.UNIQUE_ID+",");
+		buffer.append("companyId,");
 		LinkedList<ColumnInfo> columns = builderItemColumns(itemInfo,buffer,dataMap);
 		if (!itemInfo.getAutoPk().equalsIgnoreCase(DataConstant.FLAG_VALUE) && provider!=null){
 			String primType = itemInfo.getPrimType();
@@ -374,30 +372,27 @@ public class JsonDataParser extends CommonDataParser {
 		buffer.append("'"+pkValue+"',");
 		builderItemValues(dataMap,buffer,columns);
 		String sql=buffer.toString();
-		sqls.add(sql);
-		return sqls;
+		return sql;
 	}
 	
 	
 	/**
 	 * 获得子项的sql
-	 * @param jsonContent
-	 * @param itemInfos
 	 * @param companyId
 	 * @param pkValue
 	 * @return
 	 */
-	private LinkedList<String> getItemSql(String jsonContent, LinkedList<ItemInfo> itemInfos, String companyId, Object pkValue,PkProvider provider) {
+	private LinkedList<String> getItemsSql(LinkedHashMap<String, Object> dataMap,TableInfo tableInfo, String companyId, Object pkValue,PkProvider provider) {
 		LinkedList<String> sqls = new LinkedList<>();
-		StringBuffer buffer = new StringBuffer();
-		for (ItemInfo itemInfo : itemInfos) {
-			List<Object> dataList = JsonPath.read(jsonContent, itemInfo.getPath());
-			if (dataList==null || dataList.size()==0){
-				continue;
-			}
-			for (Object object : dataList) {
-				LinkedHashMap<String,Object> dataMap = (LinkedHashMap<String, Object>) object;
-				sqls.addAll(getItemsSql(dataMap,itemInfo,companyId,pkValue,provider));
+		String[] deleteItem = tableInfo.getDeleteItem();
+		LinkedHashMap<String,ItemInfo> itemMap = tableInfo.getItemsMap();
+		if (deleteItem!=null && deleteItem.length>0){
+			for (String item : deleteItem) {
+				List<Object> dataList = (List<Object>) dataMap.get(item);
+				for (Object object : dataList) {
+					LinkedHashMap<String,Object> dataItem = (LinkedHashMap<String, Object>) object;
+					sqls.add(getOneItemSql(dataItem,itemMap.get(item),companyId,pkValue,provider));
+				}
 			}
 		}
 		return sqls;
@@ -593,7 +588,11 @@ public class JsonDataParser extends CommonDataParser {
 				buffer.append("'" + dataMap.get(info.getName()) + "',");
 			}
 		}
-		buffer.append(");");
+		//buffer.append(");");
+		// mysql 的批处理会报错! 主要是记录关于Statement执行批处理操作
+		//jdbc:mysql://192.168.10.186:3306/data_sync?autoReconnect=true&amp;rewriteBatchedStatements=true&amp;
+		// useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=false
+		buffer.append(")");
 	}
 	
 	
@@ -616,6 +615,10 @@ public class JsonDataParser extends CommonDataParser {
 				buffer.append("'" + dataMap.get(info.getName()) + "',");
 			}
 		}
-		buffer.append(");");
+		//buffer.append(");");
+		// mysql 的批处理会报错! 主要是记录关于Statement执行批处理操作
+		//jdbc:mysql://192.168.10.186:3306/data_sync?autoReconnect=true&amp;rewriteBatchedStatements=true&amp;
+		// useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=false
+		buffer.append(")");
 	}
 }
