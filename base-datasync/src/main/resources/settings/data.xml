@@ -149,11 +149,11 @@
 			</data>
 			<data apiKey="company_detail" key="tminfo" uniqueKey="CQ_tminfo" path="$.data.TMINFO[*]" dataKey="data,TMINFO" dataArray="true" tableName="chongqing_tminfo" comments="F2 商标信息 TMINFO" global="true" autoPk="false" columnLen="600" textField="" primKey="infoId" primType="String" primLen="50" deleteItem="TMPROJECT,TMFLOW,TMGG">
 				<items>
-					<data-item name="TMPROJECT" uniqueKey="TMPROJECT" path="$.data.TMINFO[*].TMPROJECT[*]" dataKey="data,TMINFO,TMPROJECT" dataArray="true" tableName="chongqing_tminfo_tmproject" comments="商标类群" autoPk="false" columnLen="600" textField="" primKey="projId" primType="String" primLen="50">
+					<data-item name="TMPROJECT" uniqueKey="TMPROJECT" dataKey="data,TMINFO,TMPROJECT" dataArray="true" tableName="chongqing_tminfo_tmproject" comments="商标类群" autoPk="false" columnLen="600" textField="" primKey="projId" primType="String" primLen="50">
 					</data-item>
-					<data-item name="TMFLOW" uniqueKey="TMFLOW" path="data.TMINFO[*].TMFLOW[*]" dataKey="data,TMINFO,TMFLOW" dataArray="true" tableName="chongqing_tminfo_tmflow" comments="商标流程信息" autoPk="false" columnLen="600" textField="" primKey="flowId" primType="String" primLen="50">
+					<data-item name="TMFLOW" uniqueKey="TMFLOW" dataKey="data,TMINFO,TMFLOW" dataArray="true" tableName="chongqing_tminfo_tmflow" comments="商标流程信息" autoPk="false" columnLen="600" textField="" primKey="flowId" primType="String" primLen="50">
 					</data-item>
-					<data-item name="TMGG" uniqueKey="TMGG" path="data.TMINFO[*].TMGG[*]" dataKey="data,TMINFO,TMGG" dataArray="true" tableName="chongqing_tminfo_tmgg" comments="商标公告" autoPk="false" columnLen="600" textField="" primKey="tggId" primType="String" primLen="50">
+					<data-item name="TMGG" uniqueKey="TMGG" dataKey="data,TMINFO,TMGG" dataArray="true" tableName="chongqing_tminfo_tmgg" comments="商标公告" autoPk="false" columnLen="600" textField="" primKey="tggId" primType="String" primLen="50">
 					</data-item>
 				</items>
 			</data>
