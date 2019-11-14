@@ -103,15 +103,15 @@ public class KylinJdbcClient {
 			connection = getConnection(projectName);
 			pstmt = connection.prepareStatement(sql);
 			if (param!=null && param.length>0){
-				for (int i = 0; i < param.length; i++) {
-					pstmt.setString(i+1, param[i]);
+				for (int i = 1; i <= param.length; i++) {
+					pstmt.setString(i, param[i]);
 				}
 			}
 			resultSet = pstmt.executeQuery();
 			ResultSetMetaData rsmd = resultSet.getMetaData();
 			int count = rsmd.getColumnCount();
 			Set<String> columns = new HashSet<>();
-			for (int i = 1; i <=count ; i++) {
+			for (int i = 1; i <= count ; i++) {
 				columns.add(rsmd.getColumnName(i));
 			}
 			while (resultSet.next()) {
@@ -156,7 +156,7 @@ public class KylinJdbcClient {
 			ResultSetMetaData rsmd = resultSet.getMetaData();
 			int count = rsmd.getColumnCount();
 			Set<String> columns = new HashSet<>();
-			for (int i = 1; i <=count ; i++) {
+			for (int i = 1; i <= count ; i++) {
 				columns.add(rsmd.getColumnName(i));
 			}
 			while (resultSet.next()) {
