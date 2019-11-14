@@ -10,8 +10,14 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -41,15 +47,6 @@ public class KylinJdbcClient {
 	 * 存在的连接.
 	 */
 	private ConcurrentHashMap<String,Connection> connsMap = new ConcurrentHashMap<>(16);
-	/**
-	 * 操作对象.
-	 */
-	private ConcurrentHashMap<String,PreparedStatement> pstmtMap = new ConcurrentHashMap<>(16);
-	/**
-	 * 操作结果集合.
-	 */
-	private ConcurrentHashMap<String,ResultSet> resultMap = new ConcurrentHashMap<>(16);
-	
 	/**
 	 * 构造函数.
 	 * @param jdbcConfig
@@ -97,24 +94,40 @@ public class KylinJdbcClient {
 	 * @param param
 	 * @return
 	 */
-	public ResultSet selectSQL(String projectName,String sql, String [] param) throws KylinException{
-		ResultSet rs = null;
+	public LinkedList<Map<String,Object>> selectSQL(String projectName, String sql, String [] param) throws KylinException{
+		ResultSet resultSet = null;
+		Connection connection = null;
+		PreparedStatement pstmt = null;
+		LinkedList<Map<String,Object>> finalList = new LinkedList<>();
 		try {
-			Connection connection = getConnection(projectName);
-			PreparedStatement pstmt = connection.prepareStatement(sql);
+			connection = getConnection(projectName);
+			pstmt = connection.prepareStatement(sql);
 			if (param!=null && param.length>0){
 				for (int i = 0; i < param.length; i++) {
 					pstmt.setString(i+1, param[i]);
 				}
 			}
-			rs = pstmt.executeQuery();
-			pstmtMap.put(projectName,pstmt);
-			resultMap.put(projectName,rs);
+			resultSet = pstmt.executeQuery();
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int count = rsmd.getColumnCount();
+			Set<String> columns = new HashSet<>();
+			for (int i = 1; i <=count ; i++) {
+				columns.add(rsmd.getColumnName(i));
+			}
+			while (resultSet.next()) {
+				Map<String,Object> data = new HashMap<>();
+				for (String column : columns ) {
+					data.put(column,resultSet.getObject(column));
+				}
+				finalList.add(data);
+			}
 		} catch (SQLException e) {
 			logger.error("kylin通过PrepareStatement获得数据异常了,异常信息是:{}",e.getMessage());
 			throw new KylinException("kylin通过PrepareStatement获得数据异常了,异常信息是:{"+e.getMessage()+"}");
+		}finally {
+			close(connection,pstmt,resultSet);
 		}
-		return rs;
+		return finalList;
 	}
 	
 	/**
@@ -123,19 +136,8 @@ public class KylinJdbcClient {
 	 * @param sql
 	 * @return
 	 */
-	public ResultSet selectSQL(String projectName,String sql) throws KylinException{
-		ResultSet rs = null;
-		try {
-			Connection connection = getConnection(projectName);
-			PreparedStatement pstmt = connection.prepareStatement(sql);
-			rs = pstmt.executeQuery();
-			pstmtMap.put(projectName,pstmt);
-			resultMap.put(projectName,rs);
-		} catch (SQLException e) {
-			logger.error("kylin通過Statement获得数据异常了,异常信息是:{}",e.getMessage());
-			throw new KylinException("kylin通過Statement获得数据异常了,异常信息是:{"+e.getMessage()+"}");
-		}
-		return rs;
+	public LinkedList<Map<String,Object>> selectSQL(String projectName,String sql) throws KylinException{
+		return selectSQL(projectName,sql,null);
 	}
 	
 	/**
@@ -144,52 +146,31 @@ public class KylinJdbcClient {
 	 * @param tableName
 	 * @return
 	 */
-	public ResultSet selectMetaSQL(String projectName,String tableName) throws KylinException{
-		ResultSet rs = null;
+	public LinkedList<Map<String,Object>> selectMetaSQL(String projectName,String tableName) throws KylinException{
+		ResultSet resultSet = null;
+		Connection connection = null;
+		LinkedList<Map<String,Object>> finalList = new LinkedList<>();
 		try {
-			Connection connection = getConnection(projectName);
-			rs = connection.getMetaData().getTables(null,null,tableName,null);
-			resultMap.put(projectName,rs);
+			connection = getConnection(projectName);
+			resultSet = connection.getMetaData().getTables(null,null,tableName,null);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int count = rsmd.getColumnCount();
+			Set<String> columns = new HashSet<>();
+			for (int i = 1; i <=count ; i++) {
+				columns.add(rsmd.getColumnName(i));
+			}
+			while (resultSet.next()) {
+				Map<String,Object> data = new HashMap<>();
+				for (String column : columns ) {
+					data.put(column,resultSet.getObject(column));
+				}
+				finalList.add(data);
+			}
 		} catch (SQLException e) {
 			logger.error("kylin通過Statement获得数据异常了,异常信息是:{}",e.getMessage());
 			throw new KylinException("kylin通過Statement获得数据异常了,异常信息是:{"+e.getMessage()+"}");
 		}
-		return rs;
-	}
-	
-	/**
-	 * 关闭连接
-	 * @param projectName
-	 */
-	public void close(String projectName){
-		 Connection conn = connsMap.get(projectName);
-		 PreparedStatement pstmt = pstmtMap.get(projectName);
-		 ResultSet rs = resultMap.get(projectName);
-		//判断是否关闭，要时没有关闭，就让它关闭，并给它附一空值（null）,下同
-		if(pstmt!=null){
-			try {
-				pstmt.close();
-				pstmt=null;
-			} catch (SQLException e) {
-				logger.error(e.getMessage());
-			}
-		}
-		if(rs!=null){
-			try {
-				rs.close();
-				rs=null;
-			} catch (SQLException e) {
-				logger.error(e.getMessage());
-			}
-		}
-		if(conn!=null){
-			try {
-				conn.close();
-				conn=null;
-			} catch (SQLException e) {
-				logger.error(e.getMessage());
-			}
-		}
+		return finalList;
 	}
 	
 	/**
@@ -203,6 +184,39 @@ public class KylinJdbcClient {
 			logger.error(e.getMessage());
 		}
 		return result;
+	}
+	
+	/**
+	 * 关闭连接
+	 * @param connection
+	 * @param pstmt
+	 * @param resultSet
+	 */
+	public void close(Connection connection,PreparedStatement pstmt,ResultSet resultSet){
+		if(pstmt!=null){
+			try {
+				pstmt.close();
+				pstmt=null;
+			} catch (SQLException e) {
+				logger.error(e.getMessage());
+			}
+		}
+		if(resultSet!=null){
+			try {
+				resultSet.close();
+				resultSet=null;
+			} catch (SQLException e) {
+				logger.error(e.getMessage());
+			}
+		}
+		if(connection!=null){
+			try {
+				connection.close();
+				connection=null;
+			} catch (SQLException e) {
+				logger.error(e.getMessage());
+			}
+		}
 	}
 	
 	public String getProjectName() {

@@ -6,7 +6,8 @@ import com.application.base.kylin.jdbc.core.KylinJdbcClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.ResultSet;
+import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * @author : 孤狼
@@ -28,7 +29,7 @@ public class KylinJdbcOperSession implements KylinJdbcSession {
 	}
 	
 	@Override
-	public ResultSet selectSQL(String projectName, String sql, String[] param) {
+	public LinkedList<Map<String,Object>> selectSQL(String projectName, String sql, String[] param) {
 		try {
 			return kylinJdbcClient.selectSQL(projectName,sql,param);
 		}catch (KylinException e){
@@ -38,7 +39,7 @@ public class KylinJdbcOperSession implements KylinJdbcSession {
 	}
 	
 	@Override
-	public ResultSet selectSQL(String projectName, String sql) {
+	public LinkedList<Map<String,Object>> selectSQL(String projectName, String sql) {
 		try {
 			return kylinJdbcClient.selectSQL(projectName,sql);
 		}catch (KylinException e){
@@ -48,7 +49,7 @@ public class KylinJdbcOperSession implements KylinJdbcSession {
 	}
 	
 	@Override
-	public ResultSet selectMetaSQL(String projectName, String tableName) {
+	public LinkedList<Map<String,Object>> selectMetaSQL(String projectName, String tableName) {
 		try {
 			return kylinJdbcClient.selectMetaSQL(projectName,tableName);
 		}catch (KylinException e){
@@ -56,9 +57,5 @@ public class KylinJdbcOperSession implements KylinJdbcSession {
 		}
 		return null;
 	}
-	
-	@Override
-	public void close(String projectName) {
-		kylinJdbcClient.close(projectName);
-	}
+
 }
