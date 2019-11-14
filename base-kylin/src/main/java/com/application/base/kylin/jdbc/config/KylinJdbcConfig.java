@@ -17,6 +17,10 @@ public class KylinJdbcConfig  extends GenericObjectPoolConfig {
 	 */
 	private String userPass;
 	/**
+	 * 项目名称.
+	 */
+	private String projectName;
+	/**
 	 * kylin的连接地址.
 	 */
 	private String kylinUrl;
@@ -27,6 +31,7 @@ public class KylinJdbcConfig  extends GenericObjectPoolConfig {
 		buffer.append("userName:"+getUserName()+"\n");
 		buffer.append("userPass:"+getUserPass()+"\n");
 		buffer.append("kylinUrl:"+getKylinUrl()+"\n");
+		buffer.append("projectName:"+getProjectName()+"\n");
 		buffer.append("testOnBorrow:").append(getTestOnBorrow()).append("\n")
 				.append("testWhileIdle:").append(getTestWhileIdle()).append("\n")
 				.append("testOnReturn:").append(getTestOnReturn()).append("\n")
@@ -58,5 +63,13 @@ public class KylinJdbcConfig  extends GenericObjectPoolConfig {
 	
 	public void setKylinUrl(String kylinUrl) {
 		this.kylinUrl = kylinUrl;
+	}
+	
+	public String getProjectName() {
+		return projectName;
+	}
+	
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
 	}
 }
