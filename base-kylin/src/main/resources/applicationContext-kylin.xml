@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans 
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+   		http://www.springframework.org/schema/context 
+   		http://www.springframework.org/schema/context/spring-context.xsd">
+    
+    
+    
+    <!-- kylin rest 基础信息配置 (公共使用) -->
+    <bean id="kylinRestConfig" class="com.application.base.kylin.rest.config.KylinRestConfig">
+        <property name="maxTotal" value="${kylin.pool.maxTotal}"/>
+        <property name="maxIdle" value="${kylin.pool.maxIdle}"/>
+        <property name="minIdle" value="${kylin.pool.minIdle}"/>
+        <property name="maxWaitMillis" value="${kylin.pool.maxWaitMillis}"/>
+        <property name="testOnBorrow" value="${kylin.pool.testOnBorrow}"/>
+        <property name="testOnReturn" value="${kylin.pool.testOnReturn}"/>
+        <property name="testWhileIdle" value="${kylin.pool.testWhileIdle}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${kylin.pool.timeBetweenEvictionRunsMillis}"/>
+		<property name="numTestsPerEvictionRun" value="${kylin.pool.numTestsPerEvictionRun}"/>
+		<property name="userName" value="${kylin.name}"/>
+		<property name="userPass" value="${kylin.pass}"/>
+		<property name="requestUrl" value="${kylin.host}"/>
+	</bean>
+    
+    <!-- 1. kylin 单点服务器,只存在一个kylin的服务器 -->
+    <bean id = "apiRestPoolPool" class="com.application.base.kylin.rest.pool.KylinJestApiPool">
+        <constructor-arg name="restConfig" ref="kylinRestConfig"/>
+    </bean>
+	
+    <bean id="kylinRestFactory" class="com.application.base.kylin.rest.factory.KylinJestSessionFactory">
+        <property name="restApiPool" ref="apiRestPoolPool"/>
+    </bean>
+	
+	
+	
+	
+	
+	<!-- kylin jdbc 基础信息配置 (公共使用) -->
+	<bean id="kylinJdbcConfig" class="com.application.base.kylin.jdbc.config.KylinJdbcConfig">
+		<property name="maxTotal" value="${kylin.pool.maxTotal}"/>
+		<property name="maxIdle" value="${kylin.pool.maxIdle}"/>
+		<property name="minIdle" value="${kylin.pool.minIdle}"/>
+		<property name="maxWaitMillis" value="${kylin.pool.maxWaitMillis}"/>
+		<property name="testOnBorrow" value="${kylin.pool.testOnBorrow}"/>
+		<property name="testOnReturn" value="${kylin.pool.testOnReturn}"/>
+		<property name="testWhileIdle" value="${kylin.pool.testWhileIdle}"/>
+		<property name="timeBetweenEvictionRunsMillis" value="${kylin.pool.timeBetweenEvictionRunsMillis}"/>
+		<property name="numTestsPerEvictionRun" value="${kylin.pool.numTestsPerEvictionRun}"/>
+		<property name="userName" value="${kylin.name}"/>
+		<property name="userPass" value="${kylin.pass}"/>
+		<property name="kylinUrl" value="${kylin.jdbc.url}"/>
+ 	</bean>
+	
+	<!-- 1. kylin 单点服务器,只存在一个kylin的服务器 -->
+	<bean id = "apiJdbcPoolPool" class="com.application.base.kylin.jdbc.pool.KylinJdbcOperPool">
+		<constructor-arg name="jdbcConfig" ref="kylinJdbcConfig"/>
+	</bean>
+	
+	<bean id="kylinJdbcFactory" class="com.application.base.kylin.jdbc.factory.KylinJdbcSessionFactory">
+		<property name="jdbcOperPool" ref="apiJdbcPoolPool"/>
+	</bean>
+
+</beans>
+
