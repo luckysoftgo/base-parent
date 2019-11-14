@@ -129,7 +129,7 @@ public class KylinJdbcClient {
 		try {
 			Connection connection = getConnection(projectName);
 			PreparedStatement pstmt = connection.prepareStatement(sql);
-			rs = pstmt.executeQuery(sql);
+			rs = pstmt.executeQuery();
 			pstmtMap.put(projectName,pstmt);
 			resultMap.put(projectName,rs);
 		} catch (SQLException e) {
