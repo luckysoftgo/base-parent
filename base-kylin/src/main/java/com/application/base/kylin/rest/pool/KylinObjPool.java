@@ -1,4 +1,4 @@
-package com.application.base.kylin;
+package com.application.base.kylin.rest.pool;
 
 import com.application.base.exception.KylinException;
 import org.apache.commons.pool2.PooledObjectFactory;
@@ -6,11 +6,9 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 /**
- * @author : 孤狼
- *
  * @NAME: KylinObjPool
- *
- * @DESC: 连接池定义
+ * @DESC: 连接池接口.
+ * @USER: 孤狼
  **/
 public class KylinObjPool<T> implements Cloneable  {
 	
@@ -29,6 +27,7 @@ public class KylinObjPool<T> implements Cloneable  {
 			try {
 				closeInternalPool();
 			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 		
