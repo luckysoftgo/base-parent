@@ -19,6 +19,10 @@ public class KylinConstant {
 	 * 登录密码.
 	 */
 	public static final String PASSWORD = "password";
+	/**
+	 * 分隔符号.
+	 */
+	public static final String SPLIT = "/";
 	
 	
 }

@@ -71,7 +71,7 @@ public class KylinJdbcSessionFactory implements KylinSessionFactory {
 			logger.debug("获取kylin jdbc 链接");
 			KylinJdbcClient client = null;
 			try {
-				client = KylinJdbcSessionFactory.this.jdbcOperPool.getResource();
+				client = KylinJdbcSessionFactory.this.jdbcOperPool.borrowObject();
 			}
 			catch (Exception e) {
 				logger.error("获取 kylin 链接错误,{}", e);
@@ -117,7 +117,7 @@ public class KylinJdbcSessionFactory implements KylinSessionFactory {
 			finally {
 				if (success && client != null) {
 					logger.debug("kylin链接关闭");
-					client.close(client.getProjectName());
+					//client.close(client.getProjectName());
 				}
 			}
 		}

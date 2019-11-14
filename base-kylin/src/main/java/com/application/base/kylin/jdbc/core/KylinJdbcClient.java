@@ -6,7 +6,6 @@ import com.application.base.kylin.jdbc.config.KylinJdbcConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.PreparedStatement;
@@ -81,7 +80,7 @@ public class KylinJdbcClient {
 				Properties info = new Properties();
 				info.put(KylinConstant.USER, jdbcConfig.getUserName());
 				info.put(KylinConstant.PASSWORD, jdbcConfig.getUserPass());
-				connection = driver.connect(jdbcConfig.getKylinUrl()+ File.separator+projectName,info);
+				connection = driver.connect(jdbcConfig.getKylinUrl()+ KylinConstant.SPLIT+projectName,info);
 				connsMap.put(projectName,connection);
 			}catch (Exception e){
 				logger.error("kylin获得连接异常了,异常信息是:{}",e.getMessage());

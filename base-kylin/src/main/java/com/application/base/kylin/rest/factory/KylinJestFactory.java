@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * @author : 孤狼
  * @NAME: KylinJdbcFactory
- * @DESC: 工厂实例.
+ * @DESC: 工厂实例,自己实现接口信息.
  **/
 public class KylinJestFactory implements PooledObjectFactory<KylinRestApiClient> {
 	

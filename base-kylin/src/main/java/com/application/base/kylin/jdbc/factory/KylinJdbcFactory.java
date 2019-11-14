@@ -2,65 +2,34 @@ package com.application.base.kylin.jdbc.factory;
 
 import com.application.base.kylin.jdbc.config.KylinJdbcConfig;
 import com.application.base.kylin.jdbc.core.KylinJdbcClient;
-import com.google.gson.Gson;
+import org.apache.commons.pool2.BasePooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
-import org.apache.commons.pool2.PooledObjectFactory;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
+
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author : 孤狼
  * @NAME: KylinJdbcFactory
- * @DESC: 工厂实例.
+ * @DESC: 工厂实例,继承他人的实现.
  **/
-public class KylinJdbcFactory implements PooledObjectFactory<KylinJdbcClient> {
+public class KylinJdbcFactory extends BasePooledObjectFactory<KylinJdbcClient> {
 	
-	/**
-	 * 映射对象.
-	 */
 	private AtomicReference<KylinJdbcConfig> nodesReference = new AtomicReference<KylinJdbcConfig>();
 	
-	public KylinJdbcFactory(KylinJdbcConfig poolConfig) {
-		this.nodesReference.set(poolConfig);
+	public KylinJdbcFactory(KylinJdbcConfig jdbcConfig){
+		this.nodesReference.set(jdbcConfig);
 	}
 	
 	@Override
-	public PooledObject<KylinJdbcClient> makeObject() throws Exception {
-		KylinJdbcConfig poolConfig = nodesReference.get();
-		KylinJdbcClient client = new KylinJdbcClient(poolConfig);
-		return new DefaultPooledObject(client);
+	public KylinJdbcClient create() throws Exception {
+		KylinJdbcConfig config = nodesReference.get();
+		return new KylinJdbcClient(config);
 	}
 	
 	@Override
-	public void destroyObject(PooledObject<KylinJdbcClient> pooledObject) throws Exception {
-		KylinJdbcClient client = pooledObject.getObject();
-		if (client != null) {
-			try {
-				client.close(client.getProjectName());
-			} catch (Exception e) {
-				//ignore
-			}
-		}
-	}
-	
-	@Override
-	public boolean validateObject(PooledObject<KylinJdbcClient> pooledObject) {
-		KylinJdbcClient client = pooledObject.getObject();
-		try {
-			return client.check(client.getProjectName());
-		} catch (Exception e) {
-			return false;
-		}
-	}
-	
-	@Override
-	public void activateObject(PooledObject<KylinJdbcClient> pooledObject) throws Exception {
-		KylinJdbcClient client = pooledObject.getObject();
-		System.out.println("得到的对象是:"+new Gson().toJson(client));
-	}
-	
-	@Override
-	public void passivateObject(PooledObject<KylinJdbcClient> pooledObject) throws Exception {
-		//nothing
+	public PooledObject<KylinJdbcClient> wrap(KylinJdbcClient conn) {
+		//包装实际对象
+		return new DefaultPooledObject<>(conn);
 	}
 }
