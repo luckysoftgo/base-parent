@@ -71,7 +71,7 @@ public class KylinJestSessionFactory implements KylinSessionFactory {
 			logger.debug("获取kylin链接");
 			KylinRestApiClient client = null;
 			try {
-				client = KylinJestSessionFactory.this.restApiPool.borrowObject();
+				client = KylinJestSessionFactory.this.restApiPool.getResource();
 			}
 			catch (Exception e) {
 				logger.error("获取 kylin 链接错误,{}", e);
