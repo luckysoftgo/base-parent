@@ -114,12 +114,6 @@ public class KylinJdbcSessionFactory implements KylinSessionFactory {
 				logger.error("[kylin执行失败！异常信息为：{}]", e);
 				throw e;
 			}
-			finally {
-				if (success && client != null) {
-					logger.debug("kylin链接关闭");
-					//client.close(client.getProjectName());
-				}
-			}
 		}
 	}
 }
