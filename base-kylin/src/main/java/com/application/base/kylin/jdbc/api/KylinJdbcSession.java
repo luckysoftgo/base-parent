@@ -27,6 +27,24 @@ public interface KylinJdbcSession {
 	 */
 	public LinkedList<Map<String,Object>> selectSQL(String projectName, String sql);
 	/**
+	 * 使用PreparedStatement查询数据
+	 * @param projectName
+	 * @param sql
+	 * @param param
+	 * @param nullback null 值是否返回,true 返回,false 不返回.
+	 * @return
+	 */
+	public LinkedList<Map<String,Object>> selectSQL(String projectName, String sql, String [] param,boolean nullback);
+	/**
+	 * 使用Statement查询数据
+	 * @param projectName
+	 * @param sql
+	 * @param nullback null 值是否返回,true 返回,false 不返回.
+	 * @return
+	 */
+	public LinkedList<Map<String,Object>> selectSQL(String projectName, String sql,boolean nullback);
+	
+	/**
 	 * 使用Statement查询数据
 	 * @param projectName
 	 * @param tableName

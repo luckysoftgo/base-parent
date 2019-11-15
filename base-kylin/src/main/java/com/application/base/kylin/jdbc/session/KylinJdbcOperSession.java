@@ -49,6 +49,27 @@ public class KylinJdbcOperSession implements KylinJdbcSession {
 	}
 	
 	@Override
+	public LinkedList<Map<String, Object>> selectSQL(String projectName, String sql, String[] param,
+	                                                 boolean nullback) {
+		try {
+			return kylinJdbcClient.selectSQL(projectName,sql,param,nullback);
+		}catch (KylinException e){
+			logger.error("kylin执行jdbc方式查询数据失败,项目名称是:{},失败信息是:{}",projectName,e.getMessage());
+		}
+		return null;
+	}
+	
+	@Override
+	public LinkedList<Map<String, Object>> selectSQL(String projectName, String sql, boolean nullback) {
+		try {
+			return kylinJdbcClient.selectSQL(projectName,sql,nullback);
+		}catch (KylinException e){
+			logger.error("kylin执行jdbc方式查询数据失败,项目名称是:{},失败信息是:{}",projectName,e.getMessage());
+		}
+		return null;
+	}
+	
+	@Override
 	public LinkedList<Map<String,Object>> selectMetaSQL(String projectName, String tableName) {
 		try {
 			return kylinJdbcClient.selectMetaSQL(projectName,tableName);

@@ -3,6 +3,7 @@ package com.application.base.kylin.jdbc.core;
 import com.application.base.constant.KylinConstant;
 import com.application.base.exception.KylinException;
 import com.application.base.kylin.jdbc.config.KylinJdbcConfig;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -138,6 +140,100 @@ public class KylinJdbcClient {
 	 */
 	public LinkedList<Map<String,Object>> selectSQL(String projectName,String sql) throws KylinException{
 		return selectSQL(projectName,sql,null);
+	}
+	
+	/**
+	 * 使用PreparedStatement查询数据
+	 * @param projectName
+	 * @param sql
+	 * @param param
+	 * @return
+	 */
+	public LinkedList<Map<String,Object>> selectSQL(String projectName, String sql, String [] param,boolean nullback) throws KylinException{
+		ResultSet resultSet = null;
+		Connection connection = null;
+		PreparedStatement pstmt = null;
+		LinkedList<Map<String,Object>> finalList = new LinkedList<>();
+		try {
+			connection = getConnection(projectName);
+			pstmt = connection.prepareStatement(sql);
+			if (param!=null && param.length>0){
+				for (int i = 1; i <= param.length; i++) {
+					pstmt.setString(i, param[i]);
+				}
+			}
+			resultSet = pstmt.executeQuery();
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int count = rsmd.getColumnCount();
+			Set<String> columns = new HashSet<>();
+			for (int i = 1; i <= count ; i++) {
+				columns.add(rsmd.getColumnName(i));
+			}
+			while (resultSet.next()) {
+				Map<String,Object> data = new HashMap<>();
+				for (String column : columns ) {
+					String value = Objects.toString(resultSet.getObject(column),"");
+					if (StringUtils.isBlank(value)){
+						if (nullback){
+							data.put(column,resultSet.getObject(column));
+						}
+					}else{
+						data.put(column,resultSet.getObject(column));
+					}
+				}
+				finalList.add(data);
+			}
+		} catch (SQLException e) {
+			logger.error("kylin通过PrepareStatement获得数据异常了,异常信息是:{}",e.getMessage());
+			throw new KylinException("kylin通过PrepareStatement获得数据异常了,异常信息是:{"+e.getMessage()+"}");
+		}finally {
+			close(connection,pstmt,resultSet);
+		}
+		return finalList;
+	}
+	
+	/**
+	 * 使用Statement查询数据
+	 * @param projectName
+	 * @param sql
+	 * @return
+	 */
+	public LinkedList<Map<String,Object>> selectSQL(String projectName,String sql,boolean nullback) throws KylinException{
+		ResultSet resultSet = null;
+		Connection connection = null;
+		PreparedStatement pstmt = null;
+		LinkedList<Map<String,Object>> finalList = new LinkedList<>();
+		try {
+			connection = getConnection(projectName);
+			pstmt = connection.prepareStatement(sql);
+			resultSet = pstmt.executeQuery();
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			int count = rsmd.getColumnCount();
+			Set<String> columns = new HashSet<>();
+			for (int i = 1; i <= count ; i++) {
+				columns.add(rsmd.getColumnName(i));
+			}
+			while (resultSet.next()) {
+				Map<String,Object> data = new HashMap<>();
+				for (String column : columns ) {
+					String value = Objects.toString(resultSet.getObject(column),"");
+					if (StringUtils.isBlank(value)){
+						if (nullback){
+							data.put(column,resultSet.getObject(column));
+						}
+					}else{
+						data.put(column,resultSet.getObject(column));
+					}
+				}
+				finalList.add(data);
+			}
+		} catch (SQLException e) {
+			logger.error("kylin通过PrepareStatement获得数据异常了,异常信息是:{}",e.getMessage());
+			throw new KylinException("kylin通过PrepareStatement获得数据异常了,异常信息是:{"+e.getMessage()+"}");
+		}finally {
+			close(connection,pstmt,resultSet);
+		}
+		return finalList;
 	}
 	
 	/**
