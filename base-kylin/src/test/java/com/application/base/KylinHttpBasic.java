@@ -1,6 +1,7 @@
 package com.application.base;
 
 import com.google.gson.Gson;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -54,7 +55,6 @@ public class KylinHttpBasic {
 		return  excute(para,method,null);
 	}
 	
-	
 	/**
 	 * 列出可供查询的cube名字
 	 * @param offset required int Offset used by pagination
@@ -65,10 +65,14 @@ public class KylinHttpBasic {
 	 */
 	public static String listCubes(int offset,int limit,String cubeName,String projectName ){
 		String method = "GET";
-		String para = "/cubes?offset="+offset
-				+"&limit="+limit
-				+"&cubeName="+cubeName
-				+"&projectName="+projectName;
+		StringBuffer buffer = new StringBuffer("/cubes?offset="+offset+"&limit="+limit);
+		if (StringUtils.isNotBlank(cubeName)){
+			buffer.append("&cubeName="+cubeName);
+		}
+		if (StringUtils.isNotBlank(projectName)){
+			buffer.append("&projectName="+projectName);
+		}
+		String para = buffer.toString();
 		return excute(para,method,null);
 	}
 	

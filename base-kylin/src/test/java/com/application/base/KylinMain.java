@@ -18,9 +18,10 @@ public class KylinMain {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
 		String result= KylinHttpBasic.login("ADMIN", "KYLIN");
 		System.out.println("登录信息:"+result);
+		String json = KylinHttpBasic.listCubes(0,50,null,null);
+		System.out.println("cobes:"+json);
 		
 		String cubdesc_array = KylinHttpBasic.getCubeDes("/kylin_sales_cube?");
 		String cubdesc_str=cubdesc_array.substring(1, cubdesc_array.length()-1);

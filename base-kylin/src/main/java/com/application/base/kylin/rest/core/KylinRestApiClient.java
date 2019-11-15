@@ -72,14 +72,22 @@ public class KylinRestApiClient {
 	}
 	
 	
-	public String query(String sql, int offset, int limit, String projectName) throws KylinException {
+	public String query(String sql,Integer offset,Integer limit,Boolean acceptPartial, String projectName) throws KylinException {
 		String method = "POST";
 		String param = "/query";
 		Map<String, Object> map = new HashMap<>(16);
 		map.put("sql", sql);
-		map.put("offset", offset);
-		map.put("limit", limit);
-		map.put("acceptPartial", false);
+		if (offset!=null){
+			map.put("offset", offset.intValue());
+		}
+		if (limit!=null){
+			map.put("limit", limit.intValue());
+		}
+		if (acceptPartial!=null){
+			map.put("acceptPartial", acceptPartial.booleanValue());
+		}else {
+			map.put("acceptPartial", false);
+		}
 		if(StringUtils.isNotBlank(projectName)){
 			map.put("project",projectName);
 		}else{
@@ -99,7 +107,14 @@ public class KylinRestApiClient {
 	
 	public String listCubes(int offset, int limit, String cubeName, String projectName) throws KylinException {
 		String method = "GET";
-		String param = "/cubes?offset="+offset+"&limit="+limit+"&cubeName="+cubeName+"&projectName="+projectName;
+		StringBuffer buffer = new StringBuffer("/cubes?offset="+offset+"&limit="+limit);
+		if (StringUtils.isNotBlank(cubeName)){
+			buffer.append("&cubeName="+cubeName);
+		}
+		if (StringUtils.isNotBlank(projectName)){
+			buffer.append("&projectName="+projectName);
+		}
+		String param = buffer.toString();
 		return execute(requestUrl,authToken,param,method,null);
 	}
 	

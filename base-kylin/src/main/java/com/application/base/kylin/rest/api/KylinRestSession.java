@@ -44,7 +44,7 @@ public interface KylinRestSession {
 	 * @return
 	 * @throws KylinException
 	 */
-	public String query(String sql,int offset,int limit,String projectName) throws KylinException;
+	public String query(String sql,Integer offset,Integer limit,Boolean acceptPartial,String projectName) throws KylinException;
 	
 	/**
 	 * 列出可供查询的表 GET /kylin/api/tables_and_columns

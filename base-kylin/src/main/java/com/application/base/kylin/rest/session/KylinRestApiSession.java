@@ -56,9 +56,9 @@ public class KylinRestApiSession implements KylinRestSession {
 	}
 	
 	@Override
-	public String query(String sql, int offset, int limit, String projectName) {
+	public String query(String sql,Integer offset,Integer limit,Boolean acceptPartial, String projectName) {
 		try {
-			return kylinRestApiClient.query(sql,offset,limit,projectName);
+			return kylinRestApiClient.query(sql,offset,limit,acceptPartial,projectName);
 		}catch (KylinException e){
 			logger.error("查询出错,错误信息是:{}",e.getMessage());
 		}
