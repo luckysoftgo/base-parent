@@ -33,7 +33,7 @@ public class MailTest {
 		String[] ccList = { "pingemail@163.com" };
 		String title = "新邮件测试";
 		String content = "这是新版的邮件测试";
-		String[] files = { "e:\\大厂面试题.txt","e:\\软件资源.txt","e:\\西部资信.txt" };
+		String[] files = { "e:\\aa.txt","e:\\bb.txt","e:\\cc.txt" };
 		
 		JavaMailInfo info = new JavaMailInfo();
 		info.setMailHost(mailHost);
