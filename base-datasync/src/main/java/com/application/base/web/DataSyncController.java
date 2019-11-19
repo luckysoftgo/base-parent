@@ -40,7 +40,7 @@ public class DataSyncController {
 		List<TableInfo> tableInfos = dataInfo.getTableInfos();
 		for (TableInfo info : tableInfos ) {
 			if (info!=null){
-				String resultJson = GetDataUtil.getDataInfo(dataInfo.getOrginInfo().getUrl(),info.getApiKey(),"陕西西部资信股份有限公司","2311497658");
+				String resultJson = GetDataUtil.getDataInfo(dataInfo.getOrginInfo().getUrl(),info.getApiKey(),"不要乱科技","2311497658");
 				if (StringUtils.isBlank(resultJson)){
 					return "";
 				}

@@ -20,11 +20,7 @@ public class GetDataUtil {
 	
 	public static void main(String[] args) {
 		String url="http://open.xxx.xxxx.com/services/";
-		System.out.println(getDataInfo(url,"branch","青云科技","2311497658"));
-		//System.out.println("--------------------------------------------------------------------------------------------");
-		//System.out.println(getDataInfo(url,"branch","陕西西部资信股份有限公司","2311497658"));
-		//System.out.println("--------------------------------------------------------------------------------------------");
-		//System.out.println(getDataInfo(url,"patents","陕西西部资信股份有限公司","2311497658"));
+		System.out.println(getDataInfo(url,"branch","不要乱科技","2311497658"));
 	}
 	
 	private static final String DATA_TOKEN = "4c00c062-3a13-4b3e-9e35-7ddce7f207b5";
