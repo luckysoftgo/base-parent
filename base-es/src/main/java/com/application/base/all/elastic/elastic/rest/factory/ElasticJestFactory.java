@@ -5,6 +5,7 @@ import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.PooledObjectFactory;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.apache.http.HttpHost;
+import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -49,7 +50,7 @@ public class ElasticJestFactory implements PooledObjectFactory<RestHighLevelClie
 	@Override
 	public void destroyObject(PooledObject<RestHighLevelClient> pooledObject) throws Exception {
 		RestHighLevelClient client = pooledObject.getObject();
-		if (client != null && client.ping()) {
+		if (client != null && client.ping(RequestOptions.DEFAULT)) {
 			try {
 				client.close();
 			} catch (Exception e) {
@@ -62,7 +63,7 @@ public class ElasticJestFactory implements PooledObjectFactory<RestHighLevelClie
 	public boolean validateObject(PooledObject<RestHighLevelClient> pooledObject) {
 		RestHighLevelClient client = pooledObject.getObject();
 		try {
-			return client.ping();
+			return client.ping(RequestOptions.DEFAULT);
 		} catch (Exception e) {
 			return false;
 		}
@@ -71,7 +72,7 @@ public class ElasticJestFactory implements PooledObjectFactory<RestHighLevelClie
 	@Override
 	public void activateObject(PooledObject<RestHighLevelClient> pooledObject) throws Exception {
 		RestHighLevelClient client = pooledObject.getObject();
-		boolean response = client.ping();
+		boolean response = client.ping(RequestOptions.DEFAULT);
 	}
 	
 	@Override
