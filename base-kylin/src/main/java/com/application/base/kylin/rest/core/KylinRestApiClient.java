@@ -47,13 +47,11 @@ public class KylinRestApiClient {
 		byte[] key = (poolConfig.getUserName()+":"+poolConfig.getUserPass()).getBytes();
 		this.authToken = new sun.misc.BASE64Encoder().encode(key);
 		this.requestUrl = poolConfig.getRequestUrl();
-		logger.info("认证的token为:{},请求的url:{}",authToken,requestUrl);
 	}
 	
 	public boolean authToken() throws KylinException {
 		byte[] key = (poolConfig.getUserName()+":"+poolConfig.getUserPass()).getBytes();
 		String tmpAuthToken = new sun.misc.BASE64Encoder().encode(key);
-		logger.info("得到的认证信息是:{}",tmpAuthToken);
 		authToken = tmpAuthToken;
 		return true;
 	}

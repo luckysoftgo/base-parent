@@ -53,8 +53,7 @@ public class KylinJestFactory implements PooledObjectFactory<KylinRestApiClient>
 	@Override
 	public void activateObject(PooledObject<KylinRestApiClient> pooledObject) throws Exception {
 		KylinRestApiClient client = pooledObject.getObject();
-		String response = client.login();
-		System.out.println("login info:"+response);
+		client.login();
 	}
 	
 	@Override
