@@ -11,7 +11,7 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<elasticsearch.version>6.8.1</elasticsearch.version>
+		<elasticsearch.version>7.1.0</elasticsearch.version>
         <x-pack.version>5.6.1</x-pack.version>
 		<jackson.version>2.9.9</jackson.version>
         <log4j.version>1.2.17</log4j.version>
@@ -94,7 +94,7 @@
 		<dependency>
 			<groupId>org.elasticsearch.client</groupId>
 			<artifactId>x-pack-transport</artifactId>
-			<version>${elasticsearch.version}</version>
+			<version>${x-pack.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.elasticsearch</groupId>
