@@ -9,14 +9,14 @@
    		http://www.springframework.org/schema/context/spring-context.xsd">
     
     <!-- elastic 基础信息配置 (公共使用) -->
-    <bean id="transPortNodeConfig" class="com.application.base.all.elastic.elastic.transport.config.EsTransportNodeConfig">
+    <bean id="transPortNodeConfig" class="com.application.base.elastic.elastic.transport.config.EsTransportNodeConfig">
         <property name="nodeHost" value="${transport.host}"/>
         <property name="nodePort" value="${transport.port}"/>
         <property name="nodeSchema" value="${transport.schema}"/>
     </bean>
     
     <!-- elastic 基础信息配置 (公共使用) -->
-    <bean id="transportPoolConfig" class="com.application.base.all.elastic.elastic.transport.config.EsTransportPoolConfig">
+    <bean id="transportPoolConfig" class="com.application.base.elastic.elastic.transport.config.EsTransportPoolConfig">
         <property name="maxTotal" value="${elastic.pool.maxTotal}"/>
         <property name="maxIdle" value="${elastic.pool.maxIdle}"/>
         <property name="minIdle" value="${elastic.pool.minIdle}"/>
@@ -36,25 +36,25 @@
     </bean>
     
     <!-- 1. elastic 单点服务器,只存在一个elastic的服务器 -->
-    <bean id="transportPool" class="com.application.base.all.elastic.elastic.transport.pool.ElasticTransportPool">
+    <bean id="transportPool" class="com.application.base.elastic.elastic.transport.pool.ElasticTransportPool">
         <constructor-arg name="loginAuth" value="${elastic.login.auth}"/>
         <constructor-arg name="transportPoolConfig" ref="transportPoolConfig"/>
     </bean>
-    <bean id="transportFactory" class="com.application.base.all.elastic.elastic.transport.factory.EsTransportSessionPoolFactory">
+    <bean id="transportFactory" class="com.application.base.elastic.elastic.transport.factory.EsTransportSessionPoolFactory">
         <property name="transportPool" ref="transportPool"/>
     </bean>
     
     
     
     <!-- elastic 基础信息配置 (公共使用) -->
-    <bean id="jestNodeConfig" class="com.application.base.all.elastic.elastic.rest.config.EsJestNodeConfig">
+    <bean id="jestNodeConfig" class="com.application.base.elastic.elastic.rest.config.EsJestNodeConfig">
         <property name="nodeHost" value="${jest.host}"/>
         <property name="nodePort" value="${jest.port}"/>
         <property name="nodeSchema" value="${jest.schema}"/>
     </bean>
     
     <!-- elastic 基础信息配置 (公共使用) -->
-    <bean id="jestPoolConfig" class="com.application.base.all.elastic.elastic.rest.config.EsJestPoolConfig">
+    <bean id="jestPoolConfig" class="com.application.base.elastic.elastic.rest.config.EsJestPoolConfig">
         <property name="maxTotal" value="${elastic.pool.maxTotal}"/>
         <property name="maxIdle" value="${elastic.pool.maxIdle}"/>
         <property name="minIdle" value="${elastic.pool.minIdle}"/>
@@ -74,10 +74,10 @@
     </bean>
     
     <!-- 1. elastic 单点服务器,只存在一个elastic的服务器 -->
-    <bean id="juestPool" class="com.application.base.all.elastic.elastic.rest.pool.ElasticJestPool">
+    <bean id="juestPool" class="com.application.base.elastic.elastic.rest.pool.ElasticJestPool">
         <constructor-arg name="restPoolConfig" ref="jestPoolConfig"/>
     </bean>
-    <bean id="jestFactory" class="com.application.base.all.elastic.elastic.rest.factory.EsJestSessionPoolFactory">
+    <bean id="jestFactory" class="com.application.base.elastic.elastic.rest.factory.EsJestSessionPoolFactory">
         <property name="jestPool" ref="juestPool"/>
     </bean>
 
