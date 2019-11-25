@@ -1,8 +1,9 @@
 package com.application.base;
 
 
-import com.application.base.core.DataParser;
-import com.application.base.util.sql.PkProvider;
+import com.application.base.sync.DataSyncApplication;
+import com.application.base.sync.core.DataParser;
+import com.application.base.sync.util.sql.PkProvider;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
