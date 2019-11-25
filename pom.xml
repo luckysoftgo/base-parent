@@ -16,7 +16,7 @@
 		<!-- 消息 -->
 		<module>base-message</module>
 		<!-- 索引查询 -->
-		<module>base-es</module>
+		<module>base-elastic</module>
 		<!-- 登录的认证处理 -->
 		<module>base-auth</module>
 		<!-- 支付模块. -->
@@ -33,7 +33,9 @@
 		<module>base-datasync</module>
 		<!--操作kylin的api-->
 		<module>base-kylin</module>
-		
+		<!--操作hbase的api-->
+		<module>base-operapi</module>
+	
 	</modules>
 	<artifactId>base-parent</artifactId>
     <!-- 模块设置. -->
