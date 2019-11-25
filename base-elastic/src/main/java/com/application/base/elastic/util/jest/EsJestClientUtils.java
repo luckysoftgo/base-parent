@@ -1,4 +1,4 @@
-package com.application.base.util.jest;
+package com.application.base.elastic.util.jest;
 
 import com.application.base.elastic.entity.ElasticData;
 import com.application.base.elastic.exception.ElasticException;

@@ -1,4 +1,4 @@
-package com.application.base.util.transport;
+package com.application.base.elastic.util.transport;
 
 import com.application.base.elastic.entity.ElasticData;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
