@@ -1,4 +1,4 @@
-package com.application.base.constant;
+package com.application.base.kylin.constant;
 
 /**
  * @author : 孤狼

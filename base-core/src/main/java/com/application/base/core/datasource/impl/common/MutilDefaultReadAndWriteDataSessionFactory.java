@@ -1,7 +1,7 @@
 package com.application.base.core.datasource.impl.common;
 
 
-import com.application.base.all.elastic.factory.ElasticSessionFactory;
+import com.application.base.elastic.factory.ElasticSessionFactory;
 import com.application.base.core.datasource.api.ReadAndWriteDataSessionFactory;
 import com.application.base.core.datasource.api.SqlSessionFactorySupport;
 import com.application.base.core.datasource.cons.DefaultConst;

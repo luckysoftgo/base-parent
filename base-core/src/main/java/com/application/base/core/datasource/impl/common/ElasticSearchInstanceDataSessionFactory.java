@@ -1,6 +1,6 @@
 package com.application.base.core.datasource.impl.common;
 
-import com.application.base.all.elastic.factory.ElasticSessionFactory;
+import com.application.base.elastic.factory.ElasticSessionFactory;
 import com.application.base.core.datasource.api.EsDataSessionFactory;
 import com.application.base.core.datasource.session.EsSession;
 

@@ -1,6 +1,5 @@
 package com.application.base.config.zookeeper.zk.lock;
 
-import com.application.base.config.zookeeper.api.ZkApiSession;
 import com.application.base.config.zookeeper.exception.DistributedLockException;
 import com.application.base.config.zookeeper.exception.ZookeeperException;
 import com.application.base.config.zookeeper.factory.ZookeeperSessionFactory;

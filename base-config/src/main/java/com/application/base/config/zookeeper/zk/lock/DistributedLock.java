@@ -2,7 +2,6 @@ package com.application.base.config.zookeeper.zk.lock;
 
 import com.application.base.config.zookeeper.exception.DistributedLockException;
 import com.application.base.config.zookeeper.exception.ZookeeperException;
-import org.apache.curator.framework.CuratorFramework;
 
 import java.util.concurrent.TimeUnit;
 

@@ -3,8 +3,6 @@ package com.application.base.cache.redis.jedis.lock;
 import com.application.base.cache.redis.exception.DistributedLockException;
 import com.application.base.cache.redis.exception.RedisException;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * @desc 分布式锁,按道理说只适用单机或者哨兵模式,集群性能欠佳.
  * https://redis.io/commands/set set命令详解.
