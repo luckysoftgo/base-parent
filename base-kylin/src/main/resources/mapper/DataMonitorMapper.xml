@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.application.demo.bean.DataMonitorMapper">
+    
+    <resultMap type="DataMonitor" id="DataMonitorResult">
+        <result property="id"    column="id"    />
+        <result property="disabled"    column="disabled"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="projectName"    column="project_name"    />
+        <result property="cubeName"    column="cube_name"    />
+        <result property="tableName"    column="table_name"    />
+        <result property="schemName"    column="schem_name"    />
+        <result property="processingDttm"    column="processing_dttm"    />
+    </resultMap>
+
+    <sql id="selectDataMonitorVo">
+        select id, disabled, create_user, create_time, update_user, update_time, project_name, cube_name, table_name, schem_name, processing_dttm from data_monitor
+    </sql>
+
+    <select id="selectDataMonitorList" parameterType="DataMonitor" resultMap="DataMonitorResult">
+        <include refid="selectDataMonitorVo"/>
+        <where>  
+            <if test="disabled != null "> and disabled = #{disabled}</if>
+            <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+            <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
+            <if test="projectName != null  and projectName != ''"> and project_name like concat('%', #{projectName}, '%')</if>
+            <if test="cubeName != null  and cubeName != ''"> and cube_name like concat('%', #{cubeName}, '%')</if>
+            <if test="tableName != null  and tableName != ''"> and table_name like concat('%', #{tableName}, '%')</if>
+            <if test="schemName != null  and schemName != ''"> and schem_name like concat('%', #{schemName}, '%')</if>
+            <if test="processingDttm != null  and processingDttm != ''"> and processing_dttm = #{processingDttm}</if>
+        </where>
+    </select>
+    
+    <select id="selectDataMonitorById" parameterType="Long" resultMap="DataMonitorResult">
+        <include refid="selectDataMonitorVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDataMonitor" parameterType="DataMonitor" useGeneratedKeys="true" keyProperty="id">
+        insert into data_monitor
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="disabled != null ">disabled,</if>
+            <if test="createUser != null  and createUser != ''">create_user,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateUser != null  and updateUser != ''">update_user,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="projectName != null  and projectName != ''">project_name,</if>
+            <if test="cubeName != null  and cubeName != ''">cube_name,</if>
+            <if test="tableName != null  and tableName != ''">table_name,</if>
+            <if test="schemName != null  and schemName != ''">schem_name,</if>
+            <if test="processingDttm != null  and processingDttm != ''">processing_dttm,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="disabled != null ">#{disabled},</if>
+            <if test="createUser != null  and createUser != ''">#{createUser},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateUser != null  and updateUser != ''">#{updateUser},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="projectName != null  and projectName != ''">#{projectName},</if>
+            <if test="cubeName != null  and cubeName != ''">#{cubeName},</if>
+            <if test="tableName != null  and tableName != ''">#{tableName},</if>
+            <if test="schemName != null  and schemName != ''">#{schemName},</if>
+            <if test="processingDttm != null  and processingDttm != ''">#{processingDttm},</if>
+         </trim>
+    </insert>
+
+	<insert id="insertDataMonitors" parameterType="java.util.ArrayList" flushCache="true" >
+		insert into data_monitor
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			disabled,
+			create_user,
+			create_time,
+			update_user,
+			update_time,
+			project_name,
+			cube_name,
+			table_name,
+			schem_name,
+			processing_dttm,
+		</trim>
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+			<trim prefix="(" suffix=")" suffixOverrides=",">
+			#{item.disabled},
+			#{item.createUser},
+			#{item.createTime},
+			#{item.updateUser},
+			#{item.updateTime},
+			#{item.projectName},
+			#{item.cubeName},
+			#{item.tableName},
+			#{item.schemName},
+			#{item.processingDttm},
+			</trim>
+		</foreach>
+	</insert>
+
+
+    <update id="updateDataMonitor" parameterType="DataMonitor">
+        update data_monitor
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="disabled != null ">disabled = #{disabled},</if>
+            <if test="createUser != null  and createUser != ''">create_user = #{createUser},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateUser != null  and updateUser != ''">update_user = #{updateUser},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="projectName != null  and projectName != ''">project_name = #{projectName},</if>
+            <if test="cubeName != null  and cubeName != ''">cube_name = #{cubeName},</if>
+            <if test="tableName != null  and tableName != ''">table_name = #{tableName},</if>
+            <if test="schemName != null  and schemName != ''">schem_name = #{schemName},</if>
+            <if test="processingDttm != null  and processingDttm != ''">processing_dttm = #{processingDttm},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDataMonitorById" parameterType="Long">
+        delete from data_monitor where id = #{id}
+    </delete>
+
+    <delete id="deleteDataMonitorByIds" parameterType="String">
+        delete from data_monitor where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
