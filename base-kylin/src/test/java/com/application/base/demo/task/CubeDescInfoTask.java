@@ -12,7 +12,7 @@ import com.application.base.elastic.entity.ElasticData;
 import com.application.base.kylin.jdbc.factory.KylinJdbcSessionFactory;
 import com.application.base.kylin.rest.api.KylinRestSession;
 import com.application.base.kylin.rest.factory.KylinJestSessionFactory;
-import com.application.demo.util.EsJestClientUtils;
+import com.application.base.demo.util.EsJestClientUtils;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.handler.IJobHandler;
 import com.xxl.job.core.handler.annotation.JobHandler;

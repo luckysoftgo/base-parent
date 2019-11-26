@@ -1,8 +1,8 @@
-package com.application.demo.service.impl;
+package com.application.base.demo.service.impl;
 
 import com.application.base.demo.bean.DataMonitor;
 import com.application.base.demo.mapper.DataMonitorMapper;
-import com.application.demo.service.IDataMonitorService;
+import com.application.base.demo.service.IDataMonitorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
