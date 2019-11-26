@@ -1,6 +1,6 @@
 package com.application.base.kylin.rest.core;
 
-import com.application.base.exception.KylinException;
+import com.application.base.kylin.exception.KylinException;
 import com.application.base.kylin.rest.config.KylinRestConfig;
 import com.google.gson.Gson;
 import org.apache.commons.lang3.StringUtils;

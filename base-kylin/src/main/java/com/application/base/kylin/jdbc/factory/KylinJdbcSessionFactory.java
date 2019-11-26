@@ -1,6 +1,6 @@
 package com.application.base.kylin.jdbc.factory;
 
-import com.application.base.exception.KylinException;
+import com.application.base.kylin.exception.KylinException;
 import com.application.base.kylin.jdbc.api.KylinJdbcSession;
 import com.application.base.kylin.jdbc.core.KylinJdbcClient;
 import com.application.base.kylin.jdbc.core.KylinSessionFactory;

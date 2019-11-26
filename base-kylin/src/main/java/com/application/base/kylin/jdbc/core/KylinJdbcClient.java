@@ -1,7 +1,7 @@
 package com.application.base.kylin.jdbc.core;
 
-import com.application.base.constant.KylinConstant;
-import com.application.base.exception.KylinException;
+import com.application.base.kylin.constant.KylinConstant;
+import com.application.base.kylin.exception.KylinException;
 import com.application.base.kylin.jdbc.config.KylinJdbcConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

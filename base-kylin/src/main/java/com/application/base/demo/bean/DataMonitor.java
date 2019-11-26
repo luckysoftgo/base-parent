@@ -1,4 +1,4 @@
-package com.application.demo.bean;
+package com.application.base.demo.bean;
 
 import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;

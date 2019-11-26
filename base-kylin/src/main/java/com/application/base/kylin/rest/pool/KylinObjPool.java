@@ -1,6 +1,6 @@
 package com.application.base.kylin.rest.pool;
 
-import com.application.base.exception.KylinException;
+import com.application.base.kylin.exception.KylinException;
 import org.apache.commons.pool2.PooledObjectFactory;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;

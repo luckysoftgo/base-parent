@@ -1,7 +1,7 @@
-package com.application.base.kylin.jdbc.core;
+package com.application.base.kylin.rest.core;
 
 import com.application.base.kylin.exception.KylinException;
-import com.application.base.kylin.jdbc.api.KylinJdbcSession;
+import com.application.base.kylin.rest.api.KylinRestSession;
 
 /**
  * @author : 孤狼
@@ -15,6 +15,6 @@ public interface KylinSessionFactory {
 	 * @return
 	 * @throws KylinException
 	 */
-	KylinJdbcSession getJdbcSession() throws KylinException;
+	KylinRestSession getRestSession() throws KylinException;
 	
 }

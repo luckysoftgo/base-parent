@@ -1,4 +1,4 @@
-package com.application.base.exception;
+package com.application.base.kylin.exception;
 
 /**
  * @author : 孤狼

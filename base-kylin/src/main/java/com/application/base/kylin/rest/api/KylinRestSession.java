@@ -1,6 +1,6 @@
 package com.application.base.kylin.rest.api;
 
-import com.application.base.exception.KylinException;
+import com.application.base.kylin.exception.KylinException;
 
 /**
  * @author : 孤狼

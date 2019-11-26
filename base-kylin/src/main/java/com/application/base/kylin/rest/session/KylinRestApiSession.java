@@ -1,6 +1,6 @@
 package com.application.base.kylin.rest.session;
 
-import com.application.base.exception.KylinException;
+import com.application.base.kylin.exception.KylinException;
 import com.application.base.kylin.rest.api.KylinRestSession;
 import com.application.base.kylin.rest.core.KylinRestApiClient;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package com.application.demo.bean;
+package com.application.base.demo.bean;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,7 +36,7 @@ public class CubeDescInfo implements Serializable {
 	/**
 	 * 函数集合
 	 */
-	private List<Measures> measures;
+	private List<com.application.demo.bean.Measures> measures;
 	/**
 	 * 表名
 	 */
