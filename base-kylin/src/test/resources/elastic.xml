@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+   		http://www.springframework.org/schema/context
+   		http://www.springframework.org/schema/context/spring-context.xsd">
+    
+    <!-- elastic 基础信息配置 (公共使用) -->
+    <bean id="transPortNodeConfig" class="com.application.base.elastic.elastic.transport.config.EsTransportNodeConfig">
+        <property name="nodeHost" value="${transport.host}"/>
+        <property name="nodePort" value="${transport.port}"/>
+        <property name="nodeSchema" value="${transport.schema}"/>
+    </bean>
+    
+    <!-- elastic 基础信息配置 (公共使用) -->
+    <bean id="transportPoolConfig" class="com.application.base.elastic.elastic.transport.config.EsTransportPoolConfig">
+        <property name="maxTotal" value="${elastic.pool.maxTotal}"/>
+        <property name="maxIdle" value="${elastic.pool.maxIdle}"/>
+        <property name="minIdle" value="${elastic.pool.minIdle}"/>
+        <property name="maxWaitMillis" value="${elastic.pool.maxWaitMillis}"/>
+        <property name="testOnBorrow" value="${elastic.pool.testOnBorrow}"/>
+        <property name="testOnReturn" value="${elastic.pool.testOnReturn}"/>
+        <property name="testWhileIdle" value="${elastic.pool.testWhileIdle}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${elastic.pool.timeBetweenEvictionRunsMillis}"/>
+        <property name="numTestsPerEvictionRun" value="${elastic.pool.numTestsPerEvictionRun}"/>
+        <property name="clusterName" value="${transport.cluster.name}"/>
+        <property name="connectTimeMillis" value="5000"/>
+        <property name="esNodes">
+            <set>
+                <ref bean="transPortNodeConfig"/>
+            </set>
+        </property>
+    </bean>
+    
+    <!-- 1. elastic 单点服务器,只存在一个elastic的服务器 -->
+    <bean id="transportPool" class="com.application.base.elastic.elastic.transport.pool.ElasticTransportPool">
+        <constructor-arg name="loginAuth" value="${elastic.login.auth}"/>
+        <constructor-arg name="transportPoolConfig" ref="transportPoolConfig"/>
+    </bean>
+    <bean id="transportFactory" class="com.application.base.elastic.elastic.transport.factory.EsTransportSessionPoolFactory">
+        <property name="transportPool" ref="transportPool"/>
+    </bean>
+    
+    
+    
+    <!-- elastic 基础信息配置 (公共使用) -->
+    <bean id="jestNodeConfig" class="com.application.base.elastic.elastic.rest.config.EsJestNodeConfig">
+        <property name="nodeHost" value="${jest.host}"/>
+        <property name="nodePort" value="${jest.port}"/>
+        <property name="nodeSchema" value="${jest.schema}"/>
+    </bean>
+    
+    <!-- elastic 基础信息配置 (公共使用) -->
+    <bean id="jestPoolConfig" class="com.application.base.elastic.elastic.rest.config.EsJestPoolConfig">
+        <property name="maxTotal" value="${elastic.pool.maxTotal}"/>
+        <property name="maxIdle" value="${elastic.pool.maxIdle}"/>
+        <property name="minIdle" value="${elastic.pool.minIdle}"/>
+        <property name="maxWaitMillis" value="${elastic.pool.maxWaitMillis}"/>
+        <property name="testOnBorrow" value="${elastic.pool.testOnBorrow}"/>
+        <property name="testOnReturn" value="${elastic.pool.testOnReturn}"/>
+        <property name="testWhileIdle" value="${elastic.pool.testWhileIdle}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${elastic.pool.timeBetweenEvictionRunsMillis}"/>
+        <property name="numTestsPerEvictionRun" value="${elastic.pool.numTestsPerEvictionRun}"/>
+        <property name="clusterName" value="${jest.cluster.name}"/>
+        <property name="connectTimeMillis" value="5000"/>
+        <property name="esNodes">
+            <set>
+                <ref bean="jestNodeConfig"/>
+            </set>
+        </property>
+    </bean>
+    
+    <!-- 1. elastic 单点服务器,只存在一个elastic的服务器 -->
+    <bean id="juestPool" class="com.application.base.elastic.elastic.rest.pool.ElasticJestPool">
+        <constructor-arg name="restPoolConfig" ref="jestPoolConfig"/>
+    </bean>
+    <bean id="jestFactory" class="com.application.base.elastic.elastic.rest.factory.EsJestSessionPoolFactory">
+        <property name="jestPool" ref="juestPool"/>
+    </bean>
+
+</beans>
+
