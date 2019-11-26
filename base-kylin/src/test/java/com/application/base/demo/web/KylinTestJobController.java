@@ -1,4 +1,4 @@
-package com.application.demo.web;
+package com.application.base.demo.web;
 
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.handler.IJobHandler;

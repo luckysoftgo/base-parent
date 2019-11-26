@@ -1,10 +1,11 @@
-package com.application.demo.task;
+package com.application.base.demo.task;
 
-import com.application.base.rest.api.KylinRestSession;
-import com.application.base.rest.factory.KylinJestSessionFactory;
-import com.application.demo.bean.CubeInfo;
-import com.application.demo.cont.KylinConstant;
-import com.application.demo.init.CubeInfoProvider;
+
+import com.application.base.demo.bean.CubeInfo;
+import com.application.base.demo.cont.KylinConstant;
+import com.application.base.demo.init.CubeInfoProvider;
+import com.application.base.kylin.rest.api.KylinRestSession;
+import com.application.base.kylin.rest.factory.KylinJestSessionFactory;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.handler.IJobHandler;
 import com.xxl.job.core.handler.annotation.JobHandler;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+
 
 /**
  * @author:孤狼

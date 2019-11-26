@@ -1,6 +1,6 @@
-package com.application.demo.mapper;
+package com.application.base.demo.mapper;
 
-import com.application.demo.bean.DataMonitor;
+import com.application.base.demo.bean.DataMonitor;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

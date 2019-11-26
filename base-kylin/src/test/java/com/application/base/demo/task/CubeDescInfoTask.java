@@ -1,17 +1,17 @@
-package com.application.demo.task;
+package com.application.base.demo.task;
 
 
+import com.application.base.demo.bean.CubeDescInfo;
+import com.application.base.demo.bean.CubeInfo;
+import com.application.base.demo.bean.DataMonitor;
+import com.application.base.demo.cont.KylinConstant;
+import com.application.base.demo.init.CubeInfoProvider;
+import com.application.base.demo.init.RestClientConfig;
+import com.application.base.demo.service.IDataMonitorService;
 import com.application.base.elastic.entity.ElasticData;
-import com.application.base.jdbc.factory.KylinJdbcSessionFactory;
-import com.application.base.rest.api.KylinRestSession;
-import com.application.base.rest.factory.KylinJestSessionFactory;
-import com.application.demo.bean.CubeDescInfo;
-import com.application.demo.bean.CubeInfo;
-import com.application.demo.bean.DataMonitor;
-import com.application.demo.cont.KylinConstant;
-import com.application.demo.init.CubeInfoProvider;
-import com.application.demo.init.RestClientConfig;
-import com.application.demo.service.IDataMonitorService;
+import com.application.base.kylin.jdbc.factory.KylinJdbcSessionFactory;
+import com.application.base.kylin.rest.api.KylinRestSession;
+import com.application.base.kylin.rest.factory.KylinJestSessionFactory;
 import com.application.demo.util.EsJestClientUtils;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.handler.IJobHandler;

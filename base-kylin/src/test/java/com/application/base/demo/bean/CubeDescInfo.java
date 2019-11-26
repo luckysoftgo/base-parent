@@ -36,7 +36,7 @@ public class CubeDescInfo implements Serializable {
 	/**
 	 * 函数集合
 	 */
-	private List<com.application.demo.bean.Measures> measures;
+	private List<Measures> measures;
 	/**
 	 * 表名
 	 */

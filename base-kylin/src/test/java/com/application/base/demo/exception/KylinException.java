@@ -1,4 +1,4 @@
-package com.application.demo.exception;
+package com.application.base.demo.exception;
 
 /**
  * @author : 孤狼

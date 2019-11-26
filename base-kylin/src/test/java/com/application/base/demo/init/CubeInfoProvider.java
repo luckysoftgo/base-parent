@@ -1,9 +1,9 @@
-package com.application.demo.init;
+package com.application.base.demo.init;
 
-import com.application.demo.bean.CubeDescInfo;
-import com.application.demo.bean.CubeInfo;
-import com.application.demo.bean.Measures;
-import com.application.demo.cont.KylinConstant;
+import com.application.base.demo.bean.CubeDescInfo;
+import com.application.base.demo.bean.CubeInfo;
+import com.application.base.demo.bean.Measures;
+import com.application.base.demo.cont.KylinConstant;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

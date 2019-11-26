@@ -1,6 +1,7 @@
-package com.application.demo.service;
+package com.application.base.demo.service;
 
-import com.application.demo.bean.DataMonitor;
+
+import com.application.base.demo.bean.DataMonitor;
 
 import java.util.List;
 

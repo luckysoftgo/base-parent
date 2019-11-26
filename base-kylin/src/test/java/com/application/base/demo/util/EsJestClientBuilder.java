@@ -1,4 +1,4 @@
-package com.application.demo.util;
+package com.application.base.demo.util;
 
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
@@ -21,7 +21,7 @@ public class EsJestClientBuilder {
 	/**
 	 * 客户端：参数获得.
 	 */
-	private RestHighLevelClient  paramClient;
+	private RestHighLevelClient paramClient;
 	
 	/**
 	 * node IP 地址.

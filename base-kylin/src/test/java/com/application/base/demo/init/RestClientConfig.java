@@ -1,4 +1,4 @@
-package com.application.demo.init;
+package com.application.base.demo.init;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
