@@ -1,7 +1,7 @@
 package com.application.demo.task;
 
-import com.application.base.kylin.rest.api.KylinRestSession;
-import com.application.base.kylin.rest.factory.KylinJestSessionFactory;
+import com.application.base.rest.api.KylinRestSession;
+import com.application.base.rest.factory.KylinJestSessionFactory;
 import com.application.demo.bean.CubeInfo;
 import com.application.demo.cont.KylinConstant;
 import com.application.demo.init.CubeInfoProvider;

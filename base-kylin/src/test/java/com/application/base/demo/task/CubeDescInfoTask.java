@@ -2,9 +2,9 @@ package com.application.demo.task;
 
 
 import com.application.base.elastic.entity.ElasticData;
-import com.application.base.kylin.jdbc.factory.KylinJdbcSessionFactory;
-import com.application.base.kylin.rest.api.KylinRestSession;
-import com.application.base.kylin.rest.factory.KylinJestSessionFactory;
+import com.application.base.jdbc.factory.KylinJdbcSessionFactory;
+import com.application.base.rest.api.KylinRestSession;
+import com.application.base.rest.factory.KylinJestSessionFactory;
 import com.application.demo.bean.CubeDescInfo;
 import com.application.demo.bean.CubeInfo;
 import com.application.demo.bean.DataMonitor;

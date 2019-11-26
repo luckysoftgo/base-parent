@@ -11,7 +11,7 @@
     
     
     <!-- kylin rest 基础信息配置 (公共使用) -->
-    <bean id="kylinRestConfig" class="com.application.kylin.kylin.rest.config.KylinRestConfig">
+    <bean id="kylinRestConfig" class="com.application.base.kylin.rest.config.KylinRestConfig">
         <property name="maxTotal" value="${kylin.pool.maxTotal}"/>
         <property name="maxIdle" value="${kylin.pool.maxIdle}"/>
         <property name="minIdle" value="${kylin.pool.minIdle}"/>
@@ -27,12 +27,12 @@
 	</bean>
     
     <!-- 1. kylin 单点服务器,只存在一个kylin的服务器 -->
-    <bean id = "apiRestPoolPool" class="com.application.kylin.kylin.rest.pool.KylinJestApiPool">
+    <bean id = "apiRestPool" class="com.application.base.kylin.rest.pool.KylinJestApiPool">
         <constructor-arg name="restConfig" ref="kylinRestConfig"/>
     </bean>
 	
-    <bean id="kylinRestFactory" class="com.application.kylin.kylin.rest.factory.KylinJestSessionFactory">
-        <property name="restApiPool" ref="apiRestPoolPool"/>
+    <bean id="kylinRestFactory" class="com.application.base.kylin.rest.factory.KylinJestSessionFactory">
+        <property name="restApiPool" ref="apiRestPool"/>
     </bean>
 	
 	
@@ -40,7 +40,7 @@
 	
 	
 	<!-- kylin jdbc 基础信息配置 (公共使用) -->
-	<bean id="kylinJdbcConfig" class="com.application.kylin.kylin.jdbc.config.KylinJdbcConfig">
+	<bean id="kylinJdbcConfig" class="com.application.base.kylin.jdbc.config.KylinJdbcConfig">
 		<property name="maxTotal" value="${kylin.pool.maxTotal}"/>
 		<property name="maxIdle" value="${kylin.pool.maxIdle}"/>
 		<property name="minIdle" value="${kylin.pool.minIdle}"/>
@@ -56,12 +56,12 @@
  	</bean>
 	
 	<!-- 1. kylin 单点服务器,只存在一个kylin的服务器 -->
-	<bean id = "apiJdbcPoolPool" class="com.application.kylin.kylin.jdbc.pool.KylinJdbcOperPool">
+	<bean id = "apiJdbcPool" class="com.application.base.kylin.jdbc.pool.KylinJdbcOperPool">
 		<constructor-arg name="jdbcConfig" ref="kylinJdbcConfig"/>
 	</bean>
 	
-	<bean id="kylinJdbcFactory" class="com.application.kylin.kylin.jdbc.factory.KylinJdbcSessionFactory">
-		<property name="jdbcOperPool" ref="apiJdbcPoolPool"/>
+	<bean id="kylinJdbcFactory" class="com.application.base.kylin.jdbc.factory.KylinJdbcSessionFactory">
+		<property name="jdbcOperPool" ref="apiJdbcPool"/>
 	</bean>
 
 </beans>

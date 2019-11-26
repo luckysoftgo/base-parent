@@ -74,11 +74,11 @@
     </bean>
     
     <!-- 1. elastic 单点服务器,只存在一个elastic的服务器 -->
-    <bean id="juestPool" class="com.application.base.elastic.elastic.rest.pool.ElasticJestPool">
+    <bean id="jestPool" class="com.application.base.elastic.elastic.rest.pool.ElasticJestPool">
         <constructor-arg name="restPoolConfig" ref="jestPoolConfig"/>
     </bean>
     <bean id="jestFactory" class="com.application.base.elastic.elastic.rest.factory.EsJestSessionPoolFactory">
-        <property name="jestPool" ref="juestPool"/>
+        <property name="jestPool" ref="jestPool"/>
     </bean>
 
 </beans>

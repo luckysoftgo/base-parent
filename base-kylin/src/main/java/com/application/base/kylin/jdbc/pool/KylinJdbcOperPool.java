@@ -1,7 +1,7 @@
 package com.application.base.kylin.jdbc.pool;
 
-import com.application.base.kylin.jdbc.config.KylinJdbcConfig;
 import com.application.base.kylin.jdbc.core.KylinJdbcClient;
+import com.application.base.kylin.jdbc.config.KylinJdbcConfig;
 import com.application.base.kylin.jdbc.factory.KylinJdbcFactory;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 

@@ -1,7 +1,7 @@
 package com.application.base.kylin.jdbc.core;
 
-import com.application.base.kylin.exception.KylinException;
 import com.application.base.kylin.jdbc.api.KylinJdbcSession;
+import com.application.base.kylin.exception.KylinException;
 
 /**
  * @author : 孤狼
