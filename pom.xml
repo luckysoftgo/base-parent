@@ -13,13 +13,13 @@
 		<module>base-cache</module>
 		<!-- mongo处理 -->
 		<module>base-mongo</module>
-		<!-- 消息 -->
+		<!-- 消息处理 -->
 		<module>base-message</module>
 		<!-- 索引查询 -->
 		<module>base-elastic</module>
 		<!-- 登录的认证处理 -->
 		<module>base-auth</module>
-		<!-- 支付模块. -->
+		<!-- 支付模块处理 -->
 		<module>base-pay</module>
 		<!-- 代码生成:简单 -->
 		<module>base-codes</module>
@@ -52,6 +52,8 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<java.version>1.8</java.version>
+		<maven.test.skip>true</maven.test.skip>
+		
 		<spring.version>5.1.3.RELEASE</spring.version>
 		
         <downloadSources>true</downloadSources>
