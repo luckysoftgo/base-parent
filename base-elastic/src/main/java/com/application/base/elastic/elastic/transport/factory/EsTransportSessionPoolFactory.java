@@ -110,7 +110,7 @@ public class EsTransportSessionPoolFactory implements ElasticSessionFactory {
 				success = false;
 				if (client != null) {
 					transportPool.returnBrokenResource(client);
-					client.close();
+					//client.close();
 					client=null;
 				}
 				logger.error("[elastic执行失败！异常信息为：{}]", e);
@@ -120,7 +120,7 @@ public class EsTransportSessionPoolFactory implements ElasticSessionFactory {
 				if (success && client != null) {
 					logger.debug("elastic链接关闭");
 					transportPool.returnResource(client);
-					client.close();
+					//client.close();
 					client=null;
 				}
 			}
