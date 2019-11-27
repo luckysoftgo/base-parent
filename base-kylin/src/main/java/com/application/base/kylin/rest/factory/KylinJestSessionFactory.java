@@ -110,6 +110,7 @@ public class KylinJestSessionFactory implements KylinSessionFactory {
 				success = false;
 				if (client != null) {
 					client=null;
+					restApiPool.returnBrokenResource(client);
 				}
 				logger.error("[kylin执行失败！异常信息为：{}]", e);
 				throw e;
@@ -118,6 +119,7 @@ public class KylinJestSessionFactory implements KylinSessionFactory {
 				if (success && client != null) {
 					logger.debug("kylin链接关闭");
 					client=null;
+					restApiPool.returnResource(client);
 				}
 			}
 		}

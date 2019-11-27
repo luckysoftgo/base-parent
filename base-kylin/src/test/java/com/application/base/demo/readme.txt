@@ -10,3 +10,6 @@ DEMO 的用例重点如下:
 4.CubesInfoTask.java 和 CubeDescInfoTask.java 是对"3"功能的实现,监控数据的运行和数据增量的变化.
 
 代码要在一个新的springboot工程中才能够很好的运行,否则可能无法运行起来 !
+
+
+https://blog.csdn.net/qq447995687/article/details/80233621

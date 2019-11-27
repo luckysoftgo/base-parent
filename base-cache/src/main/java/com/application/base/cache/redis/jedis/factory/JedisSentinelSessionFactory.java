@@ -113,6 +113,7 @@ public class  JedisSentinelSessionFactory implements RedisSessionFactory {
 				success = false;
 				if (jedis != null) {
 					jedis.close();
+					sentinelPool.returnBrokenResource(jedis);
 				}
 				logger.error("[Jedis执行失败！异常信息为：{}]", e);
 				throw e;
@@ -121,6 +122,7 @@ public class  JedisSentinelSessionFactory implements RedisSessionFactory {
 				if (success && jedis != null) {
 					logger.debug("redis 链接关闭");
 					jedis.close();
+					sentinelPool.returnResource(jedis);
 				}
 			}
 		}
