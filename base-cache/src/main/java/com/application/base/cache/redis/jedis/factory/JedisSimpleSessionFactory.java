@@ -145,6 +145,7 @@ public class JedisSimpleSessionFactory implements RedisSessionFactory {
 					if(pools!=null){
 						pools.returnBrokenResource(jedis);
 					}
+					jedis=null;
 				}
 				logger.error("[Jedis执行失败！异常信息为：{}]", e);
 				throw e;
@@ -159,6 +160,7 @@ public class JedisSimpleSessionFactory implements RedisSessionFactory {
 					if(success && pools!=null){
 						pools.returnResource(jedis);
 					}
+					jedis=null;
 				}
 			}
 		}

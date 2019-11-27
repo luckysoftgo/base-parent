@@ -117,6 +117,7 @@ public class MutilCodisSessionFactory implements RedisSessionFactory {
                 if (jedis != null) {
 	                jedis.close();
 	                clusterPool.returnBrokenResource(jedis);
+	                jedis=null;
                 }
                 logger.error("[Jedis执行失败！异常信息为：{}]", e);
                 throw e;
@@ -125,6 +126,7 @@ public class MutilCodisSessionFactory implements RedisSessionFactory {
                     logger.debug("redis 链接关闭");
                     jedis.close();
 	                clusterPool.returnResource(jedis);
+	                jedis=null;
                 }
             }
         }

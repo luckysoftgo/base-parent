@@ -126,6 +126,7 @@ public class JedisClusterSessionFactory implements RedisSessionFactory {
 				if (jedisCluster != null) {
 					jedisCluster.close();
 					clusterPool.returnBrokenResource(jedisCluster);
+					jedisCluster=null;
 				}
 				logger.error("[Jedis执行失败！异常信息为：{}]", e);
 				throw e;
@@ -135,6 +136,7 @@ public class JedisClusterSessionFactory implements RedisSessionFactory {
 					logger.debug("redis 链接关闭");
 					jedisCluster.close();
 					clusterPool.returnResource(jedisCluster);
+					jedisCluster=null;
 				}
 			}
 		}

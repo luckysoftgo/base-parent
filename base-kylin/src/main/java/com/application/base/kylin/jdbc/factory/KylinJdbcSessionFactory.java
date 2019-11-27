@@ -109,15 +109,15 @@ public class KylinJdbcSessionFactory implements KylinSessionFactory {
 			catch (RuntimeException e) {
 				success = false;
 				if (client != null) {
-					client=null;
 					jdbcOperPool.returnObject(client);
+					client=null;
 				}
 				logger.error("[kylin执行失败！异常信息为：{}]", e);
 				throw e;
 			}finally {
 				if (success && client != null) {
-					client=null;
 					jdbcOperPool.returnObject(client);
+					client=null;
 				}
 			}
 		}

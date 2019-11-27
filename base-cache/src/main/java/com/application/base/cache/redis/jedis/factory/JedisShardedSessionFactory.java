@@ -114,6 +114,7 @@ public class JedisShardedSessionFactory implements RedisSessionFactory {
 				if (shardedJedis != null) {
 					shardedJedis.close();
 					shardedPool.returnBrokenResource(shardedJedis);
+					shardedJedis=null;
 				}
 				logger.error("[Jedis执行失败！异常信息为：{}]", e);
 				throw e;
@@ -123,6 +124,7 @@ public class JedisShardedSessionFactory implements RedisSessionFactory {
 					logger.debug("redis 链接关闭");
 					shardedJedis.close();
 					shardedPool.returnResource(shardedJedis);
+					shardedJedis=null;
 				}
 			}
 		}

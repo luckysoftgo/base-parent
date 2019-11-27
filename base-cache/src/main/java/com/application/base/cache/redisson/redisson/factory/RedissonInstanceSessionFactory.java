@@ -116,7 +116,12 @@ public class RedissonInstanceSessionFactory implements RedissonSessionFactory {
 		@Override
 		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 			RedissonClient client = null;
+			boolean success=true;
 			try {
+				if (instancePool == null) {
+					logger.error("获取redisson连接池失败");
+					throw new RedisException("获取redisson连接池失败");
+				}
 				client = getClient();
 				instanceSession.setCurrentClient(client);
 				return method.invoke(instanceSession, args);
@@ -124,9 +129,18 @@ public class RedissonInstanceSessionFactory implements RedissonSessionFactory {
 			catch (RuntimeException e) {
 				if (client != null) {
 					client.shutdown();
+					instancePool.returnBrokenResource(client);
+					client=null;
 				}
+				success=false;
 				logger.error("[redisson 执行失败！异常信息为：{}]", e);
 				throw e;
+			}finally {
+				if (success && client!=null){
+					client.shutdown();
+					instancePool.returnResource(client);
+					client=null;
+				}
 			}
 		}
 	}

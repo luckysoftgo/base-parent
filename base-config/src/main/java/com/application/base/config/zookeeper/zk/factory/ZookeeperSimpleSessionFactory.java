@@ -106,6 +106,7 @@ public class ZookeeperSimpleSessionFactory implements ZookeeperSessionFactory {
 				success = false;
 				if (zkClient != null) {
 					zkClient.close();
+					zkClient=null;
 				}
 				logger.error("[zookeeper执行失败！异常信息为：{}]", e);
 				throw e;
@@ -114,6 +115,7 @@ public class ZookeeperSimpleSessionFactory implements ZookeeperSessionFactory {
 				if (success && zkClient != null) {
 					logger.debug("zookeeper 链接关闭");
 					zkClient.close();
+					zkClient=null;
 				}
 			}
 		}
