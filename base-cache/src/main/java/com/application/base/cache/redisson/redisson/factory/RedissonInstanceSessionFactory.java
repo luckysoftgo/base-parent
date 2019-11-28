@@ -128,8 +128,8 @@ public class RedissonInstanceSessionFactory implements RedissonSessionFactory {
 			}
 			catch (RuntimeException e) {
 				if (client != null) {
-					client.shutdown();
 					instancePool.returnBrokenResource(client);
+					//client.shutdown();
 					client=null;
 				}
 				success=false;
@@ -137,8 +137,8 @@ public class RedissonInstanceSessionFactory implements RedissonSessionFactory {
 				throw e;
 			}finally {
 				if (success && client!=null){
-					client.shutdown();
 					instancePool.returnResource(client);
+					//client.shutdown();
 					client=null;
 				}
 			}
