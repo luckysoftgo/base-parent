@@ -21,21 +21,21 @@ public class ZooKeeperSimpleSessionFactory implements ZooKeeperSessionFactory {
 	
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
-	private ZooKeeperOperPool zooKeeperOperPool;
+	private ZooKeeperOperPool zooKeeperPool;
 	
 	public ZooKeeperSimpleSessionFactory() {
 	}
 	
-	public ZooKeeperSimpleSessionFactory(ZooKeeperOperPool zooKeeperOperPool) {
-		this.zooKeeperOperPool = zooKeeperOperPool;
+	public ZooKeeperSimpleSessionFactory(ZooKeeperOperPool zooKeeperPool) {
+		this.zooKeeperPool = zooKeeperPool;
 	}
 	
-	public ZooKeeperOperPool getZooKeeperOperPool() {
-		return zooKeeperOperPool;
+	public ZooKeeperOperPool getZooKeeperPool() {
+		return zooKeeperPool;
 	}
 	
-	public void setZooKeeperOperPool(ZooKeeperOperPool zooKeeperOperPool) {
-		this.zooKeeperOperPool = zooKeeperOperPool;
+	public void setZooKeeperPool(ZooKeeperOperPool zooKeeperPool) {
+		this.zooKeeperPool = zooKeeperPool;
 	}
 	
 	@Override
@@ -68,7 +68,7 @@ public class ZooKeeperSimpleSessionFactory implements ZooKeeperSessionFactory {
 			logger.debug("获取zookeeper链接");
 			CuratorFramework zkClient = null;
 			try {
-				zkClient = ZooKeeperSimpleSessionFactory.this.zooKeeperOperPool.borrowObject();
+				zkClient = ZooKeeperSimpleSessionFactory.this.zooKeeperPool.borrowObject();
 			}
 			catch (Exception e) {
 				logger.error("获取zookeeper链接错误,{}", e);
@@ -95,7 +95,7 @@ public class ZooKeeperSimpleSessionFactory implements ZooKeeperSessionFactory {
 			CuratorFramework zkClient = null;
 			boolean success = true;
 			try {
-				if (getZooKeeperOperPool() == null) {
+				if (getZooKeeperPool() == null) {
 					logger.error("获取 zookeeper 连接池失败");
 					throw new ZooKeeperException("获取zookeeper连接池失败");
 				}
@@ -107,7 +107,7 @@ public class ZooKeeperSimpleSessionFactory implements ZooKeeperSessionFactory {
 				success = false;
 				if (zkClient != null) {
 					zkClient.close();
-					zooKeeperOperPool.returnObject(zkClient);
+					zooKeeperPool.returnObject(zkClient);
 					zkClient=null;
 				}
 				logger.error("[zookeeper执行失败！异常信息为：{}]", e);
@@ -117,7 +117,7 @@ public class ZooKeeperSimpleSessionFactory implements ZooKeeperSessionFactory {
 				if (success && zkClient != null) {
 					logger.debug("zookeeper 链接关闭");
 					zkClient.close();
-					zooKeeperOperPool.returnObject(zkClient);
+					zooKeeperPool.returnObject(zkClient);
 					zkClient=null;
 				}
 			}
