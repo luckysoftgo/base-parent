@@ -115,7 +115,7 @@ public class SingleCodisSessionFactory implements RedisSessionFactory {
             } catch (RuntimeException e) {
                 success = false;
                 if (jedis != null) {
-                    jedis.close();
+                    //jedis.close();
 	                jedisPool.returnBrokenResource(jedis);
 	                jedis=null;
                 }
@@ -124,7 +124,7 @@ public class SingleCodisSessionFactory implements RedisSessionFactory {
             } finally {
                 if (success && jedis != null) {
                     logger.debug("redis 链接关闭");
-                    jedis.close();
+                    //jedis.close();
                     jedisPool.returnResource(jedis);
 	                jedis=null;
                 }
