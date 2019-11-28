@@ -74,7 +74,7 @@ public class JedisShardedSessionFactory implements RedisSessionFactory {
 			logger.debug("获取redis链接");
 			ShardedJedis jedis = null;
 			try {
-				jedis = JedisShardedSessionFactory.this.getShardedPool().getShardedResource();
+				jedis = JedisShardedSessionFactory.this.shardedPool.getShardedResource();
 			}
 			catch (Exception e) {
 				logger.error("获取redis链接错误,{}", e);
@@ -112,7 +112,7 @@ public class JedisShardedSessionFactory implements RedisSessionFactory {
 			catch (RuntimeException e) {
 				success = false;
 				if (shardedJedis != null) {
-					shardedJedis.close();
+					//shardedJedis.close();
 					shardedPool.returnBrokenResource(shardedJedis);
 					shardedJedis=null;
 				}
@@ -122,7 +122,7 @@ public class JedisShardedSessionFactory implements RedisSessionFactory {
 			finally {
 				if (success && shardedJedis != null) {
 					logger.debug("redis 链接关闭");
-					shardedJedis.close();
+					//shardedJedis.close();
 					shardedPool.returnResource(shardedJedis);
 					shardedJedis=null;
 				}

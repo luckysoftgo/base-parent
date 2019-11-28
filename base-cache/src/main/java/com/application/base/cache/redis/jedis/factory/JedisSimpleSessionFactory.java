@@ -96,10 +96,10 @@ public class JedisSimpleSessionFactory implements RedisSessionFactory {
 			Jedis jedis = null;
 			try {
 				if (jedisPool==null){
-					jedis = JedisSimpleSessionFactory.this.pools.getResource();
+					jedis = pools.getResource();
 				}
 				if (pools==null){
-					jedis = JedisSimpleSessionFactory.this.jedisPool.getResource();
+					jedis = jedisPool.getResource();
 				}
 			}
 			catch (Exception e) {
@@ -127,18 +127,17 @@ public class JedisSimpleSessionFactory implements RedisSessionFactory {
 			Jedis jedis = null;
 			boolean success = true;
 			try {
-				if (jedisPool == null && pools==null) {
+				if (getJedisPool() == null && getPools()==null) {
 					logger.error("获取Jedi连接池失败");
 					throw new RedisException("获取Jedi连接池失败");
 				}
 				jedis = getJedis();
 				jedisSession.setJedis(jedis);
 				return method.invoke(jedisSession, args);
-			}
-			catch (RuntimeException e) {
+			}catch (RuntimeException e) {
 				success = false;
 				if (jedis != null) {
-					jedis.close();
+					//jedis.close();
 					if(jedisPool!=null){
 						jedisPool.returnBrokenResource(jedis);
 					}
@@ -153,7 +152,7 @@ public class JedisSimpleSessionFactory implements RedisSessionFactory {
 			finally {
 				if (success && jedis != null) {
 					logger.debug("redis 链接关闭");
-					jedis.close();
+					//jedis.close();
 					if(success && jedisPool!=null){
 						jedisPool.returnResource(jedis);
 					}

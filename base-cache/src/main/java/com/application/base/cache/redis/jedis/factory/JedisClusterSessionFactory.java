@@ -124,7 +124,7 @@ public class JedisClusterSessionFactory implements RedisSessionFactory {
 			catch (RuntimeException e) {
 				success = false;
 				if (jedisCluster != null) {
-					jedisCluster.close();
+					//jedisCluster.close();
 					clusterPool.returnBrokenResource(jedisCluster);
 					jedisCluster=null;
 				}
@@ -134,7 +134,7 @@ public class JedisClusterSessionFactory implements RedisSessionFactory {
 			finally {
 				if (success && jedisCluster != null) {
 					logger.debug("redis 链接关闭");
-					jedisCluster.close();
+					//jedisCluster.close();
 					clusterPool.returnResource(jedisCluster);
 					jedisCluster=null;
 				}

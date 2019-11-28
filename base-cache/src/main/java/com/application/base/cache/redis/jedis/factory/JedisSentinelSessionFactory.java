@@ -74,7 +74,7 @@ public class  JedisSentinelSessionFactory implements RedisSessionFactory {
 			logger.debug("获取redis链接");
 			Jedis jedis = null;
 			try {
-				jedis = JedisSentinelSessionFactory.this.getSentinelPool().getResource();
+				jedis = JedisSentinelSessionFactory.this.sentinelPool.getResource();
 			}
 			catch (Exception e) {
 				logger.error("获取redis链接错误,{}", e);
@@ -112,7 +112,7 @@ public class  JedisSentinelSessionFactory implements RedisSessionFactory {
 			catch (RuntimeException e) {
 				success = false;
 				if (jedis != null) {
-					jedis.close();
+					//jedis.close();
 					sentinelPool.returnBrokenResource(jedis);
 					jedis=null;
 				}
@@ -122,7 +122,7 @@ public class  JedisSentinelSessionFactory implements RedisSessionFactory {
 			finally {
 				if (success && jedis != null) {
 					logger.debug("redis 链接关闭");
-					jedis.close();
+					//jedis.close();
 					sentinelPool.returnResource(jedis);
 					jedis=null;
 				}
