@@ -112,14 +112,14 @@
 			<version>${spring-boot.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.application.base</groupId>
-			<artifactId>base-es</artifactId>
-			<version>1.0.0-RELEASE</version>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<version>${spring-boot.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.application.base</groupId>
+			<artifactId>base-elastic</artifactId>
+			<version>1.0.0-RELEASE</version>
 		</dependency>
 		
 		<!-- demo 要使用的jar 配置 end -->
