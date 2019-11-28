@@ -34,7 +34,7 @@
     </bean>
     
 	<bean id="zookeeperFactory" class="com.application.base.config.zookeeper.curator.factory.ZooKeeperSimpleSessionFactory">
-        <property name="zooKeeperOperPool" ref="zookeeperPool"/>
+        <property name="zooKeeperPool" ref="zookeeperPool"/>
     </bean>
     
 </beans>
