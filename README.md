@@ -22,7 +22,7 @@
         该组件是生成服务常用的三级结构,具体会生成对应表的controller,service,dao,entity等相关代码.
 * #### base-core
         该组件是本平台组件最核心的组件,组件中包含了操作单/多数据源,设置缓存,读写分离等的具体业务逻辑实现.
-* #### base-es
+* #### base-elastic
         该组件是对Elasticsearch操作的API封装,封装的不是很好,后续有时间会加强.
 * #### base-generate
         该组件是生成服务常用的三级结构,具体会生成对应表的controller,service,dao,entity,web界面等相关代码.

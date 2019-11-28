@@ -56,7 +56,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.application.base</groupId>
-			<artifactId>base-es</artifactId>
+			<artifactId>base-elastic</artifactId>
 			<version>1.0.0-RELEASE</version>
 		</dependency>
 		<!--内部工具引用 end -->
