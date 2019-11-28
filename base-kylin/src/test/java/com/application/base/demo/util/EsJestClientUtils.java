@@ -1,6 +1,7 @@
 package com.application.base.demo.util;
 
 import com.application.base.demo.bean.ElasticData;
+import com.application.base.demo.exception.ElasticException;
 import com.application.base.demo.init.RestClientConfig;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.bulk.BackoffPolicy;
