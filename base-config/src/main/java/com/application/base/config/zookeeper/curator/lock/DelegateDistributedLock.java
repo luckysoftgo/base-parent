@@ -1,8 +1,7 @@
-package com.application.base.config.zookeeper.zk.lock;
+package com.application.base.config.zookeeper.curator.lock;
 
-import com.application.base.config.zookeeper.exception.DistributedLockException;
-import com.application.base.config.zookeeper.exception.ZookeeperException;
-import com.application.base.config.zookeeper.factory.ZookeeperSessionFactory;
+import com.application.base.config.zookeeper.exception.*;
+import com.application.base.config.zookeeper.factory.ZooKeeperSessionFactory;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.zookeeper.data.Stat;
@@ -22,24 +21,24 @@ public class DelegateDistributedLock implements DistributedLock {
     /**
      * session 工厂
      */
-    private ZookeeperSessionFactory sessionFactory;
+    private ZooKeeperSessionFactory sessionFactory;
     
     /**
      * 可重入排它锁
      */
     private InterProcessMutex processMutex;
     
-    public ZookeeperSessionFactory getSessionFactory(){
+    public ZooKeeperSessionFactory getSessionFactory(){
         return sessionFactory;
     }
 
-    public void setSessionFactory(ZookeeperSessionFactory sessionFactory){
+    public void setSessionFactory(ZooKeeperSessionFactory sessionFactory){
         this.sessionFactory = sessionFactory;
     }
     
     @Override
-    public boolean getDistLock(String baseNodeName, int expireTime, TimeUnit unit) throws DistributedLockException, ZookeeperException {
-        CuratorFramework client = sessionFactory.getZookeeperSession().getCuratorClient();
+    public boolean getDistLock(String baseNodeName, int expireTime, TimeUnit unit) throws DistributedLockException, ZooKeeperException {
+        CuratorFramework client = sessionFactory.getZooKeeperSession().getCuratorClient();
         processMutex = new InterProcessMutex(client,baseNodeName);
         int count = 0,max=5;
         //重试5次，每次最大等待2s，也就是最大等待10s
@@ -65,8 +64,8 @@ public class DelegateDistributedLock implements DistributedLock {
     }
     
     @Override
-    public boolean releaseDistLock(String baseNodeName) throws DistributedLockException, ZookeeperException {
-        CuratorFramework client = sessionFactory.getZookeeperSession().getCuratorClient();
+    public boolean releaseDistLock(String baseNodeName) throws DistributedLockException, ZooKeeperException {
+        CuratorFramework client = sessionFactory.getZooKeeperSession().getCuratorClient();
         try {
             if(processMutex != null && processMutex.isAcquiredInThisProcess()){
                 processMutex.release();
@@ -81,8 +80,8 @@ public class DelegateDistributedLock implements DistributedLock {
     }
     
     @Override
-    public boolean isLock(String baseNodeName) throws DistributedLockException, ZookeeperException {
-        CuratorFramework client = sessionFactory.getZookeeperSession().getCuratorClient();
+    public boolean isLock(String baseNodeName) throws DistributedLockException, ZooKeeperException {
+        CuratorFramework client = sessionFactory.getZooKeeperSession().getCuratorClient();
         try {
             Stat stat = client.checkExists().forPath(baseNodeName);
             if (stat==null){

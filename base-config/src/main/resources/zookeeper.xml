@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+   		http://www.springframework.org/schema/context
+   		http://www.springframework.org/schema/context/spring-context.xsd">
+    
+	
+    <!-- zookeeper 基础信息配置 (公共使用) -->
+    <bean id="zookeeperConfig" class="com.application.base.config.zookeeper.config.ZooKeeperConfig">
+        <property name="maxTotal" value="${zookeeper.pool.maxTotal}"/>
+        <property name="maxIdle" value="${zookeeper.pool.maxIdle}"/>
+        <property name="minIdle" value="${zookeeper.pool.minIdle}"/>
+        <property name="maxWaitMillis" value="${zookeeper.pool.maxWaitMillis}"/>
+        <property name="testOnBorrow" value="${zookeeper.pool.testOnBorrow}"/>
+        <property name="testOnReturn" value="${zookeeper.pool.testOnReturn}"/>
+        <property name="testWhileIdle" value="${zookeeper.pool.testWhileIdle}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${zookeeper.pool.timeBetweenEvictionRunsMillis}"/>
+        <property name="numTestsPerEvictionRun" value="${zookeeper.pool.numTestsPerEvictionRun}"/>
+		<!--配置信息-->
+        <property name="connectString" value="${zookeeper.connect.string}"/>
+        <property name="sessionTimeoutMs" value="${zookeeper.session.timeoutms}"/>
+        <property name="connectionTimeoutMs" value="${zookeeper.connection.timeoutms}" />
+		<property name="nameSpace" value="${zookeeper.name.space}" />
+    </bean>
+    
+	
+    <!-- 1. zookeeper 单点服务器,只存在一个zookeeper的服务器 -->
+    <bean id="zookeeperPool" class="com.application.base.config.zookeeper.pool.ZooKeeperOperPool">
+        <constructor-arg name="keeperConfig" ref="zookeeperConfig"/>
+    </bean>
+    
+	<bean id="zookeeperFactory" class="com.application.base.config.zookeeper.curator.factory.ZooKeeperSimpleSessionFactory">
+        <property name="zooKeeperOperPool" ref="zookeeperPool"/>
+    </bean>
+    
+</beans>
+

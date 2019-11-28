@@ -8,7 +8,7 @@ import org.I0Itec.zkclient.ZkClient;
  */
 public class LockTest {
 	public static void main(String[] args) throws Exception {
-		ZkClient zkClient = new ZkClient("118.24.157.96:2181", 3000);
+		ZkClient zkClient = new ZkClient("192.168.10.216:2181", 3000);
 		SimpleDistributedLock simple = new SimpleDistributedLock(zkClient, "/locker");
 		for (int i = 0; i < 10; i++) {
 			try {

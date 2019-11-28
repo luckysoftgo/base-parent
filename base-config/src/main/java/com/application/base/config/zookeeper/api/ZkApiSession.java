@@ -1,6 +1,6 @@
 package com.application.base.config.zookeeper.api;
 
-import com.application.base.config.zookeeper.exception.ZookeeperException;
+import com.application.base.config.zookeeper.exception.ZooKeeperException;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.retry.ExponentialBackoffRetry;
@@ -50,40 +50,17 @@ public interface ZkApiSession {
 	/**
 	 * 获得 Curator 的 Client 端.
 	 * @return
-	 * @throws ZookeeperException
+	 * @throws ZooKeeperException
 	 */
-	CuratorFramework getCuratorClient() throws ZookeeperException;
-	
-	/**
-	 * 获得zookeeper的实例
-	 * @param connectString:连接字符串：192.168.1.1:2181,192.168.2.2:2181
-	 * @param sessionTimeout:会话超时时间，单位毫秒，默认60000ms
-	 * @param connectionTimeout:连接创建超时时间，单位毫秒，默认60000ms
-	 * @param retryPolicy:连接机制
-	 * @return
-	 * @throws ZookeeperException
-	 */
-	CuratorFramework getClient(String connectString,Integer sessionTimeout,Integer connectionTimeout,RetryPolicy retryPolicy) throws ZookeeperException;
-	
-	/**
-	 * 获得zookeeper的实例
-	 * @param connectString:连接字符串：192.168.1.1:2181,192.168.2.2:2181
-	 * @param sessionTimeout:会话超时时间，单位毫秒，默认60000ms
-	 * @param connectionTimeout:连接创建超时时间，单位毫秒，默认60000ms
-	 * @param retryPolicy:连接机制
-	 * @param nameSpace:节点的命名空间.
-	 * @return
-	 * @throws ZookeeperException
-	 */
-	CuratorFramework getClient(String connectString,Integer sessionTimeout,Integer connectionTimeout,RetryPolicy retryPolicy,String nameSpace) throws ZookeeperException;
+	CuratorFramework getCuratorClient() throws ZooKeeperException;
 	
 	/**
 	 * 创建 zk 的节点.
 	 * @param nodeName:节点名称.
 	 * @return
-	 * @throws ZookeeperException
+	 * @throws ZooKeeperException
 	 */
-	boolean createNode(String nodeName) throws ZookeeperException;
+	boolean createNode(String nodeName) throws ZooKeeperException;
 	
 	/**
 	 * 创建 zk 的节点.
@@ -94,9 +71,9 @@ public interface ZkApiSession {
 			EPHEMERAL_SEQUENTIAL：临时并且带序列号
 	 * @param nodeName:节点名称.
 	 * @return
-	 * @throws ZookeeperException
+	 * @throws ZooKeeperException
 	 */
-	boolean createNode(CreateMode mode,String nodeName) throws ZookeeperException;
+	boolean createNode(CreateMode mode,String nodeName) throws ZooKeeperException;
 	
 	/**
 	 * 创建 zk 的节点并设置值.
@@ -108,18 +85,18 @@ public interface ZkApiSession {
 	 * @param nodeName:节点名称.
 	 * @param data:节点放入的值.
 	 * @return
-	 * @throws ZookeeperException
+	 * @throws ZooKeeperException
 	 */
-	boolean createNodeAndVal(CreateMode mode,String nodeName,String data) throws ZookeeperException;
+	boolean createNodeAndVal(CreateMode mode,String nodeName,String data) throws ZooKeeperException;
 	
 	/**
 	 * 更新节点信息.
 	 * @param nodeName:节点名称
 	 * @param data: 更新的value
 	 * @return
-	 * @throws ZookeeperException
+	 * @throws ZooKeeperException
 	 */
-	boolean updateNodeData(String nodeName,String data) throws ZookeeperException;
+	boolean updateNodeData(String nodeName,String data) throws ZooKeeperException;
 	
 	/**
 	 * 更新节点信息.
@@ -127,18 +104,18 @@ public interface ZkApiSession {
 	 * @param value: 更新的value
 	 * @param version 指定版本号
 	 * @return
-	 * @throws ZookeeperException
+	 * @throws ZooKeeperException
 	 */
-	boolean updateNodeData(String nodeName,String value,Integer version) throws ZookeeperException;
+	boolean updateNodeData(String nodeName,String value,Integer version) throws ZooKeeperException;
 	
 	/**
 	 * 删除一个节点
 	 * @param nodeName:节点名称
 	 * @param children:是否删除子节点,默认false
 	 * @return
-	 * @throws ZookeeperException
+	 * @throws ZooKeeperException
 	 */
-	boolean deleteNode(String nodeName,boolean children) throws  ZookeeperException;
+	boolean deleteNode(String nodeName,boolean children) throws  ZooKeeperException;
 	
 	/**
 	 * 删除一个节点
@@ -147,41 +124,41 @@ public interface ZkApiSession {
 	 * @param children:是否删除子节点,默认false
 	 * @param guaranteed:是否保证一定删除
 	 * @return
-	 * @throws ZookeeperException
+	 * @throws ZooKeeperException
 	 */
-	boolean deleteNodeByPros(String nodeName,Integer version,boolean children,boolean guaranteed) throws  ZookeeperException;
+	boolean deleteNodeByPros(String nodeName,Integer version,boolean children,boolean guaranteed) throws  ZooKeeperException;
 	
 	/**
 	 *获取节点的内容
 	 * @param nodeName:节点名称
 	 * @return
-	 * @throws ZookeeperException
+	 * @throws ZooKeeperException
 	 */
-	String getNodeData(String nodeName) throws ZookeeperException;
+	String getNodeData(String nodeName) throws ZooKeeperException;
 	
 	/**
 	 *获取节点的内容
 	 * @param nodeName:节点名称
 	 * @param stat:节点的状态
 	 * @return
-	 * @throws ZookeeperException
+	 * @throws ZooKeeperException
 	 */
-	String getNodeData(String nodeName,Stat stat) throws ZookeeperException;
+	String getNodeData(String nodeName,Stat stat) throws ZooKeeperException;
 	
 	/**
 	 * 检查节点是否存在
 	 * @param nodeName:节点名称
 	 * @return
-	 * @throws ZookeeperException
+	 * @throws ZooKeeperException
 	 */
-	boolean exists(String nodeName) throws ZookeeperException;
+	boolean exists(String nodeName) throws ZooKeeperException;
 	
 	/**
 	 * 获取节点下的子节点集合
 	 * @param nodeName:节点名称
 	 * @return
-	 * @throws ZookeeperException
+	 * @throws ZooKeeperException
 	 */
-	List<String> getNodeChildren(String nodeName)  throws ZookeeperException;
+	List<String> getNodeChildren(String nodeName)  throws ZooKeeperException;
 	
 }

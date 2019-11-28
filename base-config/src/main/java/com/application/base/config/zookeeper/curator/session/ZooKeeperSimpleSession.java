@@ -1,12 +1,10 @@
-package com.application.base.config.zookeeper.zk.session;
+package com.application.base.config.zookeeper.curator.session;
 
-import com.application.base.config.zookeeper.ZookeeperValidUtil;
+import com.application.base.config.zookeeper.ZooKeeperValidUtil;
 import com.application.base.config.zookeeper.api.ZkApiSession;
-import com.application.base.config.zookeeper.exception.ZookeeperException;
+import com.application.base.config.zookeeper.exception.ZooKeeperException;
 import com.application.base.utils.common.BaseStringUtil;
-import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
@@ -18,7 +16,7 @@ import java.util.List;
  * @Author: 孤狼
  * @desc: zookeeper session的实现.
  */
-public class ZookeeperSimpleSession implements ZkApiSession{
+public class ZooKeeperSimpleSession implements ZkApiSession{
 	
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -30,7 +28,7 @@ public class ZookeeperSimpleSession implements ZkApiSession{
 	public CuratorFramework getClient() {
 		if (null==client){
 			logger.error("[zookeeper错误:{}]","获得zookeeper实例对象为空");
-			throw new ZookeeperException("获得zookeeper实例对象为空");
+			throw new ZooKeeperException("获得zookeeper实例对象为空");
 		}
 		//开启服务.
 		client.start();
@@ -42,64 +40,14 @@ public class ZookeeperSimpleSession implements ZkApiSession{
 	}
 	
 	@Override
-	public CuratorFramework getCuratorClient() throws ZookeeperException {
+	public CuratorFramework getCuratorClient() throws ZooKeeperException {
 		return getClient();
 	}
 	
 	@Override
-	public CuratorFramework getClient(String connectString, Integer sessionTimeout, Integer connectionTimeout, RetryPolicy retryPolicy) throws ZookeeperException {
-		CuratorFramework client = null;
-		if (retryPolicy==null){
-			retryPolicy = getPolicy();
-		}
-		if (sessionTimeout==null){
-			sessionTimeout=SESSION_TIMEOUT_MS;
-		}
-		if (connectionTimeout==null){
-			connectionTimeout=CONNECTION_TIMEOUT_MS;
-		}
-		try {
-			ZookeeperValidUtil.zkValidated(logger, connectString);
-			client = CuratorFrameworkFactory.newClient(connectString,sessionTimeout,connectionTimeout,retryPolicy);
-		} catch (Exception e) {
-			logger.error("[zookeeper错误:{}]", e);
-			throw new ZookeeperException(e);
-		}
-		//开启服务.
-		client.start();
-		return client;
-	}
-	
-	@Override
-	public CuratorFramework getClient(String connectString, Integer sessionTimeout, Integer connectionTimeout, RetryPolicy retryPolicy,String nameSpace) throws ZookeeperException {
-		CuratorFramework client = null;
-		if (retryPolicy==null){
-			retryPolicy = getPolicy();
-		}
-		if (sessionTimeout==null){
-			sessionTimeout=SESSION_TIMEOUT_MS;
-		}
-		if (connectionTimeout==null){
-			connectionTimeout=CONNECTION_TIMEOUT_MS;
-		}
-		try {
-			ZookeeperValidUtil.zkValidated(logger, connectString);
-			ZookeeperValidUtil.zkValidated(logger, nameSpace);
-			client = CuratorFrameworkFactory.builder().connectString(connectString).sessionTimeoutMs(sessionTimeout).connectionTimeoutMs(connectionTimeout)
-							.retryPolicy(retryPolicy).namespace(nameSpace).build();
-		} catch (Exception e) {
-			logger.error("[zookeeper错误:{}]", e);
-			throw new ZookeeperException(e);
-		}
-		//开启服务.
-		client.start();
-		return client;
-	}
-	
-	@Override
-	public boolean createNode(String nodeName) throws ZookeeperException {
+	public boolean createNode(String nodeName) throws ZooKeeperException {
 		CuratorFramework client = getClient();
-		ZookeeperValidUtil.zkValidated(logger, nodeName);
+		ZooKeeperValidUtil.zkValidated(logger, nodeName);
 		try {
 			String value = client.create().forPath(nodeName);
 			if (BaseStringUtil.isNotEmpty(value)){
@@ -107,15 +55,15 @@ public class ZookeeperSimpleSession implements ZkApiSession{
 			}
 		} catch (Exception e) {
 			logger.error("[zookeeper错误:{}]", e);
-			throw new ZookeeperException(e);
+			throw new ZooKeeperException(e);
 		}
 		return false;
 	}
 	
 	@Override
-	public boolean createNode(CreateMode mode, String nodeName) throws ZookeeperException {
+	public boolean createNode(CreateMode mode, String nodeName) throws ZooKeeperException {
 		CuratorFramework client = getClient();
-		ZookeeperValidUtil.zkValidated(logger, nodeName);
+		ZooKeeperValidUtil.zkValidated(logger, nodeName);
 		String value = "";
 		try {
 			if (mode==null){
@@ -128,16 +76,16 @@ public class ZookeeperSimpleSession implements ZkApiSession{
 			}
 		} catch (Exception e) {
 			logger.error("[zookeeper错误:{}]", e);
-			throw new ZookeeperException(e);
+			throw new ZooKeeperException(e);
 		}
 		return false;
 	}
 	
 	@Override
-	public boolean createNodeAndVal(CreateMode mode, String nodeName, String data) throws ZookeeperException {
+	public boolean createNodeAndVal(CreateMode mode, String nodeName, String data) throws ZooKeeperException {
 		CuratorFramework client = getClient();
-		ZookeeperValidUtil.zkValidated(logger, nodeName);
-		ZookeeperValidUtil.zkValidated(logger,data);
+		ZooKeeperValidUtil.zkValidated(logger, nodeName);
+		ZooKeeperValidUtil.zkValidated(logger,data);
 		String result = "";
 		try {
 			if (mode==null){
@@ -150,16 +98,16 @@ public class ZookeeperSimpleSession implements ZkApiSession{
 			}
 		} catch (Exception e) {
 			logger.error("[zookeeper错误:{}]", e);
-			throw new ZookeeperException(e);
+			throw new ZooKeeperException(e);
 		}
 		return false;
 	}
 	
 	@Override
-	public boolean updateNodeData(String nodeName,String value) throws ZookeeperException {
+	public boolean updateNodeData(String nodeName,String value) throws ZooKeeperException {
 		CuratorFramework client = getClient();
-		ZookeeperValidUtil.zkValidated(logger, nodeName);
-		ZookeeperValidUtil.zkValidated(logger,value);
+		ZooKeeperValidUtil.zkValidated(logger, nodeName);
+		ZooKeeperValidUtil.zkValidated(logger,value);
 		try {
 			Stat stat = client.setData().forPath(nodeName,value.getBytes(ENDCODING));
 			if (stat!=null){
@@ -167,16 +115,16 @@ public class ZookeeperSimpleSession implements ZkApiSession{
 			}
 		} catch (Exception e) {
 			logger.error("[zookeeper错误:{}]", e);
-			throw new ZookeeperException(e);
+			throw new ZooKeeperException(e);
 		}
 		return false;
 	}
 	
 	@Override
-	public boolean updateNodeData(String nodeName,String value, Integer version) throws ZookeeperException {
+	public boolean updateNodeData(String nodeName,String value, Integer version) throws ZooKeeperException {
 		CuratorFramework client = getClient();
-		ZookeeperValidUtil.zkValidated(logger, nodeName);
-		ZookeeperValidUtil.zkValidated(logger,value);
+		ZooKeeperValidUtil.zkValidated(logger, nodeName);
+		ZooKeeperValidUtil.zkValidated(logger,value);
 		try {
 			Stat stat = null;
 			if (version==null){
@@ -189,15 +137,15 @@ public class ZookeeperSimpleSession implements ZkApiSession{
 			}
 		} catch (Exception e) {
 			logger.error("[zookeeper错误:{}]", e);
-			throw new ZookeeperException(e);
+			throw new ZooKeeperException(e);
 		}
 		return false;
 	}
 	
 	@Override
-	public boolean deleteNode(String nodeName,boolean children) throws ZookeeperException {
+	public boolean deleteNode(String nodeName,boolean children) throws ZooKeeperException {
 		CuratorFramework client = getClient();
-		ZookeeperValidUtil.zkValidated(logger, nodeName);
+		ZooKeeperValidUtil.zkValidated(logger, nodeName);
 		try {
 			if (children){
 				client.delete().forPath(nodeName);
@@ -207,14 +155,14 @@ public class ZookeeperSimpleSession implements ZkApiSession{
 			return true;
 		} catch (Exception e) {
 			logger.error("[zookeeper错误:{}]", e);
-			throw new ZookeeperException(e);
+			throw new ZooKeeperException(e);
 		}
 	}
 	
 	@Override
-	public boolean deleteNodeByPros(String nodeName, Integer version, boolean children, boolean guaranteed) throws ZookeeperException {
+	public boolean deleteNodeByPros(String nodeName, Integer version, boolean children, boolean guaranteed) throws ZooKeeperException {
 		CuratorFramework client = getClient();
-		ZookeeperValidUtil.zkValidated(logger, nodeName);
+		ZooKeeperValidUtil.zkValidated(logger, nodeName);
 		try {
 			if (version==null && children==false && guaranteed==false){
 				client.delete().forPath(nodeName);
@@ -236,40 +184,40 @@ public class ZookeeperSimpleSession implements ZkApiSession{
 			return true;
 		} catch (Exception e) {
 			logger.error("[zookeeper错误:{}]", e);
-			throw new ZookeeperException(e);
+			throw new ZooKeeperException(e);
 		}
 	}
 	
 	@Override
-	public String getNodeData(String nodeName) throws ZookeeperException {
+	public String getNodeData(String nodeName) throws ZooKeeperException {
 		CuratorFramework client = getClient();
-		ZookeeperValidUtil.zkValidated(logger, nodeName);
+		ZooKeeperValidUtil.zkValidated(logger, nodeName);
 		try {
 			byte[] values = client.getData().forPath(nodeName);
 			return new String(values,ENDCODING);
 		} catch (Exception e) {
 			logger.error("[zookeeper错误:{}]", e);
-			throw new ZookeeperException(e);
+			throw new ZooKeeperException(e);
 		}
 	}
 	
 	@Override
-	public String getNodeData(String nodeName, Stat stat) throws ZookeeperException {
+	public String getNodeData(String nodeName, Stat stat) throws ZooKeeperException {
 		CuratorFramework client = getClient();
-		ZookeeperValidUtil.zkValidated(logger, nodeName);
+		ZooKeeperValidUtil.zkValidated(logger, nodeName);
 		try {
 			byte[] values = client.getData().storingStatIn(stat).forPath(nodeName);
 			return new String(values,ENDCODING);
 		} catch (Exception e) {
 			logger.error("[zookeeper错误:{}]", e);
-			throw new ZookeeperException(e);
+			throw new ZooKeeperException(e);
 		}
 	}
 
 	@Override
-	public boolean exists(String nodeName) throws ZookeeperException {
+	public boolean exists(String nodeName) throws ZooKeeperException {
 		CuratorFramework client = getClient();
-		ZookeeperValidUtil.zkValidated(logger, nodeName);
+		ZooKeeperValidUtil.zkValidated(logger, nodeName);
 		try {
 			Stat stat = client.checkExists().forPath(nodeName);
 			if(stat.getCtime()!=0){
@@ -278,20 +226,20 @@ public class ZookeeperSimpleSession implements ZkApiSession{
 			return false;
 		} catch (Exception e) {
 			logger.error("[zookeeper错误:{}]", e);
-			throw new ZookeeperException(e);
+			throw new ZooKeeperException(e);
 		}
 	}
 	
 	@Override
-	public List<String> getNodeChildren(String nodeName) throws ZookeeperException {
+	public List<String> getNodeChildren(String nodeName) throws ZooKeeperException {
 		CuratorFramework client = getClient();
-		ZookeeperValidUtil.zkValidated(logger, nodeName);
+		ZooKeeperValidUtil.zkValidated(logger, nodeName);
 		try {
 			List<String> nodes = client.getChildren().forPath(nodeName);
 			return nodes;
 		} catch (Exception e) {
 			logger.error("[zookeeper错误:{}]", e);
-			throw new ZookeeperException(e);
+			throw new ZooKeeperException(e);
 		}
 	}
 	

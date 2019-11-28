@@ -4,14 +4,14 @@ package com.application.base.config.zookeeper.exception;
  * @desc: 异常处理
  * @author 孤狼
  */
-public class ZookeeperException extends RuntimeException {
+public class ZooKeeperException extends RuntimeException {
 
 	/**
 	 * @Fields serialVersionUID : TODO
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public ZookeeperException() {
+	public ZooKeeperException() {
 	
 	}
 
@@ -24,7 +24,7 @@ public class ZookeeperException extends RuntimeException {
 	 *            the detail message. The detail message is saved for later
 	 *            retrieval by the {@link #getMessage()} method.
 	 */
-	public ZookeeperException(String message) {
+	public ZooKeeperException(String message) {
 		super(message);
 	}
 
@@ -42,7 +42,7 @@ public class ZookeeperException extends RuntimeException {
 	 *            unknown.)
 	 * @since 1.4
 	 */
-	public ZookeeperException(Throwable cause) {
+	public ZooKeeperException(Throwable cause) {
 		super(cause);
 	}
 
@@ -63,7 +63,7 @@ public class ZookeeperException extends RuntimeException {
 	 *            unknown.)
 	 * @since 1.4
 	 */
-	public ZookeeperException(String message, Throwable cause) {
+	public ZooKeeperException(String message, Throwable cause) {
 		super(message, cause);
 	}
 }
