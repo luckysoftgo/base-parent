@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
  * @desc zk 分布式锁实现.
  * @author 孤狼
  */
-public class DelegateDistributedLock implements DistributedLock {
+public class ZkDelegateDistributedLock implements ZkDistributedLock {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
     
@@ -37,7 +37,7 @@ public class DelegateDistributedLock implements DistributedLock {
     }
     
     @Override
-    public boolean getDistLock(String baseNodeName, int expireTime, TimeUnit unit) throws DistributedLockException, ZooKeeperException {
+    public boolean getDistLock(String baseNodeName, int expireTime, TimeUnit unit) throws ZkDistributedLockException, ZooKeeperException {
         CuratorFramework client = sessionFactory.getZooKeeperSession().getCuratorClient();
         processMutex = new InterProcessMutex(client,baseNodeName);
         int count = 0,max=5;
@@ -64,7 +64,7 @@ public class DelegateDistributedLock implements DistributedLock {
     }
     
     @Override
-    public boolean releaseDistLock(String baseNodeName) throws DistributedLockException, ZooKeeperException {
+    public boolean releaseDistLock(String baseNodeName) throws ZkDistributedLockException, ZooKeeperException {
         CuratorFramework client = sessionFactory.getZooKeeperSession().getCuratorClient();
         try {
             if(processMutex != null && processMutex.isAcquiredInThisProcess()){
@@ -80,7 +80,7 @@ public class DelegateDistributedLock implements DistributedLock {
     }
     
     @Override
-    public boolean isLock(String baseNodeName) throws DistributedLockException, ZooKeeperException {
+    public boolean isLock(String baseNodeName) throws ZkDistributedLockException, ZooKeeperException {
         CuratorFramework client = sessionFactory.getZooKeeperSession().getCuratorClient();
         try {
             Stat stat = client.checkExists().forPath(baseNodeName);

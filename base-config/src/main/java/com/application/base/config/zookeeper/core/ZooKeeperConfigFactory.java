@@ -18,11 +18,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * @DESC: 工厂实例,继承他人的实现.
  **/
 public class ZooKeeperConfigFactory extends BasePooledObjectFactory<CuratorFramework> {
-	
-	/**
-	 * 编码集
-	 */
-	String ENDCODING="UTF-8";
 	/**
 	 * 会话超时时间，单位毫秒，默认60000ms
 	 */
@@ -49,8 +44,8 @@ public class ZooKeeperConfigFactory extends BasePooledObjectFactory<CuratorFrame
 		ZooKeeperConfig config = nodesReference.get();
 		CuratorFramework client = null;
 		RetryPolicy retryPolicy = config.getRetryPolicy();
-		Integer sessionTimeout=config.getSessionTimeoutMs(),
-				connectionTimeout=config.getConnectionTimeoutMs();
+		Integer sessionTimeout=config.getSessionTimeoutMs();
+		Integer connectionTimeout=config.getConnectionTimeoutMs();
 		String connectStr = config.getConnectString();
 		String nameSpace=config.getNameSpace();
 		if (null==config.getRetryPolicy()){
@@ -70,7 +65,7 @@ public class ZooKeeperConfigFactory extends BasePooledObjectFactory<CuratorFrame
 				client = CuratorFrameworkFactory
 						.newClient(connectStr,sessionTimeout,connectionTimeout,retryPolicy);
 			} catch (Exception e) {
-				throw new ZooKeeperException("创建对象失败,error:"+e);
+				throw new ZooKeeperException("创建 CuratorFramework 对象失败,error:"+e);
 			}
 		}else{
 			try {
@@ -81,7 +76,7 @@ public class ZooKeeperConfigFactory extends BasePooledObjectFactory<CuratorFrame
 						.retryPolicy(retryPolicy)
 						.namespace(nameSpace).build();
 			} catch (Exception e) {
-				throw new ZooKeeperException("创建对象失败,error:"+e);
+				throw new ZooKeeperException("创建 CuratorFramework 对象失败,error:"+e);
 			}
 		}
 		return client;

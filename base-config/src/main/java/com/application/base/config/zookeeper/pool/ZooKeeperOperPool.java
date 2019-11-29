@@ -3,7 +3,6 @@ package com.application.base.config.zookeeper.pool;
 
 import com.application.base.config.zookeeper.config.ZooKeeperConfig;
 import com.application.base.config.zookeeper.core.ZooKeeperConfigFactory;
-import org.apache.commons.pool2.impl.AbandonedConfig;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.curator.framework.CuratorFramework;
 
@@ -27,7 +26,9 @@ public class ZooKeeperOperPool extends GenericObjectPool<CuratorFramework> {
 	 * @param keeperConfig
 	 * @param abandonedConfig
 	 */
+	/*
 	public ZooKeeperOperPool(ZooKeeperConfig keeperConfig, AbandonedConfig abandonedConfig) {
 		super(new ZooKeeperConfigFactory(keeperConfig),keeperConfig,abandonedConfig);
 	}
+	*/
 }

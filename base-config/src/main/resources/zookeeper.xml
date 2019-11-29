@@ -36,6 +36,10 @@
 	<bean id="zookeeperFactory" class="com.application.base.config.zookeeper.curator.factory.ZooKeeperSimpleSessionFactory">
         <property name="zooKeeperPool" ref="zookeeperPool"/>
     </bean>
-    
+	
+	<bean id="zookeeperLock" class="com.application.base.config.zookeeper.curator.lock.ZkDelegateDistributedLock">
+		<property name="sessionFactory" ref="zookeeperFactory"/>
+	</bean>
+	
 </beans>
 

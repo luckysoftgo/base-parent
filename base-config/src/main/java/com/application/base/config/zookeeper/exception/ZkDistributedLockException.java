@@ -4,14 +4,14 @@ package com.application.base.config.zookeeper.exception;
  * @desc zookeeper分布式锁
  * @author 孤狼
  */
-public class DistributedLockException extends RuntimeException {
+public class ZkDistributedLockException extends RuntimeException {
 
     /**
      * @Fields serialVersionUID : TODO
      */
     private static final long serialVersionUID = 1L;
 
-    public DistributedLockException(){}
+    public ZkDistributedLockException(){}
 
     /**
      * Constructs a new runtime exception with the specified detail message.
@@ -21,7 +21,7 @@ public class DistributedLockException extends RuntimeException {
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public DistributedLockException(String message) {
+    public ZkDistributedLockException(String message) {
         super(message);
     }
 
@@ -38,7 +38,7 @@ public class DistributedLockException extends RuntimeException {
      *              unknown.)
      * @since 1.4
      */
-    public DistributedLockException(Throwable cause) {
+    public ZkDistributedLockException(Throwable cause) {
         super(cause);
     }
 
@@ -56,7 +56,7 @@ public class DistributedLockException extends RuntimeException {
      *                unknown.)
      * @since 1.4
      */
-    public DistributedLockException(String message, Throwable cause) {
+    public ZkDistributedLockException(String message, Throwable cause) {
         super(message, cause);
     }
 

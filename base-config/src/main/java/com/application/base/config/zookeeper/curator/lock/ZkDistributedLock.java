@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
  * @desc 分布式锁
  * @author 孤狼
  */
-public interface DistributedLock {
+public interface ZkDistributedLock {
 
     /**
      * 获取zk 的分布式锁.
@@ -17,7 +17,7 @@ public interface DistributedLock {
      * @return
      * @throws ZooKeeperException
      */
-    boolean getDistLock(String baseNodeName, int expireTime,TimeUnit unit) throws DistributedLockException, ZooKeeperException;
+    boolean getDistLock(String baseNodeName, int expireTime,TimeUnit unit) throws ZkDistributedLockException, ZooKeeperException;
     
     /**
      * 释放锁资源.
@@ -25,7 +25,7 @@ public interface DistributedLock {
      * @return
      * @throws ZooKeeperException
      */
-    boolean releaseDistLock(String baseNodeName) throws DistributedLockException,ZooKeeperException;
+    boolean releaseDistLock(String baseNodeName) throws ZkDistributedLockException,ZooKeeperException;
     
     /**
      * 是否锁住的.
@@ -33,6 +33,6 @@ public interface DistributedLock {
      * @return
      * @throws ZooKeeperException
      */
-    boolean isLock(String baseNodeName) throws DistributedLockException,ZooKeeperException;
+    boolean isLock(String baseNodeName) throws ZkDistributedLockException,ZooKeeperException;
     
 }

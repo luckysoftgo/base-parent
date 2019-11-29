@@ -19,15 +19,6 @@ public interface ZkApiSession {
 	 * 编码集
 	 */
 	String ENDCODING="UTF-8";
-	/**
-	 * 会话超时时间，单位毫秒，默认60000ms
-	 */
-	int SESSION_TIMEOUT_MS=60000;
-	
-	/**
-	 * 连接创建超时时间，单位毫秒，默认60000ms
-	 */
-	int CONNECTION_TIMEOUT_MS=60000;
 	
 	/**
 	 * 连接重试策略:刚开始重试间隔为1秒，之后重试间隔逐渐增加，最多重试不超过三次

@@ -21,8 +21,6 @@ public class ZooKeeperSimpleSessionFactory implements ZooKeeperSessionFactory {
 	
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
-	private ZooKeeperOperPool zooKeeperPool;
-	
 	public ZooKeeperSimpleSessionFactory() {
 	}
 	
@@ -30,10 +28,10 @@ public class ZooKeeperSimpleSessionFactory implements ZooKeeperSessionFactory {
 		this.zooKeeperPool = zooKeeperPool;
 	}
 	
+	private ZooKeeperOperPool zooKeeperPool;
 	public ZooKeeperOperPool getZooKeeperPool() {
 		return zooKeeperPool;
 	}
-	
 	public void setZooKeeperPool(ZooKeeperOperPool zooKeeperPool) {
 		this.zooKeeperPool = zooKeeperPool;
 	}
@@ -43,20 +41,20 @@ public class ZooKeeperSimpleSessionFactory implements ZooKeeperSessionFactory {
 		ZkApiSession session = null;
 		try {
 			session = (ZkApiSession) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-					new Class[]{ZkApiSession.class}, new ZookeeperSimpleSessionProxy(new ZooKeeperSimpleSession()));
+					new Class[]{ZkApiSession.class}, new ZooKeeperSimpleSessionProxy(new ZooKeeperSimpleSession()));
 		} catch (Exception e) {
 			logger.error("错误信息是:{}", e);
 		}
 		return session;
 	}
 	
-	private class ZookeeperSimpleSessionProxy implements InvocationHandler {
+	private class ZooKeeperSimpleSessionProxy implements InvocationHandler {
 		
 		private Logger logger = LoggerFactory.getLogger(getClass());
 		
 		private ZooKeeperSimpleSession zookeeperSimpleSession;
 		
-		public ZookeeperSimpleSessionProxy(ZooKeeperSimpleSession zookeeperSimpleSession) {
+		public ZooKeeperSimpleSessionProxy(ZooKeeperSimpleSession zookeeperSimpleSession) {
 			this.zookeeperSimpleSession = zookeeperSimpleSession;
 		}
 		
@@ -102,8 +100,7 @@ public class ZooKeeperSimpleSessionFactory implements ZooKeeperSessionFactory {
 				zkClient = getZKClient();
 				zookeeperSimpleSession.setClient(zkClient);
 				return method.invoke(zookeeperSimpleSession, args);
-			}
-			catch (RuntimeException e) {
+			}catch (RuntimeException e) {
 				success = false;
 				if (zkClient != null) {
 					zkClient.close();
