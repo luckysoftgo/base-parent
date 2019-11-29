@@ -42,9 +42,8 @@
 		<commons-lang.version>2.6</commons-lang.version>
 		<commons-logging.version>1.2</commons-logging.version>
 		<commons-net.version>3.6</commons-net.version>
-		<commons-lang3.version>3.4</commons-lang3.version>
-		<commons-pool.version>1.6</commons-pool.version>
-		<commons-pool2.version>2.4.2</commons-pool2.version>
+		<commons-lang3.version>3.6</commons-lang3.version>
+		<commons-pool2.version>2.6.2</commons-pool2.version>
 		
 		<!-- log for project -->
         <slf4j-api.version>1.7.25</slf4j-api.version>
@@ -92,7 +91,7 @@
 		    <groupId>org.slf4j</groupId>  
 		    <artifactId>jul-to-slf4j</artifactId>  
 		    <version>${slf4j-api.version}</version>  
-		</dependency>  
+		</dependency>
 		<!-- log4j日志到slf4j去 -->
         <dependency>
 	         <groupId>org.slf4j</groupId>
@@ -192,11 +191,6 @@
 
 
 		<!-- 连接池 -->
-		<dependency>
-		    <groupId>commons-pool</groupId>
-		    <artifactId>commons-pool</artifactId>
-		    <version>${commons-pool.version}</version>
-		</dependency>
 		<dependency>
 		    <groupId>org.apache.commons</groupId>
 		    <artifactId>commons-pool2</artifactId>

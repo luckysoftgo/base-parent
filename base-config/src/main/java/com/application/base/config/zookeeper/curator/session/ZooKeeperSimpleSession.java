@@ -3,7 +3,7 @@ package com.application.base.config.zookeeper.curator.session;
 import com.application.base.config.zookeeper.ZooKeeperValidUtil;
 import com.application.base.config.zookeeper.api.ZkApiSession;
 import com.application.base.config.zookeeper.exception.ZooKeeperException;
-import com.application.base.utils.common.BaseStringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
@@ -50,7 +50,7 @@ public class ZooKeeperSimpleSession implements ZkApiSession{
 		ZooKeeperValidUtil.zkValidated(logger, nodeName);
 		try {
 			String value = client.create().forPath(nodeName);
-			if (BaseStringUtil.isNotEmpty(value)){
+			if (StringUtils.isNotEmpty(value)){
 				return true;
 			}
 		} catch (Exception e) {
@@ -71,7 +71,7 @@ public class ZooKeeperSimpleSession implements ZkApiSession{
 			}else{
 				value = client.create().withMode(mode).forPath(nodeName);
 			}
-			if (BaseStringUtil.isNotEmpty(value)){
+			if (StringUtils.isNotEmpty(value)){
 				return true;
 			}
 		} catch (Exception e) {
@@ -93,7 +93,7 @@ public class ZooKeeperSimpleSession implements ZkApiSession{
 			}else{
 				result = client.create().withMode(mode).forPath(nodeName,data.getBytes(ENDCODING));
 			}
-			if (BaseStringUtil.isNotEmpty(result)){
+			if (StringUtils.isNotEmpty(result)){
 				return true;
 			}
 		} catch (Exception e) {
