@@ -7,19 +7,18 @@ import org.redisson.config.Config;
 import java.io.Serializable;
 
 /**
- * @NAME: MasterSlaveConfig
- * @DESC: 主从配置.
+ * @NAME: RedissonCloudConfig
+ * @DESC: redis云服务配置.
  * @USER: 孤狼
  **/
-public class MasterSlaveConfig extends BasicConfig implements Serializable {
+public class RedissonCloudConfig extends RedissonBasicConfig implements Serializable {
+	
 	/**
 	 * 连接地址:redis://127.0.0.1:6379;redis://127.0.0.1:26379
 	 */
 	private String hostInfos;
-	/**
-	 * 设置redis的主节点:redis://127.0.0.1:6379
-	 */
-	private String masterAddr;
+	
+	
 	/**
 	 * 密码分割符号(和 hostInfos 是一一对应的)
 	 */
@@ -31,32 +30,30 @@ public class MasterSlaveConfig extends BasicConfig implements Serializable {
 	 */
 	@Override
 	public Config getInstance(){
-		
 		Config config = new Config();
 		//指定编码，默认编码为org.redisson.codec.JsonJacksonCodec
 		//之前使用的spring-data-redis，用的客户端jedis，编码为org.springframework.data.redis.serializer.StringRedisSerializer
 		//改用redisson后为了之间数据能兼容，这里修改编码为org.redisson.client.codec.StringCodec
 		config.setCodec(new StringCodec());
-		// 集群状态扫描间隔时间，单位是毫秒
-		config.useMasterSlaveServers().setMasterAddress(masterAddr);
+		//集群状态扫描间隔时间,单位是毫秒
+		config.useReplicatedServers().setScanInterval(2000);
 		String[] address=initConfig();
 		if(address!=null && address.length>0){
-			config.useMasterSlaveServers().addSlaveAddress(address);
+			config.useReplicatedServers().addNodeAddress(address);
 		}
 		//设置对于master节点的连接池中连接数最大为500
-		config.useMasterSlaveServers().setMasterConnectionPoolSize(getMasterConnectionPoolSize());
+		config.useReplicatedServers().setMasterConnectionPoolSize(getMasterConnectionPoolSize());
 		//设置对于slave节点的连接池中连接数最大为500
-		config.useMasterSlaveServers().setSlaveConnectionPoolSize(getSlaveConnectionPoolSize());
+		config.useReplicatedServers().setSlaveConnectionPoolSize(getSlaveConnectionPoolSize());
 		//如果当前连接池里的连接数量超过了最小空闲连接数，而同时有连接空闲时间超过了该数值，那么这些连接将会自动被关闭，并从连接池里去掉。时间单位是毫秒。
-		config.useMasterSlaveServers().setIdleConnectionTimeout(getIdleConnectionTimeout());
+		config.useReplicatedServers().setIdleConnectionTimeout(getIdleConnectionTimeout());
 		//同任何节点建立连接时的等待超时。时间单位是毫秒。
-		config.useMasterSlaveServers().setConnectTimeout(getConnectTimeout());
+		config.useReplicatedServers().setConnectTimeout(getConnectTimeout());
 		//等待节点回复命令的时间。该时间从命令发送成功时开始计时。
-		config.useMasterSlaveServers().setTimeout(getTimeout());
-		config.useMasterSlaveServers().setPingTimeout(getPingTimeout());
+		config.useReplicatedServers().setTimeout(getTimeout());
+		config.useReplicatedServers().setPingTimeout(getPingTimeout());
 		//当与某个节点的连接断开时，等待与其重新建立连接的时间间隔。时间单位是毫秒。
-		config.useMasterSlaveServers().setReconnectionTimeout(getReconnectionTimeout());
-		
+		config.useReplicatedServers().setReconnectionTimeout(getReconnectionTimeout());
 		return config;
 	}
 	
@@ -82,11 +79,4 @@ public class MasterSlaveConfig extends BasicConfig implements Serializable {
 		this.hostInfos = hostInfos;
 	}
 	
-	public String getMasterAddr() {
-		return masterAddr;
-	}
-	
-	public void setMasterAddr(String masterAddr) {
-		this.masterAddr = masterAddr;
-	}
 }

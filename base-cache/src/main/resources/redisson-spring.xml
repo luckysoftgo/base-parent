@@ -35,14 +35,14 @@
     <bean id="redissonFactory" class="com.application.base.cache.redisson.redisson.factory.RedissonInstanceSessionFactory">
         <property name="instanceClient" ref="standalone"/>
     </bean>
-    <bean id="redissonDistLock" class="com.application.base.cache.redisson.redisson.lock.JDelegateDistributedLock">
-        <property name="lockFactory" ref="redissonFactory"/>
+    <bean id="redissonDistLock" class="com.application.base.cache.redisson.redisson.lock.RedissonDelegateDistributedLock">
+        <property name="cloudLockFactory" ref="redissonFactory"/>
     </bean>
 
 
 
-
     <!-- 哨兵部署应用 -->
+	<!--
     <redisson:client
             id="sentinel"
             codec-ref="stringCodec">
@@ -59,18 +59,19 @@
             <redisson:sentinel-address value="redis://127.0.0.1:26399" />
         </redisson:sentinel-servers>
     </redisson:client>
-    <bean id="redissonFactory" class="com.application.base.cache.redisson.redisson.factory.RedissonInstanceSessionFactory">
+    <bean id="sentinelFactory" class="com.application.base.cache.redisson.redisson.factory.RedissonInstanceSessionFactory">
         <property name="instanceClient" ref="sentinel"/>
     </bean>
-    <bean id="redissonDistLock" class="com.application.base.cache.redisson.redisson.lock.JDelegateDistributedLock">
-        <property name="lockFactory" ref="redissonFactory"/>
+    <bean id="sentinelDistLock" class="com.application.base.cache.redisson.redisson.lock.RedissonDelegateDistributedLock">
+        <property name="cloudLockFactory" ref="sentinelFactory"/>
     </bean>
-
+	-->
 
 
 
 
     <!-- 集群部署应用 -->
+	<!--
     <redisson:client
             id="cluster"
             codec-ref="stringCodec">
@@ -89,18 +90,19 @@
             <redisson:node-address value="redis://127.0.0.1:6384" />
         </redisson:cluster-servers>
     </redisson:client>
-    <bean id="redissonFactory" class="com.application.base.cache.redisson.redisson.factory.RedissonInstanceSessionFactory">
+    <bean id="clusterFactory" class="com.application.base.cache.redisson.redisson.factory.RedissonInstanceSessionFactory">
         <property name="instanceClient" ref="cluster"/>
     </bean>
-    <bean id="redissonDistLock" class="com.application.base.cache.redisson.redisson.lock.JDelegateDistributedLock">
-        <property name="lockFactory" ref="redissonFactory"/>
+    <bean id="clusterDistLock" class="com.application.base.cache.redisson.redisson.lock.RedissonDelegateDistributedLock">
+        <property name="cloudLockFactory" ref="clusterFactory"/>
     </bean>
-
+	-->
 
 
 
 
     <!-- 主从部署应用 -->
+	<!--
     <redisson:client
             id="masterSlave"
             codec-ref="stringCodec">
@@ -116,13 +118,13 @@
             <redisson:slave-address value="redis://127.0.0.1:6381" />
         </redisson:master-slave-servers>
     </redisson:client>
-    <bean id="redissonFactory" class="com.application.base.cache.redisson.redisson.factory.RedissonInstanceSessionFactory">
+    <bean id="masterSlaveFactory" class="com.application.base.cache.redisson.redisson.factory.RedissonInstanceSessionFactory">
         <property name="instanceClient" ref="masterSlave"/>
     </bean>
-    <bean id="redissonDistLock" class="com.application.base.cache.redisson.redisson.lock.JDelegateDistributedLock">
-        <property name="lockFactory" ref="redissonFactory"/>
+    <bean id="masterSlaveDistLock" class="com.application.base.cache.redisson.redisson.lock.RedissonDelegateDistributedLock">
+        <property name="cloudLockFactory" ref="masterSlaveFactory"/>
     </bean>
-
+	-->
 
 </beans>
 

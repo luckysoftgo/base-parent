@@ -1,7 +1,7 @@
 package com.application.base.cache.redisson.redisson.lock;
 
 import com.application.base.cache.redisson.api.RedissonSession;
-import com.application.base.cache.redisson.exception.JDistributedLockException;
+import com.application.base.cache.redisson.exception.RedissonDistributedLockException;
 import com.application.base.cache.redisson.exception.RedissonException;
 import com.application.base.cache.redisson.factory.RedissonSessionFactory;
 import org.redisson.api.RLock;
@@ -14,31 +14,29 @@ import java.util.concurrent.TimeUnit;
  * @desc 分布式锁实现.
  * @author 孤狼
  */
-public class JDelegateDistributedLock implements JDistributedLock {
+public class RedissonDelegateDistributedLock implements RedissonDistributedLock {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
-    
-    private RedissonSessionFactory lockFactory;
-    
-    public RedissonSessionFactory getLockFactory() {
-        return lockFactory;
-    }
-    
-    public void setLockFactory(RedissonSessionFactory lockFactory) {
-        this.lockFactory = lockFactory;
-    }
-   
+	
+	private RedissonSessionFactory cloudLockFactory;
+	
+	public RedissonSessionFactory getCloudLockFactory() {
+		return cloudLockFactory;
+	}
+	public void setCloudLockFactory(RedissonSessionFactory cloudLockFactory) {
+		this.cloudLockFactory = cloudLockFactory;
+	}
 
     @Override
-    public boolean loopLock(String uniqueKey) throws JDistributedLockException, RedissonException {
+    public boolean loopLock(String uniqueKey) throws RedissonDistributedLockException, RedissonException {
        return loopLock(uniqueKey,5,TimeUnit.MILLISECONDS);
     }
     
     @Override
-    public boolean loopLock(String uniqueKey,long timeout,TimeUnit unit) throws JDistributedLockException, RedissonException {
+    public boolean loopLock(String uniqueKey,long timeout,TimeUnit unit) throws RedissonDistributedLockException, RedissonException {
         RedissonSession session = null;
         try {
-            session = lockFactory.getRedissonSession();
+            session = cloudLockFactory.getRedissonSession();
             do {
                 logger.debug("lock key: " + uniqueKey);
                 RLock rLock = session.getRLock(uniqueKey);
@@ -56,21 +54,21 @@ public class JDelegateDistributedLock implements JDistributedLock {
         } catch (RedissonException e) {
             throw e;
         } catch (Exception e) {
-            throw new JDistributedLockException(e);
+            throw new RedissonDistributedLockException(e);
         }
     }
     
 
     @Override
-    public boolean tryLock(String uniqueKey) throws JDistributedLockException, RedissonException {
+    public boolean tryLock(String uniqueKey) throws RedissonDistributedLockException, RedissonException {
         return tryLock(uniqueKey, 5, TimeUnit.MILLISECONDS);
     }
 
     @Override
-    public boolean tryLock(String uniqueKey, long timeout, TimeUnit unit) throws JDistributedLockException, RedissonException {
+    public boolean tryLock(String uniqueKey, long timeout, TimeUnit unit) throws RedissonDistributedLockException, RedissonException {
         RedissonSession session = null;
         try {
-            session = lockFactory.getRedissonSession();
+            session = cloudLockFactory.getRedissonSession();
             logger.debug("try lock key: " + uniqueKey);
             RLock rLock = session.getRLock(uniqueKey);
             boolean flag = rLock.isLocked();
@@ -87,16 +85,16 @@ public class JDelegateDistributedLock implements JDistributedLock {
             throw e;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new JDistributedLockException(e);
+            throw new RedissonDistributedLockException(e);
         }
     }
 
     @Override
-    public boolean unLock(String uniqueKey) throws JDistributedLockException, RedissonException {
+    public boolean unLock(String uniqueKey) throws RedissonDistributedLockException, RedissonException {
         RedissonSession session = null;
         try {
             logger.debug("unlock key: " + uniqueKey);
-            session = lockFactory.getRedissonSession();
+            session = cloudLockFactory.getRedissonSession();
             if (session!=null){
                 session.getRLock(uniqueKey).unlock();
                 return true;
@@ -107,16 +105,16 @@ public class JDelegateDistributedLock implements JDistributedLock {
            throw e;
         }catch (Exception e){
             logger.error(e.getMessage(), e);
-            throw new JDistributedLockException(e);
+            throw new RedissonDistributedLockException(e);
         }
     }
     
     @Override
-    public boolean isLock(String uniqueKey) throws JDistributedLockException, RedissonException {
+    public boolean isLock(String uniqueKey) throws RedissonDistributedLockException, RedissonException {
         RedissonSession session = null;
         try {
             logger.debug("judge key : " + uniqueKey);
-            session = lockFactory.getRedissonSession();
+            session = cloudLockFactory.getRedissonSession();
             if (session!=null){
                 return session.getRLock(uniqueKey).isLocked();
             }else{
@@ -126,7 +124,7 @@ public class JDelegateDistributedLock implements JDistributedLock {
             throw e;
         }catch (Exception e){
             logger.error(e.getMessage(), e);
-            throw new JDistributedLockException(e);
+            throw new RedissonDistributedLockException(e);
         }
     }
 }

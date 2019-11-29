@@ -10,15 +10,15 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
  * @DESC: 连接池接口.
  * @USER: 孤狼
  **/
-public class ClusterPool<T> implements Cloneable {
+public class OwnClusterPool<T> implements Cloneable {
 	
 	protected GenericObjectPool<T> internalPool ;
 	
-	public ClusterPool(){
+	public OwnClusterPool(){
 		super();
 	}
 	
-	public ClusterPool(final GenericObjectPoolConfig poolConfig, PooledObjectFactory<T> factory){
+	public OwnClusterPool(final GenericObjectPoolConfig poolConfig, PooledObjectFactory<T> factory){
 		initPool(poolConfig, factory);
 	}
 	

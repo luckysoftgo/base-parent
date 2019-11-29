@@ -1,6 +1,6 @@
 package com.application.base.cache.redisson.redisson.pool;
 
-import com.application.base.cache.redisson.redisson.pool.config.BasicConfig;
+import com.application.base.cache.redisson.redisson.pool.config.RedissonBasicConfig;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.PooledObjectFactory;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
@@ -37,7 +37,7 @@ public class RedissonInstanceFactory implements PooledObjectFactory<RedissonClie
 	/**
 	 * 构造方法
 	 */
-	public RedissonInstanceFactory(BasicConfig config) {
+	public RedissonInstanceFactory(RedissonBasicConfig config) {
 		this.poolConfig = config.getInstance();
 	}
 	

@@ -6,11 +6,11 @@ import org.redisson.config.Config;
 import java.io.Serializable;
 
 /**
- * @NAME: SimpleConfig
+ * @NAME: RedissonSimpleConfig
  * @DESC: 简单配置.
  * @USER: 孤狼
  **/
-public class SimpleConfig extends BasicConfig implements Serializable {
+public class RedissonSimpleConfig extends RedissonBasicConfig implements Serializable {
 	
 	/**
 	 * 连接地址:redis://127.0.0.1:26379

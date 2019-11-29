@@ -35,14 +35,16 @@
     <bean id="redisFactory" class="com.application.base.cache.redis.jedis.factory.JedisSimpleSessionFactory">
         <property name="jedisPool" ref="jedisPool"/>
     </bean>
-    <bean id="distributedLock" class="com.application.base.cache.redis.jedis.lock.DelegateDistributedLock">
+    <bean id="distributedLock" class="com.application.base.cache.redis.jedis.lock.RedisDelegateDistributedLock">
         <property name="sessionFactory" ref="redisFactory"/>
 	</bean>
+
 	
 
     <!--2. redis 哨兵模式,有一个哨兵的redis服务可以调用,版本一-->
-    <!--
-	  <bean id="sentinelPoolOne" class="redis.clients.jedis.JedisSentinelPool">
+	<!--
+	   <bean id="sentinelPoolOne" class="redis.clients.jedis.JedisSentinelPool">
+		   <constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
 		   <constructor-arg name="masterName" value="${redis.sentinel.mastername}"/>
 		   <constructor-arg name="sentinels">
 			   <set>
@@ -50,68 +52,75 @@
 				   <value>${redis.sentinel.b.infos}</value>
 			   </set>
 		   </constructor-arg>
-		   <constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
 		   <constructor-arg name="timeout" value="${redis.timeout}"/>
 	   </bean>
-	   <bean id="redisFactory" class="com.application.base.cache.redis.jedis.factory.JedisSimpleSessionFactory">
+	   <bean id="sentinelFactory" class="com.application.base.cache.redis.jedis.factory.JedisSimpleSessionFactory">
 		   <property name="pools" ref="sentinelPoolOne"/>
 	   </bean>
-	   <bean id="distributedLock" class="com.application.base.cache.redis.jedis.lock.DelegateDistributedLock">
-		   <property name="sessionFactory" ref="redisFactory"/>
+	   <bean id="sentinelDistributedLock" class="com.application.base.cache.redis.jedis.lock.RedisDelegateDistributedLock">
+		   <property name="sessionFactory" ref="sentinelFactory"/>
 	   </bean>
-	   -->
+		-->
     
+	
+	
     <!--3. redis 哨兵模式,有一个哨兵的redis服务可以调用,版本二-->
-    <!--
-    <bean id="sentinelPoolTwo" class="com.application.base.cache.redis.jedis.factory.JedisSentinelFactory">
-        <constructor-arg name="masterName" value="${redis.sentinel.mastername}"/>
-        <constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
-        <constructor-arg name="timeout" value="${redis.timeout}"/>
-        <constructor-arg name="hostInfos" value="${redis.sentinel.instances}"/>
-    </bean>
-    <bean id="redisFactory" class="com.application.base.cache.redis.jedis.factory.JedisSentinelSessionFactory">
-        <property name="sentinelPool" ref="sentinelPoolTwo"/>
-    </bean>
-    <bean id="distributedLock" class="com.application.base.cache.redis.jedis.lock.DelegateDistributedLock">
-        <property name="sessionFactory" ref="redisFactory"/>
-    </bean>
-    -->
+	<!--
+		<bean id="sentinelPoolTwo" class="com.application.base.cache.redis.jedis.factory.JedisSentinelFactory">
+			<constructor-arg name="masterName" value="${redis.sentinel.mastername}"/>
+			<constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
+			<constructor-arg name="timeout" value="${redis.timeout}"/>
+			<constructor-arg name="hostInfos" value="${redis.sentinel.instances}"/>
+		</bean>
+		<bean id="sentinelFactory" class="com.application.base.cache.redis.jedis.factory.JedisSentinelSessionFactory">
+			<property name="sentinelPool" ref="sentinelPoolTwo"/>
+		</bean>
+		<bean id="sentinelDistributedLock" class="com.application.base.cache.redis.jedis.lock.RedisDelegateDistributedLock">
+			<property name="sessionFactory" ref="sentinelFactory"/>
+		</bean>
+		-->
+	
+	
+	
     
     <!--3. redis集群模式,有一个redis的集群服务器组可以使用 -->
-    <!--
-    <bean id="clusterPool" class="com.application.base.cache.redis.jedis.factory.cluster.RedisClusterPool">
-        <property name="hostInfos" value="${redis.cluster.hostinfos}"/>
-        <property name="timeout" value="${redis.cluster.timeout}"/>
-        <property name="sotimeout" value="${redis.cluster.sotimeout}"/>
-        <property name="maxattempts" value="${redis.cluster.maxattempts}"/>
-        <property name="passWord" value="${redis.cluster.password}"/>
-        <property name="poolConfig" ref="jedisPoolConfig"/>
-    </bean>
-    <bean id="redisFactory" class="com.application.base.cache.redis.jedis.factory.JedisClusterSessionFactory">
-        <property name="clusterPool" ref="clusterPool"/>
-    </bean>
-    <bean id="distributedLock" class="com.application.base.cache.redis.jedis.lock.DelegateDistributedLock">
-        <property name="sessionFactory" ref="redisFactory"/>
-    </bean>
-    -->
+	<!--
+		<bean id="clusterPool" class="com.application.base.cache.redis.jedis.factory.cluster.OwnRedisClusterPool">
+			<property name="poolConfig" ref="jedisPoolConfig"/>
+			<property name="hostInfos" value="${redis.cluster.hostinfos}"/>
+			<property name="timeout" value="${redis.cluster.timeout}"/>
+			<property name="sotimeout" value="${redis.cluster.sotimeout}"/>
+			<property name="maxattempts" value="${redis.cluster.maxattempts}"/>
+			<property name="passWord" value="${redis.cluster.password}"/>
+		</bean>
+		<bean id="clusterFactory" class="com.application.base.cache.redis.jedis.factory.JedisClusterSessionFactory">
+			<property name="clusterPool" ref="clusterPool"/>
+		</bean>
+		<bean id="distributedLock" class="com.application.base.cache.redis.jedis.lock.RedisDelegateDistributedLock">
+			<property name="sessionFactory" ref="clusterFactory"/>
+		</bean>
+		-->
     
+	
+	
+	
     <!--4. redis分片模式,有一个redis的分片模式服务器组可以使用 -->
-    <!--
-    <bean id="shardedPool" class="com.application.base.cache.redis.jedis.factory.JedisShardedFactory">
-        <property name="hostInfos" value="${redis.sharded.hostinfos}"/>
-        <property name="timeout" value="${redis.sharded.timeout}"/>
-        <property name="sotimeout" value="${redis.sharded.sotimeout}"/>
-        <property name="maxattempts" value="${redis.sharded.maxattempts}"/>
-        <property name="passWords" value="${redis.sharded.passwords}"/>
-        <property name="poolConfig" ref="jedisPoolConfig"/>
-    </bean>
-    <bean id="redisFactory" class="com.application.base.cache.redis.jedis.factory.JedisShardedSessionFactory">
-        <property name="shardedPool" ref="shardedPool"/>
-    </bean>
-    <bean id="distributedLock" class="com.application.base.cache.redis.jedis.lock.DelegateDistributedLock">
-        <property name="sessionFactory" ref="redisFactory"/>
-    </bean>
-    -->
+	<!--
+		<bean id="shardedPool" class="com.application.base.cache.redis.jedis.factory.JedisShardedFactory">
+			<property name="poolConfig" ref="jedisPoolConfig"/>
+			<property name="hostInfos" value="${redis.sharded.hostinfos}"/>
+			<property name="timeout" value="${redis.sharded.timeout}"/>
+			<property name="sotimeout" value="${redis.sharded.sotimeout}"/>
+			<property name="maxattempts" value="${redis.sharded.maxattempts}"/>
+			<property name="passWords" value="${redis.sharded.passwords}"/>
+		</bean>
+		<bean id="shardedFactory" class="com.application.base.cache.redis.jedis.factory.JedisShardedSessionFactory">
+			<property name="shardedPool" ref="shardedPool"/>
+		</bean>
+		<bean id="distributedLock" class="com.application.base.cache.redis.jedis.lock.RedisDelegateDistributedLock">
+			<property name="sessionFactory" ref="shardedFactory"/>
+		</bean>
+		-->
     
 </beans>
 

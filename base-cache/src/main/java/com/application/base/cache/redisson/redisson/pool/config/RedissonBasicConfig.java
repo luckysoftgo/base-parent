@@ -3,11 +3,11 @@ package com.application.base.cache.redisson.redisson.pool.config;
 import org.redisson.config.Config;
 
 /**
- * @NAME: BasicConfig
+ * @NAME: RedissonBasicConfig
  * @DESC: 基础数据装配层.
  * @USER: 孤狼
  **/
-public abstract class BasicConfig {
+public abstract class RedissonBasicConfig {
 	
 	/**
 	 * 设置对于master节点的连接池中连接数最大为500
@@ -53,7 +53,7 @@ public abstract class BasicConfig {
 		return  null;
 	}
 	
-	public BasicConfig() {
+	public RedissonBasicConfig() {
 	
 	}
 	
@@ -66,8 +66,8 @@ public abstract class BasicConfig {
 	 * @param pingTimeout
 	 * @param reconnectionTimeout
 	 */
-	public BasicConfig(int connectionPoolSize, int idleConnectionTimeout, int connectTimeout, int timeout,
-	                   int pingTimeout, int reconnectionTimeout) {
+	public RedissonBasicConfig(int connectionPoolSize, int idleConnectionTimeout, int connectTimeout, int timeout,
+	                           int pingTimeout, int reconnectionTimeout) {
 		this.connectionPoolSize = connectionPoolSize;
 		this.idleConnectionTimeout = idleConnectionTimeout;
 		this.connectTimeout = connectTimeout;
@@ -86,8 +86,8 @@ public abstract class BasicConfig {
 	 * @param pingTimeout
 	 * @param reconnectionTimeout
 	 */
-	public BasicConfig(int masterConnectionPoolSize, int idleConnectionTimeout, int slaveConnectionPoolSize,
-	                   int connectTimeout, int timeout, int pingTimeout, int reconnectionTimeout) {
+	public RedissonBasicConfig(int masterConnectionPoolSize, int idleConnectionTimeout, int slaveConnectionPoolSize,
+	                           int connectTimeout, int timeout, int pingTimeout, int reconnectionTimeout) {
 		this.masterConnectionPoolSize = masterConnectionPoolSize;
 		this.idleConnectionTimeout = idleConnectionTimeout;
 		this.slaveConnectionPoolSize = slaveConnectionPoolSize;

@@ -7,11 +7,11 @@ import org.redisson.config.Config;
 import java.io.Serializable;
 
 /**
- * @NAME: SimpleConfig
+ * @NAME: RedissonSimpleConfig
  * @DESC: 哨兵配置.
  * @USER: 孤狼
  **/
-public class SentinelConfig extends BasicConfig implements Serializable {
+public class RedissonSentinelConfig extends RedissonBasicConfig implements Serializable {
 	
 	/**
 	 * 连接地址:redis://127.0.0.1:6379;redis://127.0.0.1:26379

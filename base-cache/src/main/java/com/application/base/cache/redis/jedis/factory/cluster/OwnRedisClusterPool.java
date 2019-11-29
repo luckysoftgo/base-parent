@@ -4,11 +4,11 @@ import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.JedisPoolConfig;
 
 /**
- * @NAME: RedisClusterPool
+ * @NAME: OwnRedisClusterPool
  * @DESC: es连接池.
  * @USER: 孤狼.
  **/
-public class RedisClusterPool extends ClusterPool<JedisCluster> {
+public class OwnRedisClusterPool extends OwnClusterPool<JedisCluster> {
 	
 	/**
 	 * 连接池参数 spring 注入
@@ -39,12 +39,12 @@ public class RedisClusterPool extends ClusterPool<JedisCluster> {
 	/**
 	 * 构造方法
 	 */
-	public RedisClusterPool() {}
+	public OwnRedisClusterPool() {}
 	
 	/**
 	 * 构造方法
 	 */
-	public RedisClusterPool(JedisPoolConfig poolConfig,int timeout,int sotimeout,int maxattempts,String hostInfos) {
+	public OwnRedisClusterPool(JedisPoolConfig poolConfig, int timeout, int sotimeout, int maxattempts, String hostInfos) {
 		super(poolConfig, new JedisClusterFactory(poolConfig,timeout,sotimeout,maxattempts,hostInfos));
 		this.poolConfig =poolConfig;
 		this.timeout = timeout;
@@ -56,7 +56,7 @@ public class RedisClusterPool extends ClusterPool<JedisCluster> {
 	/**
 	 * 构造方法
 	 */
-	public RedisClusterPool(JedisPoolConfig poolConfig,int timeout,int sotimeout,int maxattempts,String passWord,String hostInfos) {
+	public OwnRedisClusterPool(JedisPoolConfig poolConfig, int timeout, int sotimeout, int maxattempts, String passWord, String hostInfos) {
 		super(poolConfig, new JedisClusterFactory(poolConfig,timeout,sotimeout,maxattempts,passWord,hostInfos));
 		this.poolConfig =poolConfig;
 		this.timeout = timeout;

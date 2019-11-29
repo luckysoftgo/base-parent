@@ -1,6 +1,6 @@
 package com.application.base.cache.redis.jedis.lock;
 
-import com.application.base.cache.redis.exception.DistributedLockException;
+import com.application.base.cache.redis.exception.RedisDistributedLockException;
 import com.application.base.cache.redis.exception.RedisException;
 
 /**
@@ -8,7 +8,7 @@ import com.application.base.cache.redis.exception.RedisException;
  * https://redis.io/commands/set set命令详解.
  * @author 孤狼
  */
-public interface DistributedLock {
+public interface RedisDistributedLock {
     
     /**
      * 返回的标识
@@ -46,37 +46,37 @@ public interface DistributedLock {
      * @param uniqueKey:唯一的key,
      * @param uniqueValue:请求的value,可以使用UUID来获取.
      * @return
-     * @throws DistributedLockException
+     * @throws RedisDistributedLockException
      * @throws RedisException
      */
-    boolean getDistLock(String uniqueKey,String uniqueValue) throws DistributedLockException,RedisException;
+    boolean getDistLock(String uniqueKey,String uniqueValue) throws RedisDistributedLockException,RedisException;
     /**
      * 根据uniqueKey构建分布式锁,对key进行锁定,循环获取锁,直到获取到锁为止
      * @param uniqueKey:唯一的key,
      * @param uniqueValue:请求的value,可以使用UUID来获取.
      * @param expireTime:毫秒数.
      * @return
-     * @throws DistributedLockException
+     * @throws RedisDistributedLockException
      * @throws RedisException
      */
-    boolean getDistLock(String uniqueKey,String uniqueValue,int expireTime) throws DistributedLockException,RedisException;
+    boolean getDistLock(String uniqueKey,String uniqueValue,int expireTime) throws RedisDistributedLockException,RedisException;
     /**
      * 释放 uniqueKey 对应的锁资源.
      * @param uniqueKey
      * @param uniqueValue
      * @return
-     * @throws DistributedLockException
+     * @throws RedisDistributedLockException
      * @throws RedisException
      */
-    boolean releaseDistLock(String uniqueKey,String uniqueValue) throws DistributedLockException,RedisException;
+    boolean releaseDistLock(String uniqueKey,String uniqueValue) throws RedisDistributedLockException,RedisException;
     
     /**
      * 是否锁住的.
      * @param uniqueKey
-     * @throws DistributedLockException
+     * @throws RedisDistributedLockException
      * @throws RedisException
      */
-    boolean isLock(String uniqueKey) throws DistributedLockException,RedisException;
+    boolean isLock(String uniqueKey) throws RedisDistributedLockException,RedisException;
     
     
     /*************************************************************************************************************************************************************************/
@@ -88,10 +88,10 @@ public interface DistributedLock {
      * @param uniqueKey:唯一的key,
      * @param uniqueValue:请求的value,可以使用UUID来获取.
      * @return
-     * @throws DistributedLockException
+     * @throws RedisDistributedLockException
      * @throws RedisException
      */
-    boolean getDistLock(int dbIndex,String uniqueKey,String uniqueValue) throws DistributedLockException,RedisException;
+    boolean getDistLock(int dbIndex,String uniqueKey,String uniqueValue) throws RedisDistributedLockException,RedisException;
     
     /**
      * 根据uniqueKey构建分布式锁,对key进行锁定,循环获取锁,直到获取到锁为止
@@ -99,27 +99,27 @@ public interface DistributedLock {
      * @param uniqueValue:请求的value,可以使用UUID来获取.
      * @param expireTime:毫秒数.
      * @return
-     * @throws DistributedLockException
+     * @throws RedisDistributedLockException
      * @throws RedisException
      */
-    boolean getDistLock(int dbIndex,String uniqueKey,String uniqueValue,int expireTime) throws DistributedLockException,RedisException;
+    boolean getDistLock(int dbIndex,String uniqueKey,String uniqueValue,int expireTime) throws RedisDistributedLockException,RedisException;
     
     /**
      * 释放 uniqueKey 对应的锁资源.
      * @param uniqueKey
      * @param uniqueValue
      * @return
-     * @throws DistributedLockException
+     * @throws RedisDistributedLockException
      * @throws RedisException
      */
-    boolean releaseDistLock(int dbIndex,String uniqueKey,String uniqueValue) throws DistributedLockException,RedisException;
+    boolean releaseDistLock(int dbIndex,String uniqueKey,String uniqueValue) throws RedisDistributedLockException,RedisException;
     
     /**
      * 是否锁住的.
      * @param uniqueKey
-     * @throws DistributedLockException
+     * @throws RedisDistributedLockException
      * @throws RedisException
      */
-    boolean isLock(int dbIndex,String uniqueKey) throws DistributedLockException,RedisException;
+    boolean isLock(int dbIndex,String uniqueKey) throws RedisDistributedLockException,RedisException;
     
 }

@@ -1,7 +1,7 @@
 package com.application.base.cache.redis.jedis.lock;
 
 import com.application.base.cache.redis.api.RedisSession;
-import com.application.base.cache.redis.exception.DistributedLockException;
+import com.application.base.cache.redis.exception.RedisDistributedLockException;
 import com.application.base.cache.redis.exception.RedisException;
 import com.application.base.cache.redis.factory.RedisSessionFactory;
 import com.application.base.utils.common.BaseStringUtil;
@@ -17,7 +17,7 @@ import java.util.Collections;
  * https://redis.io/topics/distlock
  * @author 孤狼
  */
-public class DelegateDistributedLock implements DistributedLock {
+public class RedisDelegateDistributedLock implements RedisDistributedLock {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
     
@@ -40,12 +40,12 @@ public class DelegateDistributedLock implements DistributedLock {
     }
     
     @Override
-    public boolean getDistLock(String uniqueKey, String uniqueValue) throws DistributedLockException, RedisException {
+    public boolean getDistLock(String uniqueKey, String uniqueValue) throws RedisDistributedLockException, RedisException {
         return getDistLock(uniqueKey,uniqueValue,DEFAULT_SINGLE_EXPIRE_TIME);
     }
     
     @Override
-    public boolean getDistLock(String uniqueKey, String uniqueValue, int expireTime) throws DistributedLockException, RedisException {
+    public boolean getDistLock(String uniqueKey, String uniqueValue, int expireTime) throws RedisDistributedLockException, RedisException {
         RedisSession session = null;
         try {
             session = sessionFactory.getRedisSession();
@@ -72,12 +72,12 @@ public class DelegateDistributedLock implements DistributedLock {
             logger.debug("获得分布式锁异常了,异常信息是:{}",e);
             throw e;
         } catch (Exception e) {
-            throw new DistributedLockException(e);
+            throw new RedisDistributedLockException(e);
         }
     }
     
     @Override
-    public boolean releaseDistLock(String uniqueKey, String uniqueValue) throws DistributedLockException, RedisException {
+    public boolean releaseDistLock(String uniqueKey, String uniqueValue) throws RedisDistributedLockException, RedisException {
         RedisSession session = null;
         try {
             session = sessionFactory.getRedisSession();
@@ -105,12 +105,12 @@ public class DelegateDistributedLock implements DistributedLock {
             logger.debug("释放分布式锁异常了,异常信息:{}",e);
             throw e;
         } catch (Exception e) {
-            throw new DistributedLockException(e);
+            throw new RedisDistributedLockException(e);
         }
     }
     
     @Override
-    public boolean isLock(String uniqueKey) throws DistributedLockException, RedisException {
+    public boolean isLock(String uniqueKey) throws RedisDistributedLockException, RedisException {
         RedisSession session = null;
         try {
             session = sessionFactory.getRedisSession();
@@ -135,7 +135,7 @@ public class DelegateDistributedLock implements DistributedLock {
             logger.debug("获得分布式锁是否存在异常了,异常信息:{}",e);
             throw e;
         } catch (Exception e) {
-            throw new DistributedLockException(e);
+            throw new RedisDistributedLockException(e);
         }
     }
     
@@ -145,13 +145,13 @@ public class DelegateDistributedLock implements DistributedLock {
     /*************************************************************************************************************************************************************************/
 
     @Override
-    public boolean getDistLock(int dbIndex, String uniqueKey, String uniqueValue) throws DistributedLockException, RedisException {
+    public boolean getDistLock(int dbIndex, String uniqueKey, String uniqueValue) throws RedisDistributedLockException, RedisException {
         return getDistLock(dbIndex,uniqueKey,uniqueValue,DEFAULT_SINGLE_EXPIRE_TIME);
     }
     
     
     @Override
-    public boolean getDistLock(int dbIndex,String uniqueKey, String uniqueValue, int expireTime) throws DistributedLockException, RedisException {
+    public boolean getDistLock(int dbIndex,String uniqueKey, String uniqueValue, int expireTime) throws RedisDistributedLockException, RedisException {
         RedisSession session = null;
         try {
             session = sessionFactory.getRedisSession();
@@ -180,12 +180,12 @@ public class DelegateDistributedLock implements DistributedLock {
             logger.debug("获得分布式锁异常了" + e);
             throw e;
         } catch (Exception e) {
-            throw new DistributedLockException(e);
+            throw new RedisDistributedLockException(e);
         }
     }
     
     @Override
-    public boolean releaseDistLock(int dbIndex,String uniqueKey, String uniqueValue) throws DistributedLockException, RedisException {
+    public boolean releaseDistLock(int dbIndex,String uniqueKey, String uniqueValue) throws RedisDistributedLockException, RedisException {
         RedisSession session = null;
         try {
             session = sessionFactory.getRedisSession();
@@ -215,12 +215,12 @@ public class DelegateDistributedLock implements DistributedLock {
             logger.debug("获得分布式锁异常了" + e);
             throw e;
         } catch (Exception e) {
-            throw new DistributedLockException(e);
+            throw new RedisDistributedLockException(e);
         }
     }
     
     @Override
-    public boolean isLock(int dbIndex,String uniqueKey) throws DistributedLockException, RedisException {
+    public boolean isLock(int dbIndex,String uniqueKey) throws RedisDistributedLockException, RedisException {
         RedisSession session = null;
         try {
             session = sessionFactory.getRedisSession();
@@ -247,7 +247,7 @@ public class DelegateDistributedLock implements DistributedLock {
             logger.debug("获得分布式锁异常了" + e);
             throw e;
         } catch (Exception e) {
-            throw new DistributedLockException(e);
+            throw new RedisDistributedLockException(e);
         }
     }
     

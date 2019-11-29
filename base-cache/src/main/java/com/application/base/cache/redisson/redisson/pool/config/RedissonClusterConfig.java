@@ -7,11 +7,11 @@ import org.redisson.config.Config;
 import java.io.Serializable;
 
 /**
- * @NAME: ClusterConfig
+ * @NAME: RedissonClusterConfig
  * @DESC: 集群配置.
  * @USER: 孤狼
  **/
-public class ClusterConfig extends BasicConfig implements Serializable {
+public class RedissonClusterConfig extends RedissonBasicConfig implements Serializable {
 	
 	/**
 	 * 连接地址:redis://127.0.0.1:6379;redis://127.0.0.1:26379

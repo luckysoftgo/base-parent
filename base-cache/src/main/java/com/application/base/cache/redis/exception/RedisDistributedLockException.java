@@ -1,17 +1,17 @@
-package com.application.base.cache.redisson.exception;
+package com.application.base.cache.redis.exception;
 
 /**
  * @desc 分布式锁
  * @author 孤狼
  */
-public class JDistributedLockException extends RuntimeException {
+public class RedisDistributedLockException extends RuntimeException {
 
     /**
      * @Fields serialVersionUID : TODO
      */
     private static final long serialVersionUID = 1L;
 
-    public JDistributedLockException(){}
+    public RedisDistributedLockException(){}
 
     /**
      * Constructs a new runtime exception with the specified detail message.
@@ -21,7 +21,7 @@ public class JDistributedLockException extends RuntimeException {
      * @param message the detail message. The detail message is saved for
      *                later retrieval by the {@link #getMessage()} method.
      */
-    public JDistributedLockException(String message) {
+    public RedisDistributedLockException(String message) {
         super(message);
     }
 
@@ -38,7 +38,7 @@ public class JDistributedLockException extends RuntimeException {
      *              unknown.)
      * @since 1.4
      */
-    public JDistributedLockException(Throwable cause) {
+    public RedisDistributedLockException(Throwable cause) {
         super(cause);
     }
 
@@ -56,7 +56,7 @@ public class JDistributedLockException extends RuntimeException {
      *                unknown.)
      * @since 1.4
      */
-    public JDistributedLockException(String message, Throwable cause) {
+    public RedisDistributedLockException(String message, Throwable cause) {
         super(message, cause);
     }
 
