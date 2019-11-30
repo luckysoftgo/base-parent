@@ -95,14 +95,56 @@ public class ZooKeeperConfigFactory extends BasePooledObjectFactory<CuratorFrame
 	 * @return
 	 */
 	private RetryPolicy getPolicy(){
-		/*
-		//刚开始重试间隔为1秒，之后重试间隔逐渐增加，最多重试不超过三次
-		RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
-		//最大重试次数，和两次重试间隔时间
-        RetryPolicy retryPolicy1 = new RetryNTimes(3, 1000);
-		//会一直重试直到达到规定时间，第一个参数整个重试不能超过时间，第二个参数重试间隔
-        RetryPolicy retryPolicy2 = new RetryUntilElapsed(5000, 1000);
-		*/
+		
+		/**
+		 * curator链接zookeeper的策略:RetryUntilElapsed
+		 *
+		 * 构造器参数：
+		 * maxElapsedTimeMs:最大重试时间
+		 * sleepMsBetweenRetries:每次重试间隔
+		 * 重试时间超过maxElapsedTimeMs后，就不再重试
+		 */
+		//RetryPolicy retryPolicy4 = new RetryUntilElapsed(2000, 3000);
+		
+		/**
+		 * 永远重试，不推荐使用
+		 */
+		//RetryPolicy retryPolicy3 = new RetryForever(retryIntervalMs);
+		
+		/**
+		 * （不推荐）
+		 * curator链接zookeeper的策略:RetryOneTime
+		 *
+		 * 构造器参数：
+		 * sleepMsBetweenRetry:每次重试间隔的时间
+		 * 这个策略只会重试一次
+		 */
+		//RetryPolicy retryPolicy2 = new RetryOneTime(3000);
+		
+		/**
+		 * （推荐）
+		 * curator链接zookeeper的策略:RetryNTimes
+		 *
+		 * 构造器参数：
+		 * n：重试的次数
+		 * sleepMsBetweenRetries：每次重试间隔的时间
+		 */
+		//RetryPolicy retryPolicy = new RetryNTimes(3, 5000);
+		
+		/**
+		 * （推荐）
+		 * 同步创建zk示例，原生api是异步的
+		 * 这一步是设置重连策略
+		 *
+		 * 构造器参数：
+		 *  curator链接zookeeper的策略:ExponentialBackoffRetry
+		 *  baseSleepTimeMs：初始sleep的时间
+		 *  maxRetries：最大重试次数
+		 *  maxSleepMs：最大重试时间
+		 */
+		//RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 5);
+		
+		
 		RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 5);
 		return retryPolicy;
 	}
