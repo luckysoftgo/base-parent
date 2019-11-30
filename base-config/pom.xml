@@ -17,7 +17,7 @@
 	<!--属性配置-->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<curator.version>4.1.0</curator.version>
+		<curator.version>4.0.0</curator.version>
 		<zookeeper.version>3.5.5</zookeeper.version>
 		<zkclient.version>0.11</zkclient.version>
 		<pool2.version>2.6.2</pool2.version>
