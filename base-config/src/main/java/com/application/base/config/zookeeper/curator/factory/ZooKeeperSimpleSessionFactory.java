@@ -103,7 +103,7 @@ public class ZooKeeperSimpleSessionFactory implements ZooKeeperSessionFactory {
 			}catch (RuntimeException e) {
 				success = false;
 				if (zkClient != null) {
-					zkClient.close();
+					//zkClient.close();
 					zooKeeperPool.returnObject(zkClient);
 					zkClient=null;
 				}
@@ -113,7 +113,7 @@ public class ZooKeeperSimpleSessionFactory implements ZooKeeperSessionFactory {
 			finally {
 				if (success && zkClient != null) {
 					logger.debug("zookeeper 链接关闭");
-					zkClient.close();
+					//zkClient.close();
 					zooKeeperPool.returnObject(zkClient);
 					zkClient=null;
 				}

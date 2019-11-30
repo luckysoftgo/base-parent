@@ -30,8 +30,6 @@ public class ZooKeeperSimpleSession implements ZkApiSession{
 			logger.error("[zookeeper错误:{}]","获得zookeeper实例对象为空");
 			throw new ZooKeeperException("获得zookeeper实例对象为空");
 		}
-		//开启服务.
-		client.start();
 		return client;
 	}
 	

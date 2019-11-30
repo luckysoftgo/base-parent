@@ -79,6 +79,8 @@ public class ZooKeeperConfigFactory extends BasePooledObjectFactory<CuratorFrame
 				throw new ZooKeeperException("创建 CuratorFramework 对象失败,error:"+e);
 			}
 		}
+		//获得对象的时候开启访问.
+		client.start();
 		return client;
 	}
 	
