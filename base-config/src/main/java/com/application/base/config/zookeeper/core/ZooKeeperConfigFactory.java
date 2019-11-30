@@ -8,7 +8,7 @@ import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.retry.RetryUntilElapsed;
+import org.apache.curator.retry.ExponentialBackoffRetry;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -103,7 +103,7 @@ public class ZooKeeperConfigFactory extends BasePooledObjectFactory<CuratorFrame
 		//会一直重试直到达到规定时间，第一个参数整个重试不能超过时间，第二个参数重试间隔
         RetryPolicy retryPolicy2 = new RetryUntilElapsed(5000, 1000);
 		*/
-		RetryPolicy retryPolicy = new RetryUntilElapsed(60000, 3);
+		RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 5);
 		return retryPolicy;
 	}
 }
