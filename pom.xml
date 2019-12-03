@@ -35,6 +35,12 @@
 		<module>base-kylin</module>
 		<!--操作hbase的api-->
 		<module>base-operapi</module>
+		
+		
+		
+		
+		<!--springboot的方式启动-->
+		<module>base-spring-boot-starter</module>
 	
 	</modules>
 	<artifactId>base-parent</artifactId>
