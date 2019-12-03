@@ -40,7 +40,7 @@ public class EsRestClientAutoConfiguration {
 	 */
 	@Bean
 	@ConditionalOnMissingBean(EsRestClientSessionPoolFactory.class)
-	public EsRestClientSessionPoolFactory getEsTransPortFactory() {
+	public EsRestClientSessionPoolFactory getEsRestClientFactory() {
 		HashSet<EsRestClientNodeConfig> esNodes = getNodeInfos();
 		EsRestClientPoolConfig poolConfig = new EsRestClientPoolConfig();
 		poolConfig.setClusterName(esRestClientConfig.getCluster().getName());
