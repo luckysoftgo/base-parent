@@ -1,8 +1,8 @@
-package com.application.base.elastic.elastic.rest.factory;
+package com.application.base.elastic.elastic.restclient.factory;
 
 import com.application.base.elastic.core.ElasticSession;
-import com.application.base.elastic.elastic.rest.pool.ElasticJestPool;
-import com.application.base.elastic.elastic.rest.session.ElasticRestSession;
+import com.application.base.elastic.elastic.restclient.pool.ElasticRestClientPool;
+import com.application.base.elastic.elastic.restclient.session.ElasticRestClientSession;
 import com.application.base.elastic.exception.ElasticException;
 import com.application.base.elastic.factory.ElasticSessionFactory;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -18,24 +18,24 @@ import java.lang.reflect.Proxy;
  * @DESC: 连接池工厂
  * @USER: 孤狼
  **/
-public class EsJestSessionPoolFactory implements ElasticSessionFactory {
+public class EsRestClientSessionPoolFactory implements ElasticSessionFactory {
 	
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
-	private ElasticJestPool jestPool;
+	private ElasticRestClientPool jestPool;
 	
-	public EsJestSessionPoolFactory() {
+	public EsRestClientSessionPoolFactory() {
 	}
 	
-	public EsJestSessionPoolFactory(ElasticJestPool jestPool) {
+	public EsRestClientSessionPoolFactory(ElasticRestClientPool jestPool) {
 		this.jestPool = jestPool;
 	}
 	
 	
-	public ElasticJestPool getJestPool() {
+	public ElasticRestClientPool getJestPool() {
 		return jestPool;
 	}
-	public void setJestPool(ElasticJestPool jestPool) {
+	public void setJestPool(ElasticRestClientPool jestPool) {
 		this.jestPool = jestPool;
 	}
 	
@@ -44,7 +44,7 @@ public class EsJestSessionPoolFactory implements ElasticSessionFactory {
 		ElasticSession session = null;
 		try {
 			session = (ElasticSession) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-					new Class[]{ElasticSession.class}, new EsJestSimpleSessionProxy(new ElasticRestSession()));
+					new Class[]{ElasticSession.class}, new EsRestClientSimpleSessionProxy(new ElasticRestClientSession()));
 		} catch (Exception e) {
 			logger.error("错误信息是:{}", e);
 		}
@@ -54,12 +54,12 @@ public class EsJestSessionPoolFactory implements ElasticSessionFactory {
 	/**
 	 * 动态代理类实现
 	 */
-	private class EsJestSimpleSessionProxy implements InvocationHandler {
+	private class EsRestClientSimpleSessionProxy implements InvocationHandler {
 		private Logger logger = LoggerFactory.getLogger(getClass());
 		
-		private ElasticRestSession restSession;
+		private ElasticRestClientSession restSession;
 		
-		public EsJestSimpleSessionProxy(ElasticRestSession restSession) {
+		public EsRestClientSimpleSessionProxy(ElasticRestClientSession restSession) {
 			this.restSession = restSession;
 		}
 		
@@ -71,7 +71,7 @@ public class EsJestSessionPoolFactory implements ElasticSessionFactory {
 			logger.debug("获取elastic链接");
 			RestHighLevelClient client = null;
 			try {
-				client = EsJestSessionPoolFactory.this.jestPool.getResource();
+				client = EsRestClientSessionPoolFactory.this.jestPool.getResource();
 			}
 			catch (Exception e) {
 				logger.error("获取elastic链接错误,{}", e);

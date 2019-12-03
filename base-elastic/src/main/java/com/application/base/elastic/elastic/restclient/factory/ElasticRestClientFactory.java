@@ -1,6 +1,6 @@
-package com.application.base.elastic.elastic.rest.factory;
+package com.application.base.elastic.elastic.restclient.factory;
 
-import com.application.base.elastic.elastic.rest.config.EsJestNodeConfig;
+import com.application.base.elastic.elastic.restclient.config.EsRestClientNodeConfig;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.PooledObjectFactory;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
@@ -20,16 +20,16 @@ import java.util.concurrent.atomic.AtomicReference;
  * @DESC: ES 连接池的工厂.
  * @USER: 孤狼.
  **/
-public class ElasticJestFactory implements PooledObjectFactory<RestHighLevelClient> {
+public class ElasticRestClientFactory implements PooledObjectFactory<RestHighLevelClient> {
 	
-	private AtomicReference<Set<EsJestNodeConfig>> nodesReference = new AtomicReference<Set<EsJestNodeConfig>>();
+	private AtomicReference<Set<EsRestClientNodeConfig>> nodesReference = new AtomicReference<Set<EsRestClientNodeConfig>>();
 	
 	/**
 	 * 群集名称
 	 */
 	private String clusterName;
 	
-	public ElasticJestFactory(String clusterName, Set<EsJestNodeConfig> clusterNodes) {
+	public ElasticRestClientFactory(String clusterName, Set<EsRestClientNodeConfig> clusterNodes) {
 		this.clusterName = clusterName;
 		this.nodesReference.set(clusterNodes);
 	}
@@ -38,7 +38,7 @@ public class ElasticJestFactory implements PooledObjectFactory<RestHighLevelClie
 	public PooledObject<RestHighLevelClient> makeObject() throws Exception {
 		HttpHost[] nodes = new HttpHost[nodesReference.get().size()];
 		List<HttpHost> nodeList = new ArrayList<HttpHost>();
-		for (EsJestNodeConfig each : nodesReference.get()) {
+		for (EsRestClientNodeConfig each : nodesReference.get()) {
 			nodeList.add(new HttpHost(each.getNodeHost(), each.getNodePort(), each.getNodeSchema()));
 		}
 		nodes = nodeList.toArray(nodes);

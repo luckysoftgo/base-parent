@@ -47,14 +47,14 @@
     
     
     <!-- elastic 基础信息配置 (公共使用) -->
-    <bean id="jestNodeConfig" class="com.application.base.elastic.elastic.rest.config.EsJestNodeConfig">
+    <bean id="jestNodeConfig" class="com.application.base.elastic.elastic.restclient.config.EsRestClientNodeConfig">
         <property name="nodeHost" value="${jest.host}"/>
         <property name="nodePort" value="${jest.port}"/>
         <property name="nodeSchema" value="${jest.schema}"/>
     </bean>
     
     <!-- elastic 基础信息配置 (公共使用) -->
-    <bean id="jestPoolConfig" class="com.application.base.elastic.elastic.rest.config.EsJestPoolConfig">
+    <bean id="jestPoolConfig" class="com.application.base.elastic.elastic.restclient.config.EsRestClientPoolConfig">
         <property name="maxTotal" value="${elastic.pool.maxTotal}"/>
         <property name="maxIdle" value="${elastic.pool.maxIdle}"/>
         <property name="minIdle" value="${elastic.pool.minIdle}"/>
@@ -74,10 +74,10 @@
     </bean>
     
     <!-- 1. elastic 单点服务器,只存在一个elastic的服务器 -->
-    <bean id="juestPool" class="com.application.base.elastic.elastic.rest.pool.ElasticJestPool">
+    <bean id="juestPool" class="com.application.base.elastic.elastic.restclient.pool.ElasticRestClientPool">
         <constructor-arg name="restPoolConfig" ref="jestPoolConfig"/>
     </bean>
-    <bean id="jestFactory" class="com.application.base.elastic.elastic.rest.factory.EsJestSessionPoolFactory">
+    <bean id="jestFactory" class="com.application.base.elastic.elastic.restclient.factory.EsRestClientSessionPoolFactory">
         <property name="jestPool" ref="juestPool"/>
     </bean>
 

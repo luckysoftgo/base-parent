@@ -1,4 +1,4 @@
-package com.application.base.elastic.elastic.rest.config;
+package com.application.base.elastic.elastic.restclient.config;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
@@ -10,7 +10,7 @@ import java.util.Set;
  * @DESC: ES连接池配置.
  * @USER: 孤狼.
  **/
-public class EsJestPoolConfig extends GenericObjectPoolConfig {
+public class EsRestClientPoolConfig extends GenericObjectPoolConfig {
 	
 	/**
 	 * 链接的毫秒数.
@@ -23,7 +23,7 @@ public class EsJestPoolConfig extends GenericObjectPoolConfig {
 	/**
 	 * 节点数据
 	 */
-	Set<EsJestNodeConfig> esNodes = new HashSet<EsJestNodeConfig>();
+	Set<EsRestClientNodeConfig> esNodes = new HashSet<EsRestClientNodeConfig>();
 	
 	public long getConnectTimeMillis() {
 		return connectTimeMillis;
@@ -39,10 +39,10 @@ public class EsJestPoolConfig extends GenericObjectPoolConfig {
 		this.clusterName = clusterName;
 	}
 	
-	public Set<EsJestNodeConfig> getEsNodes() {
+	public Set<EsRestClientNodeConfig> getEsNodes() {
 		return esNodes;
 	}
-	public void setEsNodes(Set<EsJestNodeConfig> esNodes) {
+	public void setEsNodes(Set<EsRestClientNodeConfig> esNodes) {
 		this.esNodes = esNodes;
 	}
 	
@@ -50,7 +50,7 @@ public class EsJestPoolConfig extends GenericObjectPoolConfig {
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		int i = 0;
-		for (EsJestNodeConfig config : esNodes) {
+		for (EsRestClientNodeConfig config : esNodes) {
 			buffer.append("\n集群").append(i).append(":").append(clusterName).append("初始化：\n");
 			buffer.append("节点nodeName:").append(config.getNodeName()).append(",nodeHost:").append(config.getNodeHost()).append(",nodePort:").append(config.getNodePort()).append(",nodeSchema:").append(config.getNodeSchema()).append("\n");
 		}

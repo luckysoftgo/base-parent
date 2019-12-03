@@ -1,4 +1,4 @@
-package com.application.base.elastic.elastic.rest.config;
+package com.application.base.elastic.elastic.restclient.config;
 
 import java.io.Serializable;
 
@@ -7,7 +7,7 @@ import java.io.Serializable;
  * @DESC: 节点配置信息
  * @USER: 孤狼
  **/
-public class EsJestNodeConfig implements Serializable {
+public class EsRestClientNodeConfig implements Serializable {
 	/**
 	 * 节点名称
 	 */

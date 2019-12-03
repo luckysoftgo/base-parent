@@ -1,4 +1,4 @@
-package com.application.base.elastic.elastic.rest.session;
+package com.application.base.elastic.elastic.restclient.session;
 
 import com.application.base.elastic.core.ElasticSession;
 import com.application.base.elastic.elastic.query.EsQueryBuilderInstance;
@@ -54,10 +54,10 @@ import java.util.function.BiConsumer;
 
 /**
  * @author 孤狼
- * @ClassName : ElasticRestSession.
+ * @ClassName : ElasticRestClientSession.
  * @Desc : 操作elastic 的实现.
  */
-public class ElasticRestSession implements ElasticSession {
+public class ElasticRestClientSession implements ElasticSession {
     
     private Logger logger = LoggerFactory.getLogger(getClass());
     

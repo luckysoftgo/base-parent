@@ -1,4 +1,4 @@
-package com.application.base.elastic.elastic.rest.pool;
+package com.application.base.elastic.elastic.restclient.pool;
 
 import com.application.base.elastic.exception.ElasticException;
 import org.apache.commons.pool2.PooledObjectFactory;
@@ -10,15 +10,15 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
  * @DESC: 连接池接口.
  * @USER: 孤狼
  **/
-public class JestPool<T> implements Cloneable {
+public class RestClientPool<T> implements Cloneable {
 	
 	protected GenericObjectPool<T> internalPool ;
 	
-	public JestPool(){
+	public RestClientPool(){
 		super();
 	}
 	
-	public JestPool(final GenericObjectPoolConfig poolConfig, PooledObjectFactory<T> factory){
+	public RestClientPool(final GenericObjectPoolConfig poolConfig, PooledObjectFactory<T> factory){
 		initPool(poolConfig, factory);
 	}
 	
