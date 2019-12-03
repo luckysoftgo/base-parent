@@ -63,6 +63,11 @@
 		<!--base 封装包 start -->
 		<dependency>
 			<groupId>com.application.base</groupId>
+			<artifactId>base-elastic</artifactId>
+			<version>${base-xxx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.application.base</groupId>
 			<artifactId>base-config</artifactId>
 			<version>${base-xxx.version}</version>
 			<exclusions>
@@ -75,7 +80,7 @@
 		<dependency>
 			<groupId>com.application.base</groupId>
 			<artifactId>base-utils</artifactId>
-			<version>1.0.0-RELEASE</version>
+			<version>${base-xxx.version}</version>
 		</dependency>
 		<!--base 封装包 end -->
 		
