@@ -1,3 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.application.base.starter.config.zookeeper.ZooKeeperAutoConfiguration,\
-com.application.base.starter.elastic.ElasticSearchAutoConfiguration
