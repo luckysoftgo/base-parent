@@ -1,4 +1,4 @@
-package com.application.base.elastic;
+package com.application.base.starter.elastic;
 
 import com.application.base.elastic.elastic.restclient.config.EsRestClientNodeConfig;
 import com.application.base.elastic.elastic.restclient.config.EsRestClientPoolConfig;

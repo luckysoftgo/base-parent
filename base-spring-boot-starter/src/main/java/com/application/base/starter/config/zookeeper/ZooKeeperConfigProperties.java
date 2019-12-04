@@ -1,4 +1,4 @@
-package com.application.base.config.zookeeper;
+package com.application.base.starter.config.zookeeper;
 
 import com.application.base.pool.GenericPool;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,4 +1,4 @@
-package com.application.base.config.zookeeper;
+package com.application.base.starter.config.zookeeper;
 
 import com.application.base.config.zookeeper.config.ZooKeeperConfig;
 import com.application.base.config.zookeeper.curator.factory.ZooKeeperSimpleSessionFactory;
