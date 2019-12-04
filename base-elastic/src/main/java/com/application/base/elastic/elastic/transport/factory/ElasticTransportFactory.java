@@ -82,7 +82,7 @@ public class ElasticTransportFactory implements PooledObjectFactory<TransportCli
 			// 集群名
 			.put("cluster.name", clusterName)
 			// 自动把集群下的机器添加到列表中:true.是;false.否
-			//.put("client.transport.sniff", isAppend)
+			.put("client.transport.sniff", true)
 			// 忽略集群名字验证, 打开后集群名字不对也能连接上
 			.put("client.transport.ignore_cluster_name", true)
 			.build();
