@@ -1,6 +1,6 @@
 package com.application.base.test.config.zookeeper;
 
-import com.application.base.config.zookeeper.ZooKeeperConfigProperties;
+import com.application.base.starter.config.zookeeper.ZooKeeperConfigProperties;
 import com.application.base.config.zookeeper.curator.factory.ZooKeeperSimpleSessionFactory;
 import com.application.base.pool.GenericPool;
 import com.application.base.test.BasicStartTest;
