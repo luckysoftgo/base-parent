@@ -5,6 +5,9 @@ import com.application.base.config.zookeeper.curator.factory.ZooKeeperSimpleSess
 import com.application.base.config.zookeeper.curator.lock.ZkDelegateDistributedLock;
 import com.application.base.config.zookeeper.pool.ZooKeeperOperPool;
 import com.application.base.pool.GenericPool;
+import com.application.base.utils.json.JsonConvertUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -26,6 +29,8 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(ZooKeeperConfigProperties.class)
 public class ZooKeeperAutoConfiguration {
 
+	private Logger logger = LoggerFactory.getLogger(getClass());
+	
 	/**
 	 * 属性的配置.
 	 */
@@ -59,6 +64,7 @@ public class ZooKeeperAutoConfiguration {
 	 * @return
 	 */
 	private ZooKeeperSimpleSessionFactory getZkSessionInstance(){
+		logger.info("zookeeper init infos:{}", JsonConvertUtils.toJson(zooKeeperConfig));
 		ZooKeeperConfig instanceConfig = new ZooKeeperConfig();
 		instanceConfig.setNameSpace(zooKeeperConfig.getName().getSpace());
 		instanceConfig.setSessionTimeoutMs(zooKeeperConfig.getSession().getTimeoutms());

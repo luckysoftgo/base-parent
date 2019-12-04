@@ -79,7 +79,7 @@ public class ZooKeeperConfigProperties {
 	/**
 	 * 连接字符串.
 	 */
-	public class Connect {
+	public static class Connect {
 	    private String strings;
 		
 		public String getStrings() {
@@ -94,7 +94,7 @@ public class ZooKeeperConfigProperties {
 	/**
 	 * zk session会话
 	 */
-	public class Session {
+	public static class Session {
 		private Integer timeoutms;
 		
 		public Integer getTimeoutms() {
@@ -109,7 +109,7 @@ public class ZooKeeperConfigProperties {
 	/**
 	 * zk连接超时
 	 */
-	public class Connection {
+	public static class Connection {
 		private Integer timeoutms;
 		
 		public Integer getTimeoutms() {
@@ -124,7 +124,7 @@ public class ZooKeeperConfigProperties {
 	/**
 	 * zk工作空间
 	 */
-	public class Name {
+	public static class Name {
 		private String space;
 		
 		public String getSpace() {
