@@ -2,6 +2,7 @@ package com.application.base.elastic.elastic.transport.factory;
 
 import com.application.base.elastic.elastic.transport.config.EsTransportNodeConfig;
 import com.application.base.elastic.exception.ElasticException;
+import com.application.base.utils.json.JsonConvertUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.PooledObjectFactory;
@@ -49,11 +50,13 @@ public class ElasticTransportFactory implements PooledObjectFactory<TransportCli
 	
 	
 	public ElasticTransportFactory(String clusterName, Set<EsTransportNodeConfig> clusterNodes) {
+		logger.info("传递的连接信息集群名称是:{},连接信息是:{}",clusterName, JsonConvertUtils.toJson(clusterName));
 		this.clusterName = clusterName;
 		this.nodesReference.set(clusterNodes);
 	}
 	
 	public ElasticTransportFactory(String clusterName, Set<EsTransportNodeConfig> clusterNodes,String loginAuth) {
+		logger.info("传递的连接信息集群名称是:{},连接信息是:{},是否登录验证信息是:{}",clusterName, JsonConvertUtils.toJson(clusterName),loginAuth);
 		this.clusterName = clusterName;
 		this.nodesReference.set(clusterNodes);
 		this.loginAuth = loginAuth;
