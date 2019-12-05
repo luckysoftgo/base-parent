@@ -35,6 +35,7 @@ public class ElasticTransportFactory implements PooledObjectFactory<TransportCli
 	 * 设置processors检查为flase
 	 */
 	static{
+		//避免netty冲突
 		System.setProperty("es.set.netty.runtime.available.processors", "false");
 	}
 	
