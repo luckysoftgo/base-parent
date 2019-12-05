@@ -50,13 +50,13 @@ public class ElasticTransportFactory implements PooledObjectFactory<TransportCli
 	
 	
 	public ElasticTransportFactory(String clusterName, Set<EsTransportNodeConfig> clusterNodes) {
-		logger.info("传递的连接信息集群名称是:{},连接信息是:{}",clusterName, JsonConvertUtils.toJson(clusterName));
+		logger.info("传递的连接信息集群名称是:{},连接信息是:{}",clusterName, JsonConvertUtils.toJson(clusterNodes));
 		this.clusterName = clusterName;
 		this.nodesReference.set(clusterNodes);
 	}
 	
 	public ElasticTransportFactory(String clusterName, Set<EsTransportNodeConfig> clusterNodes,String loginAuth) {
-		logger.info("传递的连接信息集群名称是:{},连接信息是:{},是否登录验证信息是:{}",clusterName, JsonConvertUtils.toJson(clusterName),loginAuth);
+		logger.info("传递的连接信息集群名称是:{},连接信息是:{},是否登录验证信息是:{}",clusterName, JsonConvertUtils.toJson(clusterNodes),loginAuth);
 		this.clusterName = clusterName;
 		this.nodesReference.set(clusterNodes);
 		this.loginAuth = loginAuth;
