@@ -67,6 +67,7 @@
 		
 		
 		<!-- demo 要使用的jar 配置 start -->
+		<!--
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -84,7 +85,6 @@
 			<scope>test</scope>
 		</dependency>
 		
-		<!-- xxl-job-core -->
 		<dependency>
 			<groupId>com.xuxueli</groupId>
 			<artifactId>xxl-job-core</artifactId>
@@ -121,6 +121,7 @@
 			<artifactId>base-elastic</artifactId>
 			<version>1.0.0-RELEASE</version>
 		</dependency>
+		-->
 		
 		<!-- demo 要使用的jar 配置 end -->
 	</dependencies>
