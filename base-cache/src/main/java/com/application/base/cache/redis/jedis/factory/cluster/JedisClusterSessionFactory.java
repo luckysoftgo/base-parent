@@ -1,10 +1,9 @@
-package com.application.base.cache.redis.jedis.factory;
+package com.application.base.cache.redis.jedis.factory.cluster;
 
 import com.application.base.cache.redis.api.RedisSession;
 import com.application.base.cache.redis.api.ShardedSession;
 import com.application.base.cache.redis.exception.RedisException;
 import com.application.base.cache.redis.factory.RedisSessionFactory;
-import com.application.base.cache.redis.jedis.factory.cluster.OwnRedisClusterPool;
 import com.application.base.cache.redis.jedis.session.JedisClusterSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,13 +24,13 @@ public class JedisClusterSessionFactory implements RedisSessionFactory {
 	/**
 	 * 集群实例
 	 */
-	private OwnRedisClusterPool clusterPool;
+	private RedisClusterPool clusterPool;
 	
-	public OwnRedisClusterPool getClusterPool() {
+	public RedisClusterPool getClusterPool() {
 		return clusterPool;
 	}
 	
-	public void setClusterPool(OwnRedisClusterPool clusterPool) {
+	public void setClusterPool(RedisClusterPool clusterPool) {
 		this.clusterPool = clusterPool;
 	}
 	
@@ -43,7 +42,7 @@ public class JedisClusterSessionFactory implements RedisSessionFactory {
 	/**
 	 * 构造方法
 	 */
-	public JedisClusterSessionFactory(OwnRedisClusterPool clusterPool) {
+	public JedisClusterSessionFactory(RedisClusterPool clusterPool) {
 		this.clusterPool = clusterPool;
 	}
 

@@ -34,11 +34,11 @@ public class JedisClusterFactory implements PooledObjectFactory<JedisCluster> {
 	/**
 	 * 连接时间.
 	 */
-	private int timeout = 2000;
+	private int timeout = 5000;
 	/**
 	 * 超时
 	 */
-	private int sotimeout = 3000;
+	private int sotimeout = 6000;
 	/**
 	 * 最大尝试次数
 	 */
@@ -61,6 +61,14 @@ public class JedisClusterFactory implements PooledObjectFactory<JedisCluster> {
 	 * 构造方法
 	 */
 	public JedisClusterFactory() {}
+	
+	/**
+	 * 构造方法
+	 */
+	public JedisClusterFactory(JedisPoolConfig poolConfig,String hostInfos) {
+		this.poolConfig =poolConfig;
+		this.hostInfos = hostInfos;
+	}
 	
 	/**
 	 * 构造方法
@@ -137,6 +145,7 @@ public class JedisClusterFactory implements PooledObjectFactory<JedisCluster> {
 	
 	@Override
 	public void activateObject(PooledObject<JedisCluster> pooledObject) throws Exception {
+		JedisCluster client = pooledObject.getObject();
 	}
 	
 	@Override
