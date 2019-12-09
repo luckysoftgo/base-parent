@@ -1,4 +1,4 @@
-package com.application.base.cache.redis.jedis.factory;
+package com.application.base.cache.redis.jedis.factory.sentinel;
 
 import com.application.base.cache.redis.api.RedisSession;
 import com.application.base.cache.redis.api.ShardedSession;
@@ -24,13 +24,13 @@ public class  JedisSentinelSessionFactory implements RedisSessionFactory {
 	/**
 	 * 集群工厂对象.
 	 */
-	private JedisSentinelFactory sentinelPool;
+	private JedisSimpleSentinelPool sentinelPool;
 
-	public JedisSentinelFactory getSentinelPool() {
+	public JedisSimpleSentinelPool getSentinelPool() {
 		return sentinelPool;
 	}
 	
-	public void setSentinelPool(JedisSentinelFactory sentinelPool) {
+	public void setSentinelPool(JedisSimpleSentinelPool sentinelPool) {
 		this.sentinelPool = sentinelPool;
 	}
 	

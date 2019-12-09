@@ -1,4 +1,4 @@
-package com.application.base.cache.redis.jedis.factory;
+package com.application.base.cache.redis.jedis.factory.sentinel;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -13,7 +13,7 @@ import java.util.Set;
  * @desc 哨兵设置JedisSentinelPool.
  * @author 孤狼
  */
-public class JedisSentinelFactory extends Pool<Jedis> {
+public class JedisSimpleSentinelPool extends Pool<Jedis> {
 	
 	protected Logger logger = LoggerFactory.getLogger(getClass().getName());
 	
@@ -57,12 +57,22 @@ public class JedisSentinelFactory extends Pool<Jedis> {
 	/**
 	 * 构造方法
 	 */
-	public JedisSentinelFactory() {}
+	public JedisSimpleSentinelPool() {}
 	
 	/**
 	 * 构造方法
 	 */
-	public JedisSentinelFactory(String masterName, JedisPoolConfig poolConfig, int timeout,String hostInfos) {
+	public JedisSimpleSentinelPool(String masterName, JedisPoolConfig poolConfig, String hostInfos) {
+		this.masterName=masterName;
+		this.poolConfig =poolConfig;
+		this.hostInfos = hostInfos;
+		initFactory();
+	}
+	
+	/**
+	 * 构造方法
+	 */
+	public JedisSimpleSentinelPool(String masterName, JedisPoolConfig poolConfig, int timeout, String hostInfos) {
 		this.masterName=masterName;
 		this.poolConfig =poolConfig;
 		this.timeout = timeout;
@@ -73,7 +83,7 @@ public class JedisSentinelFactory extends Pool<Jedis> {
 	/**
 	 * 构造方法
 	 */
-	public JedisSentinelFactory(String masterName, JedisPoolConfig poolConfig, int timeout, String passWords, String hostInfos) {
+	public JedisSimpleSentinelPool(String masterName, JedisPoolConfig poolConfig, int timeout, String passWords, String hostInfos) {
 		this.masterName=masterName;
 		this.poolConfig =poolConfig;
 		this.timeout = timeout;

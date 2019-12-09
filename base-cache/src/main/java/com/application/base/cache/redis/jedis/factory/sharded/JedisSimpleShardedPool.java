@@ -1,4 +1,4 @@
-package com.application.base.cache.redis.jedis.factory;
+package com.application.base.cache.redis.jedis.factory.sharded;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -16,14 +16,14 @@ import java.util.List;
  * @desc 分片的工厂,实现分片的原子性，数据会根据 hashing 算法，放入到不同的片(机器)上
  * @author 孤狼
  */
-public class JedisShardedFactory extends Pool<ShardedJedis> {
+public class JedisSimpleShardedPool extends Pool<ShardedJedis> {
 	
 	protected Logger logger = LoggerFactory.getLogger(getClass().getName());
 	
 	/**
 	 * 分片集群实例:它只会选择一个服务器存放你set的数据，选择是根据你的key值按哈希算法决定哪台服务器。
 	 * 所以只会有一台有数据，而且一样的key，基本是只会在某台redis服务器存放;
-	 * 如果采用的是：使用 sharded 做 HA 操作.则换成 : ShardedJedisOwnerPool .
+	 * 如果采用的是：使用 sharded 做 HA 操作.则换成 : ShardedJedisSentinelPool .
 	 */
 	private ShardedJedisPool shardedPool;
 	
@@ -60,12 +60,12 @@ public class JedisShardedFactory extends Pool<ShardedJedis> {
 	/**
 	 * 构造方法
 	 */
-	public JedisShardedFactory() {}
+	public JedisSimpleShardedPool() {}
 	
 	/**
 	 * 构造方法
 	 */
-	public JedisShardedFactory(JedisPoolConfig poolConfig, int timeout, int sotimeout, int maxattempts, String hostInfos) {
+	public JedisSimpleShardedPool(JedisPoolConfig poolConfig, int timeout, int sotimeout, int maxattempts, String hostInfos) {
 		this.poolConfig =poolConfig;
 		this.timeout = timeout;
 		this.sotimeout = sotimeout;
@@ -77,7 +77,7 @@ public class JedisShardedFactory extends Pool<ShardedJedis> {
 	/**
 	 * 构造方法
 	 */
-	public JedisShardedFactory(JedisPoolConfig poolConfig, int timeout, int sotimeout, int maxattempts, String passWords, String hostInfos) {
+	public JedisSimpleShardedPool(JedisPoolConfig poolConfig, int timeout, int sotimeout, int maxattempts, String passWords, String hostInfos) {
 		this.poolConfig =poolConfig;
 		this.timeout = timeout;
 		this.sotimeout = sotimeout;

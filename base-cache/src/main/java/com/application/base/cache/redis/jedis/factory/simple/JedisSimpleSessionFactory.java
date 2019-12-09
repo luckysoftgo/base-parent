@@ -1,4 +1,4 @@
-package com.application.base.cache.redis.jedis.factory;
+package com.application.base.cache.redis.jedis.factory.simple;
 
 import com.application.base.cache.redis.api.RedisSession;
 import com.application.base.cache.redis.api.ShardedSession;
@@ -28,7 +28,7 @@ public class JedisSimpleSessionFactory implements RedisSessionFactory {
 	 */
 	private JedisPool jedisPool;
 	/**
-	 * 哨兵实例可使用.
+	 * 单哨兵实例可使用.
 	 */
 	private Pool<Jedis> pools;
 
