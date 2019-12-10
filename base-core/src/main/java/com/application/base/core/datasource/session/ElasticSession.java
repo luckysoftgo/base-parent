@@ -11,11 +11,11 @@ import org.elasticsearch.search.sort.FieldSortBuilder;
 import java.util.List;
 
 /**
- * @NAME: EsSession
+ * @NAME: ElasticSession
  * @DESC:
  * @USER: 孤狼
  **/
-public interface EsSession {
+public interface ElasticSession {
 	/**
 	 * 判断指定的索引名是否存在
 	 * @param index

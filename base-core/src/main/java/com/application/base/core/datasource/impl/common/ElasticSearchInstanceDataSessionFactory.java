@@ -1,15 +1,15 @@
 package com.application.base.core.datasource.impl.common;
 
+import com.application.base.core.datasource.session.ElasticSession;
 import com.application.base.elastic.factory.ElasticSessionFactory;
-import com.application.base.core.datasource.api.EsDataSessionFactory;
-import com.application.base.core.datasource.session.EsSession;
+import com.application.base.core.datasource.api.ElasticDataSessionFactory;
 
 /**
  * @NAME: ElasticSearchInstanceDataSessionFactory
  * @DESC: 操作elastic的服务接口实现.
  * @USER: 孤狼
  **/
-public class ElasticSearchInstanceDataSessionFactory implements EsDataSessionFactory {
+public class ElasticSearchInstanceDataSessionFactory implements ElasticDataSessionFactory {
 	
 	/**
 	 * 操作的实例工厂.
@@ -17,8 +17,8 @@ public class ElasticSearchInstanceDataSessionFactory implements EsDataSessionFac
 	private ElasticSessionFactory sessionFactory;
 	
 	@Override
-	public EsSession getElasticSession() {
-		DefaultEsDataSession session = new DefaultEsDataSession(sessionFactory);
+	public ElasticSession getElasticSession() {
+		DefaultElasticDataSession session = new DefaultElasticDataSession(sessionFactory);
 		return session;
 	}
 	

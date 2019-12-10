@@ -1,10 +1,10 @@
 package com.application.base.core.datasource.impl.common;
 
+import com.application.base.core.datasource.session.ElasticSession;
 import com.application.base.elastic.elastic.query.EsQueryBuilderInstance;
 import com.application.base.elastic.entity.ElasticData;
 import com.application.base.elastic.exception.ElasticException;
 import com.application.base.elastic.factory.ElasticSessionFactory;
-import com.application.base.core.datasource.session.EsSession;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -13,12 +13,12 @@ import org.elasticsearch.search.sort.FieldSortBuilder;
 import java.util.List;
 
 /**
- * @NAME: DefaultEsDataSession
+ * @NAME: DefaultElasticDataSession
  * @DESC:
  * @USER: 孤狼
  * @DATE: 2019年7月1日
  **/
-public class DefaultEsDataSession implements EsSession {
+public class DefaultElasticDataSession implements ElasticSession {
 	
 	/**
 	 * 操作的实例工厂.
@@ -33,7 +33,7 @@ public class DefaultEsDataSession implements EsSession {
 		this.sessionFactory = sessionFactory;
 	}
 	
-	public DefaultEsDataSession(ElasticSessionFactory sessionFactory) {
+	public DefaultElasticDataSession(ElasticSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
 	
