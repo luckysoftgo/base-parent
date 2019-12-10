@@ -65,6 +65,14 @@ public class JedisSimpleShardedPool extends Pool<ShardedJedis> {
 	/**
 	 * 构造方法
 	 */
+	public JedisSimpleShardedPool(JedisPoolConfig poolConfig,String hostInfos) {
+		this.poolConfig =poolConfig;
+		this.hostInfos = hostInfos;
+		initFactory();
+	}
+	/**
+	 * 构造方法
+	 */
 	public JedisSimpleShardedPool(JedisPoolConfig poolConfig, int timeout, int sotimeout, int maxattempts, String hostInfos) {
 		this.poolConfig =poolConfig;
 		this.timeout = timeout;
