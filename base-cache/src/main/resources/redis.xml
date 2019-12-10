@@ -43,15 +43,14 @@
 	
 	
 	<!--2. redis 哨兵模式,有一个哨兵的redis服务可以调用,版本一-->
-	<!--
 	   <bean id="sentinelPoolOne" class="redis.clients.jedis.JedisSentinelPool">
 		   <constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
 		   <constructor-arg name="masterName" value="${redis.sentinel.mastername}"/>
 		   <constructor-arg name="sentinels">
 			   <set>
-				   <value>${redis.sentinel.a}</value>
-				   <value>${redis.sentinel.b}</value>
-				   <value>${redis.sentinel.n}</value>
+				   <value>${redis.sentinels[0].info}</value>
+				   <value>${redis.sentinels[1].info}</value>
+				   <value>${redis.sentinels[2].info}</value>
 			   </set>
 		   </constructor-arg>
 		   <constructor-arg name="timeout" value="${redis.sentinel.timeout}"/>
@@ -67,7 +66,7 @@
 	
 	
 	<!--3. redis 哨兵模式,有一个哨兵的redis服务可以调用,版本二-->
-	<!--
+
 		<bean id="sentinelPoolTwo" class="com.application.base.cache.redis.jedis.factory.sentinel.JedisSimpleSentinelPool">
 			<constructor-arg name="masterName" value="${redis.sentinel.mastername}"/>
 			<constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
@@ -86,10 +85,10 @@
 	
 	
 	<!--3. redis集群模式,有一个redis的集群服务器组可以使用 -->
-	<!--
+
 		<bean id="clusterPool" class="com.application.base.cache.redis.jedis.factory.cluster.RedisClusterPool">
 			<constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
-			<constructor-arg name="hostInfos" value="${redis.cluster.hostinfos}"/>
+			<constructor-arg name="hostInfos" value="${redis.cluster.instances}"/>
 			<constructor-arg name="timeout" value="${redis.cluster.timeout}"/>
 			<constructor-arg name="sotimeout" value="${redis.cluster.sotimeout}"/>
 			<constructor-arg name="maxattempts" value="${redis.cluster.maxattempts}"/>
@@ -107,10 +106,10 @@
 	
 	
 	<!--4. redis分片模式,有一个redis的分片模式服务器组可以使用 -->
-	<!--
+
 	<bean id="shardedPool" class="com.application.base.cache.redis.jedis.factory.sharded.JedisSimpleShardedPool">
 		<property name="poolConfig" ref="jedisPoolConfig"/>
-		<property name="hostInfos" value="${redis.sharded.hostinfos}"/>
+		<property name="hostInfos" value="${redis.sharded.instances}"/>
 		<property name="timeout" value="${redis.sharded.timeout}"/>
 		<property name="sotimeout" value="${redis.sharded.sotimeout}"/>
 		<property name="maxattempts" value="${redis.sharded.maxattempts}"/>
@@ -124,22 +123,22 @@
 	
 	
 	<!--5. redis 哨兵分片模式,有一个redis的哨兵,分片模式服务器组可以使用 -->
-	<!--
+
 	<bean id="shardedSentinelPool" class="com.application.base.cache.redis.jedis.factory.complex.ShardedJedisSentinelPool">
 		<constructor-arg name="poolConfig" ref="jedisPoolConfig"/>
 		<constructor-arg name="timeout" value="${redis.complex.timeout}"/>
 		<constructor-arg name="masters">
 			<list>
-				<value>${redis.complex.master.a}</value>
-				<value>${redis.complex.master.b}</value>
-				<value>${redis.complex.master.n}</value>
+				<value>${redis.complex.masters[0].info}</value>
+				<value>${redis.complex.masters[1].info}</value>
+				<value>${redis.complex.masters[2].info}</value>
 			</list>
 		</constructor-arg>
 		<constructor-arg name="sentinels">
 			<set>
-				<value>${redis.complex.sentinel.a}</value>
-				<value>${redis.complex.sentinel.b}</value>
-				<value>${redis.complex.sentinel.n}</value>
+				<value>${redis.complex.sentinels[0].info}</value>
+				<value>${redis.complex.sentinels[1].info}</value>
+				<value>${redis.complex.sentinels[2].info}</value>
 			</set>
 		</constructor-arg>
 	</bean>
