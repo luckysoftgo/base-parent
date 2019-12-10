@@ -54,6 +54,7 @@ public class JedisSimpleSentinelPool extends Pool<Jedis> {
 	 */
 	private String passSplit=";";
 	
+	
 	/**
 	 * 构造方法
 	 */
@@ -97,7 +98,7 @@ public class JedisSimpleSentinelPool extends Pool<Jedis> {
 	@SuppressWarnings("deprecation")
 	public void initFactory() {
 		try {
-			if (!StringUtils.isNotBlank(hostInfos)) {
+			if (!StringUtils.isBlank(hostInfos) && sentinels.isEmpty()) {
 				logger.info("初始化 Redis 哨兵的IP和端口,没有传入IP和端口的字符串.");
 				return;
 			}
@@ -105,10 +106,12 @@ public class JedisSimpleSentinelPool extends Pool<Jedis> {
 			if (StringUtils.isNotBlank(getPassWords())) {
 				isAuth=true;
 			}
-			// 以";"分割成"ip:post"
-			String[] ipAndPorts = hostInfos.split(passSplit);
-			for (int i = 0; i <ipAndPorts.length ; i++) {
-				sentinels.add(ipAndPorts[i]);
+			if (sentinels.isEmpty() && StringUtils.isNotBlank(hostInfos)){
+				// 以";"分割成"ip:post"
+				String[] ipAndPorts = hostInfos.split(passSplit);
+				for (int i = 0; i <ipAndPorts.length ; i++) {
+					sentinels.add(ipAndPorts[i]);
+				}
 			}
 			//初始化连接池.
 			if (jedisPool==null || jedisPool.isClosed()) {
@@ -184,4 +187,13 @@ public class JedisSimpleSentinelPool extends Pool<Jedis> {
 	public void setPassSplit(String passSplit) {
 		this.passSplit = passSplit;
 	}
+	
+	public Set<String> getSentinels() {
+		return sentinels;
+	}
+	
+	public void setSentinels(Set<String> sentinels) {
+		this.sentinels = sentinels;
+	}
+	
 }
