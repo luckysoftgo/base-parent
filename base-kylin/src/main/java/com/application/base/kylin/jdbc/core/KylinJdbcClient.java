@@ -71,8 +71,11 @@ public class KylinJdbcClient {
 	 * 获取连接
 	 * @return
 	 */
-	public Connection getConnection(String projectName) throws KylinException {
+	public Connection getConnection(String projectName) throws KylinException, SQLException {
 		Connection connection = connsMap.get(projectName);
+		if (connection!=null && connection.isClosed()){
+			return connection;
+		}
 		if (connection == null) {
 			try {
 				if (StringUtils.isNotBlank(jdbcConfig.getKylinDriver())){
