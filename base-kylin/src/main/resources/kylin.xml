@@ -22,6 +22,7 @@
         <property name="timeBetweenEvictionRunsMillis" value="${kylin.pool.timeBetweenEvictionRunsMillis}"/>
 		<property name="numTestsPerEvictionRun" value="${kylin.pool.numTestsPerEvictionRun}"/>
 		<property name="userName" value="${kylin.name}"/>
+		<property name="kylinDriver" value="${kylin.driver}"/>
 		<property name="userPass" value="${kylin.pass}"/>
 		<property name="requestUrl" value="${kylin.host}"/>
 	</bean>

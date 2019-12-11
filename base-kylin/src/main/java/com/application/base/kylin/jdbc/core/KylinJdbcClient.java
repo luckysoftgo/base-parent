@@ -75,6 +75,9 @@ public class KylinJdbcClient {
 		Connection connection = connsMap.get(projectName);
 		if (connection == null) {
 			try {
+				if (StringUtils.isNotBlank(jdbcConfig.getKylinDriver())){
+					kylinDriver = jdbcConfig.getKylinDriver();
+				}
 				Driver driver = (Driver) Class.forName(kylinDriver).newInstance();
 				Properties info = new Properties();
 				info.put(KylinConstant.USER, jdbcConfig.getUserName());

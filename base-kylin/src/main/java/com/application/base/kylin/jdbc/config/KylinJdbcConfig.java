@@ -24,6 +24,10 @@ public class KylinJdbcConfig  extends GenericObjectPoolConfig {
 	 * kylin的连接地址.
 	 */
 	private String kylinUrl;
+	/**
+	 * kylin driver.
+	 */
+	private String kylinDriver;
 	
 	@Override
 	public String toString(){
@@ -31,6 +35,7 @@ public class KylinJdbcConfig  extends GenericObjectPoolConfig {
 		buffer.append("userName:"+getUserName()+"\n");
 		buffer.append("userPass:"+getUserPass()+"\n");
 		buffer.append("kylinUrl:"+getKylinUrl()+"\n");
+		buffer.append("kylinDriver:"+getKylinDriver()+"\n");
 		buffer.append("projectName:"+getProjectName()+"\n");
 		buffer.append("testOnBorrow:").append(getTestOnBorrow()).append("\n")
 				.append("testWhileIdle:").append(getTestWhileIdle()).append("\n")
@@ -71,5 +76,13 @@ public class KylinJdbcConfig  extends GenericObjectPoolConfig {
 	
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
+	}
+	
+	public String getKylinDriver() {
+		return kylinDriver;
+	}
+	
+	public void setKylinDriver(String kylinDriver) {
+		this.kylinDriver = kylinDriver;
 	}
 }

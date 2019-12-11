@@ -12,6 +12,10 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 public class KylinRestConfig extends GenericObjectPoolConfig {
 	
 	/**
+	 * Driver
+	 */
+	private String kylinDriver;
+	/**
 	 * 请求的用户名
 	 */
 	private String userName;
@@ -28,6 +32,7 @@ public class KylinRestConfig extends GenericObjectPoolConfig {
 	@Override
 	public String toString(){
 		StringBuffer buffer = new StringBuffer();
+		buffer.append("kylinDriver:"+getKylinDriver()+"\n");
 		buffer.append("userName:"+getUserName()+"\n");
 		buffer.append("userPass:"+getUserPass()+"\n");
 		buffer.append("requestUrl:"+getRequestUrl()+"\n");
@@ -62,5 +67,13 @@ public class KylinRestConfig extends GenericObjectPoolConfig {
 	
 	public void setRequestUrl(String requestUrl) {
 		this.requestUrl = requestUrl;
+	}
+	
+	public String getKylinDriver() {
+		return kylinDriver;
+	}
+	
+	public void setKylinDriver(String kylinDriver) {
+		this.kylinDriver = kylinDriver;
 	}
 }
