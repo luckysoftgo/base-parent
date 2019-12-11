@@ -21,7 +21,7 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<java.version>1.8</java.version>
 		
-		<hive.version>3.1.0</hive.version>
+		<hive.version>3.1.1</hive.version>
 		<common-pool.version>2.6.2</common-pool.version>
 		<!-- 下载需要的 jar  -->
 		<downloadSources>true</downloadSources>
