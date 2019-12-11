@@ -210,7 +210,7 @@ public class HiveJdbcClient {
 	 * @return
 	 */
 	public LinkedList<String> descTable(String tableName){
-		String sql = "desc "+tableName;
+		String sql = "describe "+tableName;
 		Connection connn = null;
 		Statement statement = null;
 		ResultSet resultSet = null;
