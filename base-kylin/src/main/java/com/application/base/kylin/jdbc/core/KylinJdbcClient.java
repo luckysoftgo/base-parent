@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -48,7 +49,8 @@ public class KylinJdbcClient {
 	/**
 	 * 存在的连接.
 	 */
-	private ConcurrentHashMap<String,Connection> connsMap = new ConcurrentHashMap<>(16);
+	private ConcurrentHashMap<String,ArrayBlockingQueue<Connection>> connsMap = new ConcurrentHashMap<>(16);
+	
 	/**
 	 * 构造函数.
 	 * @param jdbcConfig
@@ -68,31 +70,60 @@ public class KylinJdbcClient {
 	}
 	
 	/**
+	 * 创建连接池.
+	 */
+	public Connection initConnect(String projectName){
+		try {
+			if (StringUtils.isNotBlank(jdbcConfig.getKylinDriver())){
+				kylinDriver = jdbcConfig.getKylinDriver();
+			}
+			Driver driver = (Driver) Class.forName(kylinDriver).newInstance();
+			Properties info = new Properties();
+			info.put(KylinConstant.USER, jdbcConfig.getUserName());
+			info.put(KylinConstant.PASSWORD, jdbcConfig.getUserPass());
+			Connection connection = driver.connect(jdbcConfig.getKylinUrl()+ KylinConstant.SPLIT+projectName,info);
+			ArrayBlockingQueue<Connection> connections = connsMap.get(projectName);
+			if (connections==null || connections.size()==0){
+				int maxTotal = jdbcConfig.getMaxTotal();
+				connections = new ArrayBlockingQueue<>(maxTotal);
+			}
+			connections.offer(connection);
+			connsMap.put(projectName,connections);
+			return connection;
+		}catch (Exception e){
+			logger.error("kylin获得连接异常了,异常信息是:{}",e.getMessage());
+			throw new KylinException("kylin获得连接异常了,异常信息是:{"+e.getMessage()+"}");
+		}
+	}
+
+	
+	/**
 	 * 获取连接
 	 * @return
 	 */
-	public Connection getConnection(String projectName) throws KylinException, SQLException {
-		Connection connection = connsMap.get(projectName);
-		if (connection!=null && connection.isClosed()){
-			return connection;
-		}
-		if (connection == null) {
-			try {
-				if (StringUtils.isNotBlank(jdbcConfig.getKylinDriver())){
-					kylinDriver = jdbcConfig.getKylinDriver();
+	public Connection getConnection(String projectName) {
+		ArrayBlockingQueue<Connection> connections = connsMap.get(projectName);
+		try {
+			int maxTotal = jdbcConfig.getMaxTotal();
+			if (connections!=null && connections.size()>0){
+				int count = jdbcConfig.getMinIdle();
+				if (connections.size() < count){
+					int addCount = maxTotal - count;
+					for (int i = 0; i < addCount ; i++) {
+						initConnect(projectName);
+					}
 				}
-				Driver driver = (Driver) Class.forName(kylinDriver).newInstance();
-				Properties info = new Properties();
-				info.put(KylinConstant.USER, jdbcConfig.getUserName());
-				info.put(KylinConstant.PASSWORD, jdbcConfig.getUserPass());
-				connection = driver.connect(jdbcConfig.getKylinUrl()+ KylinConstant.SPLIT+projectName,info);
-				connsMap.put(projectName,connection);
-			}catch (Exception e){
-				logger.error("kylin获得连接异常了,异常信息是:{}",e.getMessage());
-				throw new KylinException("kylin获得连接异常了,异常信息是:{"+e.getMessage()+"}");
+				return connections.take();
+			}else{
+				for (int i = 0; i < maxTotal ; i++) {
+					initConnect(projectName);
+				}
+				return connsMap.get(projectName).take();
 			}
+		}catch (InterruptedException e){
+			logger.error("获取connect连接失败了,传递的项目名称是:{},错误异常是:{}",projectName,e.getMessage());
+			return null;
 		}
-		return connection;
 	}
 	
 	/**
@@ -109,6 +140,9 @@ public class KylinJdbcClient {
 		LinkedList<Map<String,Object>> finalList = new LinkedList<>();
 		try {
 			connection = getConnection(projectName);
+			if (connection==null){
+				return finalList;
+			}
 			pstmt = connection.prepareStatement(sql);
 			if (param!=null && param.length>0){
 				for (int i = 1; i <= param.length; i++) {
@@ -162,6 +196,9 @@ public class KylinJdbcClient {
 		LinkedList<Map<String,Object>> finalList = new LinkedList<>();
 		try {
 			connection = getConnection(projectName);
+			if (connection==null){
+				return finalList;
+			}
 			pstmt = connection.prepareStatement(sql);
 			if (param!=null && param.length>0){
 				for (int i = 1; i <= param.length; i++) {
@@ -211,6 +248,9 @@ public class KylinJdbcClient {
 		LinkedList<Map<String,Object>> finalList = new LinkedList<>();
 		try {
 			connection = getConnection(projectName);
+			if (connection==null){
+				return finalList;
+			}
 			pstmt = connection.prepareStatement(sql);
 			resultSet = pstmt.executeQuery();
 			ResultSetMetaData rsmd = resultSet.getMetaData();
@@ -254,6 +294,9 @@ public class KylinJdbcClient {
 		LinkedList<Map<String,Object>> finalList = new LinkedList<>();
 		try {
 			connection = getConnection(projectName);
+			if (connection==null){
+				return finalList;
+			}
 			resultSet = connection.getMetaData().getTables(null,null,tableName,null);
 			ResultSetMetaData rsmd = resultSet.getMetaData();
 			int count = rsmd.getColumnCount();
