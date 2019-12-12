@@ -1,4 +1,4 @@
-package com.application.base.operapi.hive.exception;
+package com.application.base.operapi.api.hive.exception;
 
 /**
  * @author : 孤狼.

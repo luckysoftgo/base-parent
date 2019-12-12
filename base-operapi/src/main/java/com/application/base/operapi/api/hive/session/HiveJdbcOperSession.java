@@ -1,11 +1,10 @@
-package com.application.base.operapi.hive.session;
+package com.application.base.operapi.api.hive.session;
 
-import com.application.base.operapi.hive.api.HiveJdbcSession;
-import com.application.base.operapi.hive.core.HiveJdbcClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.application.base.operapi.api.hive.api.HiveJdbcSession;
+import com.application.base.operapi.api.hive.core.HiveJdbcClient;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,8 +13,6 @@ import java.util.Map;
  * @DESC: jdbc操作数据库实现
  **/
 public class HiveJdbcOperSession implements HiveJdbcSession {
-	
-	private Logger logger = LoggerFactory.getLogger(getClass());
 	
 	private HiveJdbcClient jdbcClient;
 	
@@ -38,8 +35,23 @@ public class HiveJdbcOperSession implements HiveJdbcSession {
 	}
 	
 	@Override
+	public String excuteHiveql(String hivesql) {
+		return jdbcClient.excuteHiveql(hivesql);
+	}
+	
+	@Override
 	public boolean createTable(String createSql) {
 		return jdbcClient.createTable(createSql);
+	}
+	
+	@Override
+	public boolean createStrTable(String tableName, List<String> columnList) {
+		return jdbcClient.createStrTable(tableName,columnList);
+	}
+	
+	@Override
+	public boolean createTable(String tableName, List<Map<String, String>> columnMapList) {
+		return  jdbcClient.createTable(tableName,columnMapList);
 	}
 	
 	@Override
@@ -48,7 +60,7 @@ public class HiveJdbcOperSession implements HiveJdbcSession {
 	}
 	
 	@Override
-	public LinkedList<String> descTable(String tableName) {
+	public LinkedList<Map<String,String>> descTable(String tableName) {
 		return jdbcClient.descTable(tableName);
 	}
 	
@@ -71,6 +83,13 @@ public class HiveJdbcOperSession implements HiveJdbcSession {
 	public LinkedList<Map<String, Object>> selectTable(String sql, String[] param) {
 		return jdbcClient.selectTable(sql,param);
 	}
+	
+	@Override
+	public LinkedList<Map<String, Object>> selectTable(String tableName, List<String> columnList, String condition,
+	                                                   String limitInfo) {
+		return  jdbcClient.selectTable(tableName,columnList,condition,limitInfo);
+	}
+	
 	
 	@Override
 	public Integer countData(String tableName) {

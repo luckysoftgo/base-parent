@@ -1,7 +1,7 @@
-package com.application.base.operapi.hive.core;
+package com.application.base.operapi.api.hive.core;
 
-import com.application.base.operapi.hive.api.HiveJdbcSession;
-import com.application.base.operapi.hive.exception.HiveException;
+import com.application.base.operapi.api.hive.api.HiveJdbcSession;
+import com.application.base.operapi.api.hive.exception.HiveException;
 
 /**
  * @author : 孤狼

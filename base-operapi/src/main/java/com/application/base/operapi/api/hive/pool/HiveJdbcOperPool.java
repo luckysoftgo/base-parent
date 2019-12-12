@@ -1,8 +1,8 @@
-package com.application.base.operapi.hive.pool;
+package com.application.base.operapi.api.hive.pool;
 
-import com.application.base.operapi.hive.config.HiveJdbcConfig;
-import com.application.base.operapi.hive.core.HiveJdbcClient;
-import com.application.base.operapi.hive.factory.HiveJdbcFactory;
+import com.application.base.operapi.api.hive.config.HiveJdbcConfig;
+import com.application.base.operapi.api.hive.core.HiveJdbcClient;
+import com.application.base.operapi.api.hive.factory.HiveJdbcFactory;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 
 /**

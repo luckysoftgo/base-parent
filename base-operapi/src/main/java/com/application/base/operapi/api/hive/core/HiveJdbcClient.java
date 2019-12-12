@@ -1,7 +1,7 @@
-package com.application.base.operapi.hive.core;
+package com.application.base.operapi.api.hive.core;
 
-import com.application.base.operapi.hive.config.HiveJdbcConfig;
-import com.application.base.operapi.hive.exception.HiveException;
+import com.application.base.operapi.api.hive.config.HiveJdbcConfig;
+import com.application.base.operapi.api.hive.exception.HiveException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,15 +14,15 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * @author : 孤狼
- * @NAME: HiveJdbcClient
+ * @NAME: HiveJdbcUtil
  * @DESC: jdbc 客户端操作.
  * http://www.manongjc.com/article/100162.html
  **/
@@ -147,6 +147,26 @@ public class HiveJdbcClient {
 	}
 	
 	/**
+	 * 仅执行hivesql，不返回数据，只返回成功失败，比如执行创建表，加载数据等
+	 * @param hivesql
+	 * @return
+	 */
+	public String excuteHiveql(String hivesql){
+		String result = "";
+		Connection con = getConnection();
+		try {
+			Statement stmt = con.createStatement();
+			int bool = stmt.executeUpdate(hivesql);
+			if (bool>0){
+				result = "执行成功："+hivesql;
+			}
+		}catch (Exception e){
+			result = "执行失败："+hivesql;
+		}
+		return result;
+	}
+	
+	/**
 	 * 创建表操作.
 	 * @param createSql:
 	 * create table test_hive(
@@ -163,6 +183,7 @@ public class HiveJdbcClient {
 	 * @return
 	 */
 	public boolean createTable(String createSql){
+		logger.info("执行的sql是:{}",createSql);
 		Connection connn = null;
 		Statement statement = null;
 		try {
@@ -175,6 +196,58 @@ public class HiveJdbcClient {
 		}finally {
 			close(connn,statement,null,null);
 		}
+	}
+	
+	/**
+	 * 获取生成hive表的hiveql
+	 * @param tableName
+	 * @param columnList : 列的名称.
+	 * @return
+	 */
+	public boolean createStrTable(String tableName, List<String> columnList){
+		StringBuffer buffer = new StringBuffer("create table "+tableName+"(");
+		for (int i = 0; i < columnList.size() ; i++) {
+			String column = columnList.get(i);
+			if (StringUtils.isEmpty(column)){
+				continue;
+			}
+			if (i==columnList.size()-1){
+				buffer.append(" "+column +"    string ");
+			}else{
+				buffer.append(" "+column +"    string , ");
+			}
+		}
+		buffer.append(") row format delimited fields terminated by ',' ");
+		String sql= buffer.toString();
+		logger.info("生成的sql是:{}",sql);
+		return createTable(sql);
+	}
+	
+	/**
+	 * 获取生成hive表的hiveql
+	 * @param tableName
+	 * @param columnMapList : 列和类型的集合.
+	 * @return
+	 */
+	public boolean createTable(String tableName, List<Map<String,String >> columnMapList){
+		StringBuffer buffer = new StringBuffer("create table "+tableName+"(");
+		for (int i = 0; i < columnMapList.size() ; i++) {
+			Map<String,String> map = columnMapList.get(i);
+			Set<String> keys = map.keySet();
+			if (i==columnMapList.size()-1){
+				for (String key :keys){
+					buffer.append(" "+key +"    "+map.get(key));
+				}
+			}else{
+				for (String key :keys){
+					buffer.append(" "+key +"    "+map.get(key) + ",");
+				}
+			}
+		}
+		buffer.append(") row format delimited fields terminated by ',' ");
+		String sql= buffer.toString();
+		logger.info("生成的sql是:{}",sql);
+		return createTable(sql);
 	}
 	
 	/**
@@ -207,21 +280,29 @@ public class HiveJdbcClient {
 	/**
 	 * 显示表的结构
 	 * @param tableName
+	 * map 的值为:
+		 * "data_type" -> "bigint"
+		 * "comment" -> ""
+		 * "col_name" -> "account_id"
 	 * @return
 	 */
-	public LinkedList<String> descTable(String tableName){
+	public LinkedList<Map<String,String>> descTable(String tableName){
 		String sql = "describe "+tableName;
 		Connection connn = null;
 		Statement statement = null;
 		ResultSet resultSet = null;
-		LinkedList<String> tableDesc = new LinkedList<>();
+		LinkedList<Map<String,String>> tableDesc = new LinkedList<>();
 		try {
 			connn = getConnection();
 			statement = connn.createStatement();
 			resultSet = statement.executeQuery(sql);
-			while (resultSet.next()) {
-				String desc = resultSet.getString(1)+" "+resultSet.getString(2);
-				tableDesc.add(desc);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			while(resultSet.next()) {
+				Map<String,String> map = new HashMap<>();
+				for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+					map.put(rsmd.getColumnName(i), resultSet.getString(rsmd.getColumnName(i)));
+				}
+				tableDesc.add(map);
 			}
 			return tableDesc;
 		} catch (SQLException e) {
@@ -279,17 +360,12 @@ public class HiveJdbcClient {
 			statement = connn.createStatement();
 			resultSet = statement.executeQuery(sql);
 			ResultSetMetaData rsmd = resultSet.getMetaData();
-			int count = rsmd.getColumnCount();
-			Set<String> columns = new HashSet<>();
-			for (int i = 1; i <= count ; i++) {
-				columns.add(rsmd.getColumnName(i));
-			}
-			while (resultSet.next()) {
-				Map<String,Object> data = new HashMap<>();
-				for (String column : columns ) {
-					data.put(column,resultSet.getObject(column));
+			while(resultSet.next()) {
+				Map<String,Object> map = new HashMap<>();
+				for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+					map.put(rsmd.getColumnName(i), resultSet.getObject(rsmd.getColumnName(i)));
 				}
-				tableDatas.add(data);
+				tableDatas.add(map);
 			}
 			return tableDatas;
 		} catch (SQLException e) {
@@ -321,17 +397,12 @@ public class HiveJdbcClient {
 			}
 			resultSet = statement.executeQuery(sql);
 			ResultSetMetaData rsmd = resultSet.getMetaData();
-			int count = rsmd.getColumnCount();
-			Set<String> columns = new HashSet<>();
-			for (int i = 1; i <= count ; i++) {
-				columns.add(rsmd.getColumnName(i));
-			}
-			while (resultSet.next()) {
-				Map<String,Object> data = new HashMap<>();
-				for (String column : columns ) {
-					data.put(column,resultSet.getObject(column));
+			while(resultSet.next()) {
+				Map<String,Object> map = new HashMap<>();
+				for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+					map.put(rsmd.getColumnName(i), resultSet.getObject(rsmd.getColumnName(i)));
 				}
-				tableDatas.add(data);
+				tableDatas.add(map);
 			}
 			return tableDatas;
 		} catch (SQLException e) {
@@ -343,12 +414,61 @@ public class HiveJdbcClient {
 	}
 	
 	/**
+	 * 根据表名称、查询字段、条件、限制条数返回数据,若参数为空,请填入"";
+	 * @param tableName
+	 * @param columnList
+	 * @param condition 条件.
+	 * @param limitInfo 分页条件.
+	 * @return
+	 */
+	public LinkedList<Map<String,Object>> selectTable(String tableName, List<String> columnList, String condition,String limitInfo){
+		LinkedList<Map<String,Object>> resultList = new LinkedList<Map<String,Object>>();
+		Connection con = getConnection();
+		ResultSet res = null;
+		StringBuffer buffer= new StringBuffer(" select ");
+		
+		if(columnList !=null&&columnList.size() > 0){
+			for (int i = 0;i < columnList.size();i++){
+				if(i != columnList.size()-1) {
+					buffer.append(columnList.get(i) + ",");
+				}else {
+					buffer.append(columnList.get(i));
+				}
+			}
+		}else{
+			buffer.append(" * ");
+		}
+		buffer.append(" from " + tableName);
+		if(condition!=null &&!condition.equals("")){
+			buffer.append(" where "+condition);
+		}
+		if(limitInfo!=null&&!limitInfo.equals("")){
+			buffer.append(" " + limitInfo);
+		}
+		try {
+			Statement stmt = con.createStatement();
+			res = stmt.executeQuery(buffer.toString());
+			ResultSetMetaData rsmd = res.getMetaData();
+			while(res.next()) {
+				Map<String,Object> map = new HashMap<>();
+				for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+					map.put(rsmd.getColumnName(i), res.getObject(rsmd.getColumnName(i)));
+				}
+				resultList.add(map);
+			}
+		}catch (Exception e){
+			logger.error("查询数据出错了,错误信息是:{}",e.getMessage());
+		}
+		return resultList;
+	}
+	
+	/**
 	 * 统计数据条数.
 	 * @param tableName
 	 * @return
 	 */
 	public Integer countData(String tableName){
-		String sql = "select count(1) from "+tableName;
+		String sql = "select count(*) from "+tableName;
 		Connection connn = null;
 		Statement statement = null;
 		ResultSet resultSet = null;

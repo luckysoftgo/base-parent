@@ -1,11 +1,11 @@
-package com.application.base.operapi.hive.factory;
+package com.application.base.operapi.api.hive.factory;
 
-import com.application.base.operapi.hive.api.HiveJdbcSession;
-import com.application.base.operapi.hive.core.HiveJdbcClient;
-import com.application.base.operapi.hive.core.HiveSessionFactory;
-import com.application.base.operapi.hive.exception.HiveException;
-import com.application.base.operapi.hive.pool.HiveJdbcOperPool;
-import com.application.base.operapi.hive.session.HiveJdbcOperSession;
+import com.application.base.operapi.api.hive.api.HiveJdbcSession;
+import com.application.base.operapi.api.hive.core.HiveJdbcClient;
+import com.application.base.operapi.api.hive.core.HiveSessionFactory;
+import com.application.base.operapi.api.hive.exception.HiveException;
+import com.application.base.operapi.api.hive.pool.HiveJdbcOperPool;
+import com.application.base.operapi.api.hive.session.HiveJdbcOperSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

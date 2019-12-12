@@ -1,4 +1,4 @@
-package com.application.base.operapi.hive.config;
+package com.application.base.operapi.api.hive.config;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 

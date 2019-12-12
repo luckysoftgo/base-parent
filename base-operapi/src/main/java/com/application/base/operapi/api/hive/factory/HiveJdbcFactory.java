@@ -1,7 +1,7 @@
-package com.application.base.operapi.hive.factory;
+package com.application.base.operapi.api.hive.factory;
 
-import com.application.base.operapi.hive.config.HiveJdbcConfig;
-import com.application.base.operapi.hive.core.HiveJdbcClient;
+import com.application.base.operapi.api.hive.config.HiveJdbcConfig;
+import com.application.base.operapi.api.hive.core.HiveJdbcClient;
 import org.apache.commons.pool2.BasePooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;

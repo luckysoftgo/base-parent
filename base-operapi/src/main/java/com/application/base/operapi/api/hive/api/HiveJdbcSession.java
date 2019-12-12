@@ -1,6 +1,7 @@
-package com.application.base.operapi.hive.api;
+package com.application.base.operapi.api.hive.api;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,11 +25,34 @@ public interface HiveJdbcSession {
 	public LinkedList<String> showDatabases();
 	
 	/**
+	 * 仅执行hivesql，不返回数据，只返回成功失败，比如执行创建表，加载数据等
+	 * @param hivesql
+	 * @return
+	 */
+	public String excuteHiveql(String hivesql);
+	
+	/**
 	 * 创建表操作.
 	 * @param createSql
 	 * @return
 	 */
 	public boolean createTable(String createSql);
+	
+	/**
+	 * 获取生成hive表的hiveql
+	 * @param tableName
+	 * @param columnList : 列的名称.
+	 * @return
+	 */
+	public boolean createStrTable(String tableName, List<String> columnList);
+	
+	/**
+	 * 获取生成hive表的hiveql
+	 * @param tableName
+	 * @param columnMapList : 列和类型的集合.
+	 * @return
+	 */
+	public boolean createTable(String tableName, List<Map<String,String >> columnMapList);
 	
 	/**
 	 * 获取hive上表的信息.
@@ -41,7 +65,7 @@ public interface HiveJdbcSession {
 	 * @param tableName
 	 * @return
 	 */
-	public LinkedList<String> descTable(String tableName);
+	public LinkedList<Map<String,String>> descTable(String tableName);
 	
 	/**
 	 * 给固定的表添加数据文件.
@@ -49,7 +73,7 @@ public interface HiveJdbcSession {
 	 * @param tableName
 	 * @return
 	 */
-	public boolean loadDataByPath(String filePath,String tableName);
+	public boolean loadDataByPath(String filePath, String tableName);
 	
 	/**
 	 * 查询表中的数据.
@@ -72,6 +96,16 @@ public interface HiveJdbcSession {
 	 * @return
 	 */
 	public LinkedList<Map<String,Object>> selectTable(String sql, String[] param);
+	
+	/**
+	 * 根据表名称、查询字段、条件、限制条数返回数据,若参数为空,请填入"";
+	 * @param tableName
+	 * @param columnList
+	 * @param condition 条件.
+	 * @param limitInfo 分页条件.
+	 * @return
+	 */
+	public LinkedList<Map<String,Object>> selectTable(String tableName, List<String> columnList, String condition,String limitInfo);
 	
 	/**
 	 * 统计数据条数.
