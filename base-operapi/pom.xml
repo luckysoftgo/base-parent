@@ -21,8 +21,10 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<java.version>1.8</java.version>
 		
-		<hive.version>3.1.0</hive.version>
+		<hive.version>2.1.1</hive.version>
 		<common-pool.version>2.6.2</common-pool.version>
+		<ssh2.version>build210</ssh2.version>
+		<mysql.version>5.1.48</mysql.version>
 		<!-- 下载需要的 jar  -->
 		<downloadSources>true</downloadSources>
 	</properties>
@@ -41,9 +43,20 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>ch.ethz.ganymed</groupId>
+			<artifactId>ganymed-ssh2</artifactId>
+			<version>${ssh2.version}</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>org.apache.hive</groupId>
 			<artifactId>hive-jdbc</artifactId>
 			<version>${hive.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql.version}</version>
 		</dependency>
 		
 		<!-- demo 要使用的jar 配置 end -->
