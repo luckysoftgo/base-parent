@@ -83,10 +83,10 @@ public class HiveOperateUtil {
     public String genCreateTablesqlByColumnInfo(String tableName,List<ColumnInfo> columnInfoList,String split){
         String sql = "create table "+tableName+"(";
         for (ColumnInfo columnInfo:columnInfoList){
-            sql +=  "`"+columnInfo.getColumnName() +"`"+"  " +columnInfo.getColumnType() + ",";
+            sql +=  columnInfo.getColumnName() +"  " +columnInfo.getColumnType() + ",";
         }
         sql = sql.substring(0,sql.length()-1);
-        sql += ") row format delimited fields terminated by '"+split+"'";
+        sql += ") row format delimited fields terminated by ',' stored as textfile";
         return sql;
     }
     
@@ -104,7 +104,10 @@ public class HiveOperateUtil {
     public String  executeHiveOperate(String tableName,String tmpFile,List<ColumnInfo> columnMapList,String split,String localFilePath)throws Exception{
         String result = tableName ;
         //上传服务器
-	    boolean bool = remoteOpera.uploadFile(localFilePath+tmpFile,operateConfig.getHiveConfig().getRemoteFilePath());
+	    HdfsOperUtil operUtil = HdfsOperUtil.getInstance(operateConfig.getHiveConfig().getHdfsAddresss());
+	
+	    boolean bool = operUtil.uploadFileToHdfs(localFilePath+tmpFile,operateConfig.getHiveConfig().getRemoteFilePath());
+	    //boolean bool = remoteOpera.uploadFile(localFilePath+tmpFile,operateConfig.getHiveConfig().getRemoteFilePath());
 	    if (!bool){
 	    	logger.error("上传文件"+localFilePath+tmpFile+"失败了.");
 	    	return "";
@@ -116,16 +119,17 @@ public class HiveOperateUtil {
         try {
             //建表 hive
             bool = hiveJdbcClient.excuteHiveql(createTableSql);
-            String loadStr = "load data local inpath '" + absolutePath + tmpFile + "' overwrite into table "+tableName+" ";
             
+            String loadStr = "load data local inpath '" + absolutePath + tmpFile + "' overwrite into table "+tableName+" ";
+	        //String loadStr = "load data inpath 'hdfs://192.168.10.185:8020" + absolutePath + tmpFile + "' into table "+tableName+" ";
             remoteOpera.excuteCmd("chmod -R 755 "+absolutePath + tmpFile);
 	        
             System.out.println("execute command:\n\t"+loadStr);
             bool = hiveJdbcClient.excuteHiveql(loadStr);
 			
             //shell 删除临时文件
-            //String execCommand = "rm -rf " + absolutePath + "/" + tmpFile;
-	        //remoteOpera.excuteCmd(execCommand);
+            String execCommand = "rm -rf " + absolutePath + "/" + tmpFile;
+	        remoteOpera.excuteCmd(execCommand);
         } catch (Exception e) {
             logger.error("error: ",e);
             throw  new RuntimeException(e.getCause().getLocalizedMessage());

@@ -8,8 +8,8 @@ import java.util.List;
 
 /**
  * @author : 孤狼
- * @NAME: NumValidUtils
- * @DESC: 格式校驗.
+ * @NAME: FileWrite
+ * @DESC: 文件写入.
  **/
 public class FileWrite {
 	
@@ -33,27 +33,24 @@ public class FileWrite {
      */
     public void writeMapList2File(List<List<Object>> mapList, String fileName, String split) throws Exception{
         FileWriter fw = new FileWriter(fileName);
-        String sb;
-        split = split==null?"|":split;
+        StringBuffer buffer = new StringBuffer("");
+        split = split==null ? "|":split;
         for(int i = 0; i < mapList.size(); i++){
-            sb = "";
-            boolean hasBlank = false;
             List<Object> row = mapList.get(i);
             for(Object value :row){
                 if(value instanceof Date){
-                    sb += DateTimeUtil.format((Date)value,"yyyy-MM-dd")+split;
+	                buffer.append(DateTimeUtil.format((Date)value,"yyyy-MM-dd")+split);
                 }else if(value instanceof Timestamp){
-                    sb += DateTimeUtil.format((Timestamp)value,"yyyy-MM-dd HH:mm:ss")+split;
+	                buffer.append(DateTimeUtil.format((Timestamp)value,"yyyy-MM-dd HH:mm:ss")+split);
                 }else if(value ==null){
-                    sb +=split;
-                    hasBlank = true ;
+	                buffer.append(split);
                 }else {
-                    sb += value+split;
+                	buffer.append(value+split);
                 }
             }
-            sb += "\n";
+	        buffer.append("\n");
             try{
-                fw.write(sb);
+                fw.write(buffer.toString());
                 fw.flush();
             }catch (Exception e) {
                 e.printStackTrace();

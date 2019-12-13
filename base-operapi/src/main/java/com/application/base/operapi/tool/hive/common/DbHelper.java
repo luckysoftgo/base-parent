@@ -154,6 +154,13 @@ public class DbHelper {
 		return HiveDataType.STRING;
 	}
 	
+	/**
+	 * 获取所有的表名.
+	 * @param conn
+	 * @param database
+	 * @return
+	 * @throws SQLException
+	 */
 	public static List<String> getAlltables(Connection conn,String database) throws SQLException {
 		List tables=new ArrayList();
 		DatabaseMetaData dbMetaData=conn.getMetaData();
@@ -165,6 +172,7 @@ public class DbHelper {
 		}
 		return   tables;
 	}
+	
 	/**
 	 * 得到连接
 	 * @return

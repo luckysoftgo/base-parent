@@ -21,9 +21,10 @@ public class Ttransfer {
 		HiveConfig hiveConfig = new HiveConfig();
 		hiveConfig.setDriver("org.apache.hive.jdbc.HiveDriver");
 		hiveConfig.setUrl("jdbc:hive2://192.168.10.185:10000/default");
-		hiveConfig.setRemoteFilePath("/root/");
+		hiveConfig.setRemoteFilePath("/tmp/");
 		hiveConfig.setUsername("");
 		hiveConfig.setPassword("");
+		hiveConfig.setHdfsAddresss("hdfs://192.168.153.111:9000");
 		
 		JdbcConfig jdbcConfig = new JdbcConfig();
 		jdbcConfig.setDataBase("test");

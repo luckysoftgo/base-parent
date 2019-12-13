@@ -27,6 +27,10 @@ public class HiveConfig {
 	 * 远程文件存放路径.
 	 */
 	private String remoteFilePath;
+	/**
+	 * hdfs 的文件路径
+	 */
+	private String hdfsAddresss;
 	
 	public HiveConfig() {
 	}
@@ -35,25 +39,28 @@ public class HiveConfig {
 		this.url = url;
 	}
 	
-	public HiveConfig(String url, String username, String password) {
+	public HiveConfig(String url, String username, String password,String hdfsAddresss) {
 		this.url = url;
 		this.username = username;
 		this.password = password;
+		this.hdfsAddresss =hdfsAddresss;
 	}
 	
-	public HiveConfig(String driver, String url, String username, String password) {
+	public HiveConfig(String driver, String url, String username, String password,String hdfsAddresss) {
 		this.driver = driver;
 		this.url = url;
 		this.username = username;
 		this.password = password;
+		this.hdfsAddresss =hdfsAddresss;
 	}
 	
-	public HiveConfig(String driver, String url, String username, String password, String remoteFilePath) {
+	public HiveConfig(String driver, String url, String username, String password, String remoteFilePath,String hdfsAddresss) {
 		this.driver = driver;
 		this.url = url;
 		this.username = username;
 		this.password = password;
 		this.remoteFilePath = remoteFilePath;
+		this.hdfsAddresss =hdfsAddresss;
 	}
 	
 	public String getDriver() {
@@ -94,5 +101,13 @@ public class HiveConfig {
 	
 	public void setRemoteFilePath(String remoteFilePath) {
 		this.remoteFilePath = remoteFilePath;
+	}
+	
+	public String getHdfsAddresss() {
+		return hdfsAddresss;
+	}
+	
+	public void setHdfsAddresss(String hdfsAddresss) {
+		this.hdfsAddresss = hdfsAddresss;
 	}
 }
