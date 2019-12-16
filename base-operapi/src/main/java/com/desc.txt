@@ -50,3 +50,6 @@ Caused by: java.lang.RuntimeException: org.apache.hadoop.hive.ql.parse.SemanticE
 	at org.apache.hadoop.hive.ql.Driver.compileAndRespond(Driver.java:1398)
 	at org.apache.hive.service.cli.operation.SQLOperation.prepare(SQLOperation.java:205)
 	... 26 more
+
+解決方案:
+    将文件放入到 hadoop 上,再使用文件系统 hdfs 上,在使用命令去执行 !
