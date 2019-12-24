@@ -183,16 +183,16 @@ public class HiveJdbcClient {
 	 * 创建表操作.
 	 * @param createSql:
 	 * create table test_hive(
-		 * 	empno int,
-		 * 	ename string,
-		 * 	job string,
-		 * 	mgr int,
-		 * 	hiredate string,
-		 * 	sal double,
-		 * 	comm double,
-		 * 	deptno int
+		 * 	`empno` int,
+		 * 	`ename` string,
+		 * 	`job` string,
+		 * 	`mgr` int,
+		 * 	`hiredate` string,
+		 * 	`sal` double,
+		 * 	`comm` double,
+		 * 	`deptno` int
 		 * 	)
-	 * row format delimited fields terminated by stored as textfile ;
+	 * row format delimited fields terminated by '\t' stored as textfile ;
 	 * @return
 	 */
 	public boolean createTable(String createSql){
