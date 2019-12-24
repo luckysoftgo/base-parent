@@ -35,8 +35,8 @@ public class HiveJdbcOperSession implements HiveJdbcSession {
 	}
 	
 	@Override
-	public String excuteHiveql(String hivesql) {
-		return jdbcClient.excuteHiveql(hivesql);
+	public String excuteHiveSql(String hivesql) {
+		return jdbcClient.excuteHiveSql(hivesql);
 	}
 	
 	@Override
@@ -104,5 +104,10 @@ public class HiveJdbcOperSession implements HiveJdbcSession {
 	@Override
 	public boolean deleteTable(String tableName) {
 		return jdbcClient.deleteTable(tableName);
+	}
+	
+	@Override
+	public boolean dropTable(String tableName) {
+		return jdbcClient.dropTable(tableName);
 	}
 }

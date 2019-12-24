@@ -99,25 +99,37 @@ public class HiveJdbcClient {
 	}
 	
 	/**
+	 * 执行 hive 相关的 sql.
+	 * @param hiveSql
+	 * @return
+	 */
+	private boolean execHiveSql(String hiveSql){
+		logger.info("执行的sql是:{}",hiveSql);
+		Connection connn = null;
+		Statement statement = null;
+		try {
+			connn = getConnection();
+			statement = connn.createStatement();
+			return statement.execute(hiveSql);
+		} catch (SQLException e) {
+			logger.error("执行操作失败,失败原因是:{}",e.getMessage());
+			return false;
+		}finally {
+			close(connn,statement,null,null);
+		}
+	}
+	
+	
+	/**
 	 * 创建数据库.
 	 * @param dbName
 	 * @return
 	 */
 	public boolean createDatabase(String dbName) throws HiveException {
 		String sql = "create database "+dbName;
-		Connection connn = null;
-		Statement statement = null;
-		try {
-			connn = getConnection();
-			statement = connn.createStatement();
-			return statement.execute(sql);
-		} catch (SQLException e) {
-			logger.error("創建数据库:{}失败,失败原因是:{}",dbName,e.getMessage());
-			return false;
-		}finally {
-			close(connn,statement,null,null);
-		}
+		return execHiveSql(sql);
 	}
+	
 	
 	/**
 	 * 获取hive上库的信息.
@@ -147,21 +159,22 @@ public class HiveJdbcClient {
 	}
 	
 	/**
-	 * 仅执行hivesql，不返回数据，只返回成功失败，比如执行创建表，加载数据等
-	 * @param hivesql
+	 * 仅执行hiveSql,不返回数据，只返回成功失败，比如执行创建表，加载数据等
+	 * @param hiveSql
 	 * @return
 	 */
-	public String excuteHiveql(String hivesql){
+	public String excuteHiveSql(String hiveSql){
+		logger.info("执行的sql是:{}",hiveSql);
 		String result = "";
 		Connection con = getConnection();
 		try {
 			Statement stmt = con.createStatement();
-			int bool = stmt.executeUpdate(hivesql);
+			int bool = stmt.executeUpdate(hiveSql);
 			if (bool>0){
-				result = "执行成功："+hivesql;
+				result = "执行成功："+hiveSql;
 			}
 		}catch (Exception e){
-			result = "执行失败："+hivesql;
+			result = "执行失败："+hiveSql;
 		}
 		return result;
 	}
@@ -183,19 +196,7 @@ public class HiveJdbcClient {
 	 * @return
 	 */
 	public boolean createTable(String createSql){
-		logger.info("执行的sql是:{}",createSql);
-		Connection connn = null;
-		Statement statement = null;
-		try {
-			connn = getConnection();
-			statement = connn.createStatement();
-			return statement.execute(createSql);
-		} catch (SQLException e) {
-			logger.error("查询数据库失败,失败原因是:{}",e.getMessage());
-			return false;
-		}finally {
-			close(connn,statement,null,null);
-		}
+		return execHiveSql(createSql);
 	}
 	
 	/**
@@ -220,7 +221,7 @@ public class HiveJdbcClient {
 		buffer.append(") row format delimited fields terminated by ',' ");
 		String sql= buffer.toString();
 		logger.info("生成的sql是:{}",sql);
-		return createTable(sql);
+		return execHiveSql(sql);
 	}
 	
 	/**
@@ -247,7 +248,7 @@ public class HiveJdbcClient {
 		buffer.append(") row format delimited fields terminated by ',' ");
 		String sql= buffer.toString();
 		logger.info("生成的sql是:{}",sql);
-		return createTable(sql);
+		return execHiveSql(sql);
 	}
 	
 	/**
@@ -321,18 +322,7 @@ public class HiveJdbcClient {
 	 */
 	public boolean loadDataByPath(String filePath,String tableName){
 		String sql = "load data local inpath '" + filePath + "' overwrite into table "+tableName;
-		Connection connn = null;
-		Statement statement = null;
-		try {
-			connn = getConnection();
-			statement = connn.createStatement();
-			return statement.execute(sql);
-		} catch (SQLException e) {
-			logger.error("将文件路径为:{}的文件放入表:{}失败,失败原因是:{}",filePath,tableName,e.getMessage());
-			return false;
-		}finally {
-			close(connn,statement,null,null);
-		}
+		return execHiveSql(sql);
 	}
 	
 	/**
@@ -496,18 +486,7 @@ public class HiveJdbcClient {
 	 */
 	public boolean deleteDatabase(String dbName){
 		String sql = "drop database if exists "+dbName;
-		Connection connn = null;
-		Statement statement = null;
-		try {
-			connn = getConnection();
-			statement = connn.createStatement();
-			return statement.execute(sql);
-		} catch (SQLException e) {
-			logger.error("删除数据库:{}失败,失败原因是:{}",dbName,e.getMessage());
-			return false;
-		}finally {
-			close(connn,statement,null,null);
-		}
+		return execHiveSql(sql);
 	}
 	
 	/**
@@ -516,19 +495,18 @@ public class HiveJdbcClient {
 	 * @return
 	 */
 	public boolean deleteTable(String tableName){
+		String sql = "truncate table  "+tableName;
+		return execHiveSql(sql);
+	}
+	
+	/**
+	 * 刪除数据库表.
+	 * @param tableName
+	 * @return
+	 */
+	public boolean dropTable(String tableName){
 		String sql = "drop table if exists  "+tableName;
-		Connection connn = null;
-		Statement statement = null;
-		try {
-			connn = getConnection();
-			statement = connn.createStatement();
-			return statement.execute(sql);
-		} catch (SQLException e) {
-			logger.error("删除数据库表:{}失败,失败原因是:{}",tableName,e.getMessage());
-			return false;
-		}finally {
-			close(connn,statement,null,null);
-		}
+		return execHiveSql(sql);
 	}
 	
 	/**

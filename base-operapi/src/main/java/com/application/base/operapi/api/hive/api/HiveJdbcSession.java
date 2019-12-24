@@ -29,7 +29,7 @@ public interface HiveJdbcSession {
 	 * @param hivesql
 	 * @return
 	 */
-	public String excuteHiveql(String hivesql);
+	public String excuteHiveSql(String hivesql);
 	
 	/**
 	 * 创建表操作.
@@ -122,10 +122,17 @@ public interface HiveJdbcSession {
 	public boolean deleteDatabase(String dbName);
 	
 	/**
-	 * 刪除数据库表.
+	 * 刪除数据.
 	 * @param tableName
 	 * @return
 	 */
 	public boolean deleteTable(String tableName);
+	
+	/**
+	 * 刪除数据库表.
+	 * @param tableName
+	 * @return
+	 */
+	public boolean dropTable(String tableName);
 	
 }
