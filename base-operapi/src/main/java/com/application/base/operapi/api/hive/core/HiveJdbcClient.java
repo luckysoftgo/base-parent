@@ -213,9 +213,9 @@ public class HiveJdbcClient {
 				continue;
 			}
 			if (i==columnList.size()-1){
-				buffer.append(" "+column +"    string ");
+				buffer.append(" `"+column +"`    string ");
 			}else{
-				buffer.append(" "+column +"    string , ");
+				buffer.append(" `"+column +"`    string , ");
 			}
 		}
 		buffer.append(") row format delimited fields terminated by ',' ");
@@ -237,11 +237,11 @@ public class HiveJdbcClient {
 			Set<String> keys = map.keySet();
 			if (i==columnMapList.size()-1){
 				for (String key :keys){
-					buffer.append(" "+key +"    "+map.get(key));
+					buffer.append(" `"+key +"`    "+map.get(key));
 				}
 			}else{
 				for (String key :keys){
-					buffer.append(" "+key +"    "+map.get(key) + ",");
+					buffer.append(" `"+key +"`    "+map.get(key) + ",");
 				}
 			}
 		}
