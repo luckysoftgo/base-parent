@@ -31,7 +31,7 @@ public class MysqlDataType {
 	 * @return
 	 */
 	public static String dataTypeConvertToHiveType(String databaseDataType) {
-		switch (databaseDataType){
+		switch (databaseDataType.toUpperCase()){
 			case MysqlDataType.TINYINT:
 				return HiveDataType.TINYINT;
 			case MysqlDataType.SMALLINT:
@@ -70,7 +70,7 @@ public class MysqlDataType {
 	 * @return
 	 */
 	public static String dataTypeConvertToJavaType(String databaseDataType) {
-		switch (databaseDataType){
+		switch (databaseDataType.toUpperCase()){
 			case MysqlDataType.TINYINT:
 			case MysqlDataType.SMALLINT:
 			case MysqlDataType.MEDIUMINT:

@@ -39,7 +39,6 @@ public class HiveClient {
 		
 		//这里是Oracle连接方法
 		/*
-		String driver = "oracle.jdbc.driver.OracleDriver";
 		String url = "jdbc:oracle:thin:@192.168.12.44:1521:orcl";
 		String user = "bdc";
 		String pwd = "bdc123";
@@ -49,7 +48,6 @@ public class HiveClient {
 		//这里是SQL Server连接方法
 		/*
 		String url = "jdbc:sqlserver://localhost:1433;DateBaseName=数据库名";
-		String driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver"
 		String uid = "sa";
 		String pwd = "sa";
 		String table = "FZ_USER_T";
@@ -61,16 +59,50 @@ public class HiveClient {
 		String url = "jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=UTF-8";
 		String table = "sum_data_dir";
 		
-		try {
-			System.out.println("connn="+getConnections(RdbmsType.MYSQL.getDriver(),url,user,pwd)+",result="+getConnections(RdbmsType.MYSQL.getDriver(),url,user,pwd).isClosed());
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
 		List list = getTableMapInfo(url,user,pwd,table, RdbmsType.MYSQL);
 		System.out.println(list);
+		
 		List<ColumnInfo> dataList = getTableBeanInfo(url,user,pwd,table, RdbmsType.MYSQL);
 		System.out.println(JSON.toJSONString(dataList));
+		
+		System.out.println("create hive sql : \n\t"+getCreateHiveTableSql(url,user,pwd,table,RdbmsType.MYSQL));
+		
+	}
+	
+	/**
+	 * 获得创建 hive 的 sql.
+	 * @param conn
+	 * @param tableName
+	 * @param rdbmsType
+	 * @return
+	 */
+	public static String getCreateHiveTableSql(Connection conn, String tableName,RdbmsType rdbmsType){
+		List<ColumnInfo> columnInfos = getTableBeanInfo(conn,tableName,rdbmsType);
+		StringBuffer buffer = new StringBuffer( "create table if not exists `"+tableName+"` (");
+		for (int i = 0; i <columnInfos.size() ; i++) {
+			ColumnInfo info = columnInfos.get(i);
+			if (i!=columnInfos.size()-1){
+				buffer.append(" `"+info.getColumnName()+"` "+info.getColumnHiveType()+"  COMMENT '"+info.getColumnComment()+"',");
+			}else{
+				buffer.append(" `"+info.getColumnName()+"` "+info.getColumnHiveType()+"  COMMENT '"+info.getColumnComment()+"'");
+			}
+		}
+		buffer.append(") row format delimited fields terminated by ','");
+		return buffer.toString();
+	}
+	
+	/**
+	 * 获得创建 hive 的 sql.
+	 * @param url
+	 * @param user
+	 * @param pwd
+	 * @param tableName
+	 * @param rdbmsType
+	 * @return
+	 */
+	public static String getCreateHiveTableSql(String url, String user, String pwd, String tableName,RdbmsType rdbmsType){
+		Connection conn = getConnections(rdbmsType.getDriver(),url,user,pwd);
+		return getCreateHiveTableSql(conn,tableName,rdbmsType);
 	}
 	
 	/**
@@ -80,7 +112,7 @@ public class HiveClient {
 	 * @param rdbmsType 数据库类型:mysql,oracle,sql server
 	 * @return
 	 */
-	public static List<Map<String,Object>> getTableMapInfo(Connection conn, String table,RdbmsType rdbmsType ){
+	public static List<Map<String,Object>> getTableMapInfo(Connection conn, String table,RdbmsType rdbmsType){
 		List<Map<String,Object>> result = new ArrayList();
 		DatabaseMetaData dbmd = null;
 		ResultSet resultSet = null;
@@ -94,7 +126,6 @@ public class HiveClient {
 				if(tableName.equals(table)){
 					rs = conn.getMetaData().getColumns(null, getSchema(conn),tableName.toUpperCase(), "%");
 					while(rs.next()){
-						System.out.println("字段名:"+rs.getString("COLUMN_NAME")+";字段注释:"+rs.getString("REMARKS")+";字段数据类型:"+rs.getString("TYPE_NAME"));
 						Map<String,Object> map = new HashMap();
 						String colName = rs.getString("COLUMN_NAME");
 						map.put("columnName", colName);
@@ -129,60 +160,22 @@ public class HiveClient {
 		return result;
 	}
 	
-	/**
-	 * 获得类型
-	 * @param dbType
-	 * @param rdbmsType
-	 * @return
-	 */
-	private static String changeHiveType(String dbType, RdbmsType rdbmsType) {
-		//hive 类型.
-		String hiveType = HiveDataType.STRING;
-		switch (rdbmsType){
-			case MYSQL:
-				hiveType = MysqlDataType.dataTypeConvertToHiveType(dbType);
-			case SQLSERVER:
-				hiveType = SqlServerDataType.dataTypeConvertToHiveType(dbType);
-			case ORACLE:
-				hiveType = OracleDataType.dataTypeConvertToHiveType(dbType);
-		}
-		return hiveType;
-	}
 	
-	/**
-	 * 获得类型.
-	 * @param dbType
-	 * @param rdbmsType
-	 * @return
-	 */
-	private static String changeJavaType(String dbType,RdbmsType rdbmsType) {
-		//java类型.
-		String javaType = JavaDataType.STRING;
-		switch (rdbmsType){
-			case MYSQL:
-				javaType = MysqlDataType.dataTypeConvertToJavaType(dbType);
-			case SQLSERVER:
-				javaType = SqlServerDataType.dataTypeConvertToJavaType(dbType);
-			case ORACLE:
-				javaType = OracleDataType.dataTypeConvertToJavaType(dbType);
-		}
-		return javaType ;
-	}
 	
 	/**
 	 * 根据数据库的连接参数，获取指定表的基本信息：字段名、字段类型、字段注释
 	 * @param url 数据库连接url
 	 * @param user	数据库登陆用户名
 	 * @param pwd 数据库登陆密码
-	 * @param table	表名
+	 * @param tableName	表名
 	 * @return Map集合
 	 */
-	public static List<Map<String,Object>> getTableMapInfo(String url, String user, String pwd, String table,RdbmsType rdbmsType){
+	public static List<Map<String,Object>> getTableMapInfo(String url, String user, String pwd, String tableName,RdbmsType rdbmsType){
 		Connection conn = null;
 		List<Map<String,Object>> dataList = null;
 		try {
 			conn = getConnections(rdbmsType.getDriver(),url,user,pwd);
-			dataList = getTableMapInfo(conn,table,rdbmsType);
+			dataList = getTableMapInfo(conn,tableName,rdbmsType);
 		}catch (Exception e){
 			e.printStackTrace();
 		}finally {
@@ -216,7 +209,6 @@ public class HiveClient {
 					rs = conn.getMetaData().getColumns(null, getSchema(conn),tableName.toUpperCase(), "%");
 					while(rs.next()){
 						ColumnInfo columnInfo = new ColumnInfo();
-						System.out.println("字段名:"+rs.getString("COLUMN_NAME")+";字段注释:"+rs.getString("REMARKS")+";字段数据类型:"+rs.getString("TYPE_NAME"));
 						Map<String,Object> map = new HashMap();
 						String colName = rs.getString("COLUMN_NAME");
 						columnInfo.setColumnName(colName);
@@ -366,6 +358,52 @@ public class HiveClient {
 	}
 	
 	/**
+	 * 获得类型
+	 * @param dbType
+	 * @param rdbmsType
+	 * @return
+	 */
+	private static String changeHiveType(String dbType, RdbmsType rdbmsType) {
+		//hive 类型.
+		String hiveType = HiveDataType.STRING;
+		switch (rdbmsType){
+			case MYSQL:
+				hiveType = MysqlDataType.dataTypeConvertToHiveType(dbType);
+				break;
+			case SQLSERVER:
+				hiveType = SqlServerDataType.dataTypeConvertToHiveType(dbType);
+				break;
+			case ORACLE:
+				hiveType = OracleDataType.dataTypeConvertToHiveType(dbType);
+				break;
+		}
+		return hiveType;
+	}
+	
+	/**
+	 * 获得类型.
+	 * @param dbType
+	 * @param rdbmsType
+	 * @return
+	 */
+	private static String changeJavaType(String dbType,RdbmsType rdbmsType) {
+		//java类型.
+		String javaType = JavaDataType.STRING;
+		switch (rdbmsType){
+			case MYSQL:
+				javaType = MysqlDataType.dataTypeConvertToJavaType(dbType);
+				break;
+			case SQLSERVER:
+				javaType = SqlServerDataType.dataTypeConvertToJavaType(dbType);
+				break;
+			case ORACLE:
+				javaType = OracleDataType.dataTypeConvertToJavaType(dbType);
+				break;
+		}
+		return javaType ;
+	}
+	
+	/**
 	 * 类型转换.
 	 * @param info
 	 * @param rdbmsType
@@ -377,10 +415,13 @@ public class HiveClient {
 		switch (rdbmsType){
 			case MYSQL:
 				hiveType = MysqlDataType.dataTypeConvertToHiveType(info.getColumnDbType());
+				break;
 			case SQLSERVER:
 				hiveType = SqlServerDataType.dataTypeConvertToHiveType(info.getColumnDbType());
+				break;
 			case ORACLE:
 				hiveType = OracleDataType.dataTypeConvertToHiveType(info.getColumnDbType());
+				break;
 		}
 		info.setColumnHiveType(hiveType);
 		//java类型.
@@ -388,10 +429,13 @@ public class HiveClient {
 		switch (rdbmsType){
 			case MYSQL:
 				javaType = MysqlDataType.dataTypeConvertToJavaType(info.getColumnDbType());
+				break;
 			case SQLSERVER:
 				javaType = SqlServerDataType.dataTypeConvertToJavaType(info.getColumnDbType());
+				break;
 			case ORACLE:
 				javaType = OracleDataType.dataTypeConvertToJavaType(info.getColumnDbType());
+				break;
 		}
 		info.setColumnJavaType(javaType);
 		return info ;

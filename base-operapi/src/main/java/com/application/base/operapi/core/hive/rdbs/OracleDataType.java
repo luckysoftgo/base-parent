@@ -34,7 +34,7 @@ public class OracleDataType{
 	 * @return
 	 */
 	public static String dataTypeConvertToHiveType(String databaseDataType) {
-		switch (databaseDataType){
+		switch (databaseDataType.toUpperCase()){
 			case OracleDataType.TINYINT:
 				return HiveDataType.TINYINT;
 			case OracleDataType.SMALLINT:
@@ -75,7 +75,7 @@ public class OracleDataType{
 	 * @return
 	 */
 	public static String dataTypeConvertToJavaType(String databaseDataType) {
-		switch (databaseDataType){
+		switch (databaseDataType.toUpperCase()){
 			case OracleDataType.TINYINT:
 			case OracleDataType.SMALLINT:
 			case OracleDataType.MEDIUMINT:
