@@ -6,7 +6,7 @@ import com.application.base.cache.redis.api.RedisSession;
 import com.application.base.cache.redis.api.ShardedSession;
 import com.application.base.cache.redis.exception.RedisException;
 import com.application.base.cache.redis.factory.RedisSessionFactory;
-import com.application.base.cache.redis.jedis.factory.cluster.OwnRedisClusterPool;
+import com.application.base.cache.redis.jedis.factory.cluster.RedisClusterPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.JedisCluster;
@@ -23,7 +23,7 @@ public class MutilCodisSessionFactory implements RedisSessionFactory {
 	
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    private OwnRedisClusterPool clusterPool;
+    private RedisClusterPool clusterPool;
 
     private CacheClient client;
     
@@ -34,10 +34,10 @@ public class MutilCodisSessionFactory implements RedisSessionFactory {
         this.client = client;
     }
     
-    public OwnRedisClusterPool getClusterPool() {
+    public RedisClusterPool getClusterPool() {
         return clusterPool;
     }
-    public void setClusterPool(OwnRedisClusterPool pool) {
+    public void setClusterPool(RedisClusterPool pool) {
         this.clusterPool = pool;
     }
     

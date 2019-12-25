@@ -2,7 +2,7 @@ package com.application.base.operapi.tool.hive.common.constant;
 
 /**
  * @author : 孤狼.
- * @NAME: Constant.
+ * @NAME: Constants.
  * @DESC: 常量信息.
  **/
 public interface Constant {

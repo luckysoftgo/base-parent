@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author : 孤狼
@@ -49,7 +49,7 @@ public class KylinJdbcClient {
 	/**
 	 * 存在的连接.
 	 */
-	private ConcurrentHashMap<String,ArrayBlockingQueue<Connection>> connsMap = new ConcurrentHashMap<>(16);
+	private ConcurrentHashMap<String, LinkedBlockingQueue<Connection>> connsMap = new ConcurrentHashMap<>(1024);
 	
 	/**
 	 * 构造函数.
@@ -82,12 +82,12 @@ public class KylinJdbcClient {
 			info.put(KylinConstant.USER, jdbcConfig.getUserName());
 			info.put(KylinConstant.PASSWORD, jdbcConfig.getUserPass());
 			Connection connection = driver.connect(jdbcConfig.getKylinUrl()+ KylinConstant.SPLIT+projectName,info);
-			ArrayBlockingQueue<Connection> connections = connsMap.get(projectName);
+			LinkedBlockingQueue<Connection> connections = connsMap.get(projectName);
 			if (connections==null || connections.size()==0){
 				int maxTotal = jdbcConfig.getMaxTotal();
-				connections = new ArrayBlockingQueue<>(maxTotal);
+				connections = new LinkedBlockingQueue<>(maxTotal);
 			}
-			connections.offer(connection);
+			connections.put(connection);
 			connsMap.put(projectName,connections);
 			return connection;
 		}catch (Exception e){
@@ -102,7 +102,7 @@ public class KylinJdbcClient {
 	 * @return
 	 */
 	public Connection getConnection(String projectName) {
-		ArrayBlockingQueue<Connection> connections = connsMap.get(projectName);
+		LinkedBlockingQueue<Connection> connections = connsMap.get(projectName);
 		try {
 			int maxTotal = jdbcConfig.getMaxTotal();
 			if (connections!=null && connections.size()>0){

@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author : 孤狼
@@ -42,7 +42,7 @@ public class HiveJdbcClient {
 	/**
 	 * 存在的连接.
 	 */
-	private ArrayBlockingQueue<Connection> connections = new ArrayBlockingQueue<>(16);
+	private LinkedBlockingQueue<Connection> connections = new LinkedBlockingQueue<>(1024);
 	
 	/**
 	 * 构造函数.
@@ -62,9 +62,9 @@ public class HiveJdbcClient {
 			}
 			Class.forName(hiveDriver);
 			Connection connn = DriverManager.getConnection(jdbcConfig.getHiveUrl(),jdbcConfig.getUserName(),jdbcConfig.getUserPass());
-			connections.offer(connn);
+			connections.put(connn);
 			return connn;
-		}catch (ClassNotFoundException | SQLException e){
+		}catch (Exception e){
 			logger.error("初始化连接异常了,异常信息是:{}",e.getMessage());
 			throw new HiveException("hive获得连接异常了,异常信息是:{"+e.getMessage()+"}");
 		}
