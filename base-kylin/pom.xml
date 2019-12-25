@@ -57,7 +57,11 @@
 			<artifactId>kylin-jdbc</artifactId>
 			<version>2.6.2</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>com.application.base</groupId>
+			<artifactId>base-elastic</artifactId>
+			<version>1.0.0-RELEASE</version>
+		</dependency>
 		
 		
 		
