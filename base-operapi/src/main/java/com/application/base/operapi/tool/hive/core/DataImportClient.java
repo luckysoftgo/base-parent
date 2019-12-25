@@ -1,10 +1,10 @@
 package com.application.base.operapi.tool.hive.core;
 
+import com.application.base.operapi.core.ColumnInfo;
 import com.application.base.operapi.tool.hive.common.DbHelper;
 import com.application.base.operapi.tool.hive.common.FileWrite;
 import com.application.base.operapi.tool.hive.common.config.JdbcConfig;
 import com.application.base.operapi.tool.hive.common.config.OperateConfig;
-import com.application.base.operapi.tool.hive.model.ColumnInfo;
 import com.application.base.operapi.tool.hive.rdbs.DataSourceType;
 
 import java.sql.Connection;

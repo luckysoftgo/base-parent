@@ -1,11 +1,11 @@
-package com.application.base.operapi.tool.hive.rdbs;
-
-import com.application.base.operapi.tool.hive.core.HiveDataType;
+package com.application.base.operapi.core.hive.rdbs;
 
 /**
  * @author : 孤狼
  * @NAME: MysqlDataType
  * @DESC: Mysql 数据类型定义.
+ * 	 * https://www.cnblogs.com/HelloBigTable/p/10675258.html
+ * 	 * https://www.jianshu.com/p/b9168e48ec09
  **/
 public class MysqlDataType {
 	
@@ -47,7 +47,6 @@ public class MysqlDataType {
 			case MysqlDataType.FLOAT:
 				return HiveDataType.FLOAT;
 			case MysqlDataType.DECIMAL:
-				return HiveDataType.DECIMAL;
 			case MysqlDataType.NUMERIC:
 				return HiveDataType.DOUBLE;
 			case MysqlDataType.VARCHAR:
@@ -62,6 +61,42 @@ public class MysqlDataType {
 				return HiveDataType.TIMESTAMP;
 			default:
 				return HiveDataType.STRING;
+		}
+	}
+	
+	/**
+	 * mysql 转 java 类型
+	 * @param databaseDataType
+	 * @return
+	 */
+	public static String dataTypeConvertToJavaType(String databaseDataType) {
+		switch (databaseDataType){
+			case MysqlDataType.TINYINT:
+			case MysqlDataType.SMALLINT:
+			case MysqlDataType.MEDIUMINT:
+			case MysqlDataType.INT:
+			case MysqlDataType.INTEGER:
+				return JavaDataType.INTEGER;
+			case MysqlDataType.BIGINT:
+				return JavaDataType.BIGINTEGER;
+			case MysqlDataType.DOUBLE:
+				return JavaDataType.DOUBLE;
+			case MysqlDataType.FLOAT:
+				return JavaDataType.FLOAT;
+			case MysqlDataType.DECIMAL:
+				return JavaDataType.BIGDECIMAL;
+			case MysqlDataType.NUMERIC:
+				return JavaDataType.DOUBLE;
+			case MysqlDataType.VARCHAR:
+			case MysqlDataType.CHAR:
+				return JavaDataType.STRING;
+			case MysqlDataType.DATE:
+			case MysqlDataType.DATETIME:
+				return JavaDataType.DATE;
+			case MysqlDataType.TIMESTAMP:
+				return JavaDataType.TIMESTAMP;
+			default:
+				return JavaDataType.STRING;
 		}
 	}
 }

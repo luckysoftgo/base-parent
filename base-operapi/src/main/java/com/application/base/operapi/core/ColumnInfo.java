@@ -1,4 +1,4 @@
-package com.application.base.operapi.util.bean;
+package com.application.base.operapi.core;
 
 /**
  * @author : 孤狼
@@ -32,6 +32,11 @@ public class ColumnInfo {
 	private String columnValueType ;
 	
 	public ColumnInfo() {
+	}
+	
+	public ColumnInfo(String columnName, String columnDbType) {
+		this.columnName = columnName;
+		this.columnDbType = columnDbType;
 	}
 	
 	public ColumnInfo(String columnName, String columnDbType, String columnComment, String columnJavaType,

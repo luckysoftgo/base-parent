@@ -1,11 +1,12 @@
 package com.application.base.operapi.tool.hive.common;
 
-import com.application.base.operapi.tool.hive.core.HiveDataType;
-import com.application.base.operapi.tool.hive.model.ColumnInfo;
+import com.alibaba.fastjson.JSON;
+import com.application.base.operapi.core.ColumnInfo;
+import com.application.base.operapi.core.hive.rdbs.HiveDataType;
+import com.application.base.operapi.core.hive.rdbs.MysqlDataType;
+import com.application.base.operapi.core.hive.rdbs.OracleDataType;
+import com.application.base.operapi.core.hive.rdbs.SqlServerDataType;
 import com.application.base.operapi.tool.hive.rdbs.DataSourceType;
-import com.application.base.operapi.tool.hive.rdbs.MysqlDataType;
-import com.application.base.operapi.tool.hive.rdbs.OracleDataType;
-import com.application.base.operapi.tool.hive.rdbs.SqlServerDataType;
 
 import java.sql.Blob;
 import java.sql.Clob;
@@ -41,6 +42,7 @@ public class DbHelper {
 			ResultSet res = stmt.executeQuery(sql);
 			ResultSetMetaData rsmd = res.getMetaData();
 			for(int i=1;i<=rsmd.getColumnCount();i++) {
+				System.out.println("info:"+ JSON.toJSONString(rsmd));
 				resultList.add(new ColumnInfo(rsmd.getColumnName(i), rsmd.getColumnTypeName(i)));
 			}
 		}catch (Exception e){
@@ -131,9 +133,8 @@ public class DbHelper {
 	 * @return
 	 */
 	public static List<ColumnInfo> tableColumnInfoToHiveColnmnInfo(List<ColumnInfo> list,String dataSourceType){
-		list.forEach(columnInfo -> columnInfo.setColumnType(dataBaseDataTypeToHiveDataType(columnInfo.getColumnType(),dataSourceType)));
+		list.forEach(columnInfo -> columnInfo.setColumnDbType(dataBaseDataTypeToHiveDataType(columnInfo.getColumnDbType(),dataSourceType)));
 		return list ;
-		
 	}
 	
 	/**

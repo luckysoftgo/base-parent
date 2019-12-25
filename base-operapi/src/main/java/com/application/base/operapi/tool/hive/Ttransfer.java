@@ -22,7 +22,7 @@ public class Ttransfer {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.setProperty("","");
+		System.setProperty("hadoop.home.dir", "D:\\installer\\hadoop-2.7.7");
 		HiveConfig hiveConfig = new HiveConfig();
 		hiveConfig.setDriver("org.apache.hive.jdbc.HiveDriver");
 		hiveConfig.setUrl("jdbc:hive2://192.168.10.185:10000/test");

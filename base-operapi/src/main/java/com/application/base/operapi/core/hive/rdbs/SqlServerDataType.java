@@ -1,12 +1,12 @@
-package com.application.base.operapi.tool.hive.rdbs;
+package com.application.base.operapi.core.hive.rdbs;
 
-
-import com.application.base.operapi.tool.hive.core.HiveDataType;
 
 /**
  * @author : 孤狼
  * @NAME: SqlServerDataType
  * @DESC: SqlServer 数据类型定义.
+ * 	 * https://www.cnblogs.com/HelloBigTable/p/10675258.html
+ * 	 * https://www.jianshu.com/p/b9168e48ec09
  **/
 public class SqlServerDataType{
 	
@@ -56,9 +56,8 @@ public class SqlServerDataType{
 			case SqlServerDataType.NUMERIC:
 			case SqlServerDataType.REAL:
 			case SqlServerDataType.MONEY:
-				return HiveDataType.DOUBLE;
 			case SqlServerDataType.DECIMAL:
-				return HiveDataType.DECIMAL;
+				return HiveDataType.DOUBLE;
 			case SqlServerDataType.VARCHAR:
 			case SqlServerDataType.NVARCHAR:
 			case SqlServerDataType.NCHAR:
@@ -75,6 +74,49 @@ public class SqlServerDataType{
 				return HiveDataType.TIMESTAMP;
 			default:
 				return HiveDataType.STRING;
+		}
+	}
+	
+	/**
+	 * sqlserver 转 java 的类型
+	 * @param databaseDataType
+	 * @return
+	 */
+	public static String dataTypeConvertToJavaType(String databaseDataType) {
+		switch (databaseDataType.toUpperCase()){
+			case SqlServerDataType.TINYINT:
+			case SqlServerDataType.SMALLINT:
+			case SqlServerDataType.MEDIUMINT:
+			case SqlServerDataType.INTEGER:
+				return JavaDataType.INTEGER;
+			case SqlServerDataType.BIGINT:
+				return JavaDataType.BIGINTEGER;
+			case SqlServerDataType.FLOAT:
+				return JavaDataType.FLOAT;
+			case SqlServerDataType.SMALLMONEY:
+				return JavaDataType.BIGDECIMAL;
+			case SqlServerDataType.DOUBLE:
+				return JavaDataType.DOUBLE;
+			case SqlServerDataType.NUMERIC:
+			case SqlServerDataType.REAL:
+			case SqlServerDataType.MONEY:
+			case SqlServerDataType.DECIMAL:
+				return JavaDataType.BIGDECIMAL;
+			case SqlServerDataType.VARCHAR:
+			case SqlServerDataType.NVARCHAR:
+			case SqlServerDataType.NCHAR:
+			case SqlServerDataType.CHAR:
+				return JavaDataType.STRING;
+			case SqlServerDataType.DATE:
+			case SqlServerDataType.DATETIME:
+			case SqlServerDataType.DATETIME2:
+				return JavaDataType.DATE;
+			case SqlServerDataType.SMALLDATETIME:
+			case SqlServerDataType.DATETIMEOFFSET:
+			case SqlServerDataType.TIMESTAMP:
+				return JavaDataType.TIMESTAMP;
+			default:
+				return JavaDataType.STRING;
 		}
 	}
 }

@@ -1,8 +1,8 @@
 package com.application.base.operapi.tool.hive.core;
 
+import com.application.base.operapi.core.ColumnInfo;
 import com.application.base.operapi.tool.hive.common.config.OperateConfig;
 import com.application.base.operapi.tool.hive.common.constant.Constant;
-import com.application.base.operapi.tool.hive.model.ColumnInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +83,7 @@ public class HiveOperateUtil {
     public String genCreateTablesqlByColumnInfo(String tableName,List<ColumnInfo> columnInfoList,String split){
         String sql = "create table "+tableName+"(";
         for (ColumnInfo columnInfo:columnInfoList){
-            sql +=  columnInfo.getColumnName() +"  " +columnInfo.getColumnType() + ",";
+            sql +=  columnInfo.getColumnName() +"  " +columnInfo.getColumnDbType() + ",";
         }
         sql = sql.substring(0,sql.length()-1);
         sql += ") row format delimited fields terminated by ',' stored as textfile";
