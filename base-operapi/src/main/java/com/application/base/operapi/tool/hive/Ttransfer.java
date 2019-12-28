@@ -1,5 +1,6 @@
 package com.application.base.operapi.tool.hive;
 
+import com.application.base.operapi.core.hive.rdbs.RdbmsType;
 import com.application.base.operapi.tool.hive.common.config.HadoopConfig;
 import com.application.base.operapi.tool.hive.common.config.HiveConfig;
 import com.application.base.operapi.tool.hive.common.config.JdbcConfig;
@@ -48,7 +49,7 @@ public class Ttransfer {
 		
 		JdbcConfig jdbcConfig = new JdbcConfig();
 		jdbcConfig.setDataBase("test");
-		jdbcConfig.setRdbsType("mysql");
+		jdbcConfig.setRdbsType(RdbmsType.MYSQL);
 		jdbcConfig.setTableName("sum_data_dir");
 		jdbcConfig.setUserName("root");
 		jdbcConfig.setPassWord("123456");
