@@ -16,7 +16,9 @@ import java.sql.DatabaseMetaData;
 import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -272,6 +274,35 @@ public class HiveClient {
 	}
 	
 	/**
+	 * 获取全表表数据
+	 * @param tableName
+	 * @param con
+	 * @return
+	 */
+	public static List<List<Object>> getTableDatas(String tableName,Connection con){
+		List<List<Object>> resultList = new ArrayList<>();
+		ResultSet res = null ;
+		Statement stmt = null ;
+		try {
+			stmt = con.createStatement();
+			String sql = "select * from "+tableName;
+			res = stmt.executeQuery(sql);
+			ResultSetMetaData metaData = res.getMetaData();
+			while (res.next()){
+				List<Object> row = new ArrayList<>();
+				for (int i=1;i<=metaData.getColumnCount();i++){
+					row.add(getResultSetValue(res,i));
+				}
+				resultList.add(row);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}finally {
+			close(res,stmt,con);
+		}
+		return resultList ;
+	}
+	/**
 	 * 获得数据类型的值.
 	 * @param rs
 	 * @param index
@@ -309,6 +340,28 @@ public class HiveClient {
 			e.printStackTrace();
 		}
 		return obj;
+	}
+	
+	/**
+	 * 获取数据库表字段类型
+	 * @param tableName
+	 * @param con
+	 * @return
+	 */
+	public static List<ColumnInfo> getTableColumnInfo(String tableName, Connection con){
+		List<ColumnInfo> resultList = new ArrayList<>();
+		try {
+			Statement stmt = con.createStatement();
+			String sql = "select * from "+tableName;
+			ResultSet res = stmt.executeQuery(sql);
+			ResultSetMetaData rsmd = res.getMetaData();
+			for(int i=1;i<=rsmd.getColumnCount();i++) {
+				resultList.add(new ColumnInfo(rsmd.getColumnName(i), rsmd.getColumnTypeName(i)));
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return resultList ;
 	}
 	
 	/**
@@ -352,7 +405,7 @@ public class HiveClient {
 	 */
 	public static List<ColumnInfo> convertTableColumnInfos(List<ColumnInfo> dataList,RdbmsType rdbmsType){
 		for (ColumnInfo info : dataList) {
-			info=convertTableColumnInfo(info,rdbmsType);
+			convertTableColumnInfo(info,rdbmsType);
 		}
 		return dataList ;
 	}
@@ -450,7 +503,7 @@ public class HiveClient {
 	 * @return
 	 * @throws Exception
 	 */
-	private static Connection getConnections(String driver,String url,String user,String pwd){
+	public static Connection getConnections(String driver,String url,String user,String pwd){
 		Connection conn = null;
 		try {
 			Properties props = new Properties();
@@ -480,5 +533,55 @@ public class HiveClient {
 		return schema.toUpperCase().toString();
 		
 	}
-
+	
+	/**
+	 * 斜杆
+	 * @param host
+	 * @param port
+	 * @param databaseName
+	 * @param rdbmsType
+	 * @return
+	 */
+	public static String getRequestUrl(String host,int port,String databaseName,RdbmsType rdbmsType){
+		switch (rdbmsType){
+			case MYSQL:
+				return "jdbc:mysql://"+host+":"+port+"/"+databaseName+"?serverTimezone=GMT%2b8&useUnicode=true&characterEncoding=UTF-8&useSSL=false";
+			case SQLSERVER:
+				return "jdbc:sqlserver://"+host+":"+port+";DatabaseName="+databaseName;
+			case ORACLE:
+				return "jdbc:oracle:thin:@//"+host+":"+port+":"+databaseName;
+			default:
+				return "jdbc:mysql://"+host+":"+port+"/"+databaseName+"?serverTimezone=GMT%2b8&useUnicode=true&characterEncoding=UTF-8&useSSL=false";
+		}
+	}
+	
+	/**
+	 * 释放对象.
+	 * @param rs
+	 * @param statement
+	 * @param connection
+	 */
+	public static void close(ResultSet rs,Statement statement,Connection connection){
+		if(rs != null){
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if(statement != null){
+			try {
+				statement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if(connection != null){
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

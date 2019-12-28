@@ -1,5 +1,7 @@
 package com.application.base.operapi.tool.hive.common.config;
 
+import com.application.base.operapi.core.hive.rdbs.RdbmsType;
+
 /**
  * @author : 孤狼
  * @NAME: JdbcConfig
@@ -25,7 +27,7 @@ public class JdbcConfig {
 	/**
 	 * 数据库类型:mysql; sqlserver; oracle
 	 */
-	private String rdbsType;
+	private RdbmsType rdbsType;
 	/**
 	 * driver 配置.
 	 */
@@ -44,7 +46,7 @@ public class JdbcConfig {
 	
 	}
 	
-	public JdbcConfig(String host, int port, String userName, String passWord, String rdbsType, String driver,
+	public JdbcConfig(String host, int port, String userName, String passWord, RdbmsType rdbsType, String driver,
 	                  String dataBase, String tableName) {
 		this.host = host;
 		this.port = port;
@@ -88,11 +90,11 @@ public class JdbcConfig {
 		this.passWord = passWord;
 	}
 	
-	public String getRdbsType() {
+	public RdbmsType getRdbsType() {
 		return rdbsType;
 	}
 	
-	public void setRdbsType(String rdbsType) {
+	public void setRdbsType(RdbmsType rdbsType) {
 		this.rdbsType = rdbsType;
 	}
 	

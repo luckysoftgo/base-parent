@@ -1,16 +1,15 @@
 package com.application.base.operapi.tool.hive.core;
 
 import com.application.base.operapi.core.ColumnInfo;
-import com.application.base.operapi.tool.hive.common.DbHelper;
+import com.application.base.operapi.core.hive.core.HiveClient;
+import com.application.base.operapi.core.hive.rdbs.RdbmsType;
 import com.application.base.operapi.tool.hive.common.FileWrite;
 import com.application.base.operapi.tool.hive.common.config.HadoopConfig;
 import com.application.base.operapi.tool.hive.common.config.JdbcConfig;
 import com.application.base.operapi.tool.hive.common.config.OperateConfig;
-import com.application.base.operapi.tool.hive.rdbs.DataSourceType;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -44,26 +43,20 @@ public class DataImportClient extends Thread {
 	public boolean importData() {
 		JdbcConfig jdbcConfig = operateConfig.getJdbcConfig();
 		HadoopConfig hadoopConfig = operateConfig.getHadoopConfig();
-		String dataSourceType = jdbcConfig.getRdbsType();
+		RdbmsType dataSourceType = jdbcConfig.getRdbsType();
 		String sourceTableName = jdbcConfig.getTableName();
 		
-		String reqUrl = DataSourceType.getRequestUrl(jdbcConfig.getHost(),jdbcConfig.getPort(),jdbcConfig.getDataBase(),dataSourceType);
+		String reqUrl = HiveClient.getRequestUrl(jdbcConfig.getHost(),jdbcConfig.getPort(),jdbcConfig.getDataBase(),dataSourceType);
 		//1、获取数据库连接
-		Connection conn = null;
-		try {
-			conn = DbHelper.getConn(jdbcConfig.getDriver(),reqUrl,jdbcConfig.getUserName(),jdbcConfig.getPassWord());
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+		Connection conn = HiveClient.getConnections(jdbcConfig.getDriver(),reqUrl,jdbcConfig.getUserName(),jdbcConfig.getPassWord());
 		//2、获取表的信息
-		List<ColumnInfo> columnMapList = DbHelper.getTableColumnInfo(sourceTableName, conn);
+		List<ColumnInfo> columnMapList = HiveClient.getTableColumnInfo(sourceTableName, conn);
 		//3、转换为hive表的对应类型
-		DbHelper.tableColumnInfoToHiveColnmnInfo(columnMapList,dataSourceType);
+		HiveClient.convertTableColumnInfos(columnMapList,dataSourceType);
+		
 		columnMapList.forEach(columnInfo -> System.out.println("数据库的列信息是:"+columnInfo.toString()));
 		//4、获取表的所有数据
-		List<List<Object>> resultList = DbHelper.getTableDatas(sourceTableName, conn);
+		List<List<Object>> resultList = HiveClient.getTableDatas(sourceTableName, conn);
 		int dataCount = resultList.size();
 		//5、写入文件 并导入到hive
 		if (dataCount > 0) {
