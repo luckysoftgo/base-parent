@@ -1,5 +1,7 @@
 package com.application.base.operapi.tool.hive.core;
 
+import com.application.base.operapi.tool.hive.common.config.HadoopConfig;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -25,26 +27,34 @@ public class HdfsOperUtil {
 	private static final Logger logger = LoggerFactory.getLogger(HiveOperateUtil.class);
 	
 	/**
-	 * hdfs 的地址
+	 * hdfs 的地址: 获取hdfs 的地址命令:
+	 *              hdfs getconf -confKey fs.default.name
+	 * 获取hadoop下文件的命令: hadoop  fs -ls /tmp/
+	 *                      hadoop  fs -ls /
 	 */
-	private String hdfsAddress = "hdfs://192.168.153.111:9000" ;
+	private static String hdfsAddress = "hdfs://manager:9000" ;
 	/**
 	 * 文件实例.
 	 */
 	private static HdfsOperUtil instance = null;
 	
 	
-	public HdfsOperUtil(String hdfsAddress){
-		this.hdfsAddress = hdfsAddress;
+	public HdfsOperUtil(HadoopConfig hadoopConfig){
+		if (hadoopConfig!=null){
+			if (StringUtils.isNotBlank(hadoopConfig.getHdfsRequestUrl())){
+				HdfsOperUtil.hdfsAddress = hadoopConfig.getHdfsRequestUrl();
+			}
+		}
 	}
+	
 	/**
 	 * 单例模式.
-	 * @param hdfsAddress
+	 * @param hadoopConfig
 	 * @return
 	 */
-	public static synchronized HdfsOperUtil getInstance(String hdfsAddress) {
+	public static synchronized HdfsOperUtil getInstance(HadoopConfig hadoopConfig) {
 		if (instance == null) {
-			instance = new HdfsOperUtil(hdfsAddress);
+			instance = new HdfsOperUtil(hadoopConfig);
 		}
 		return instance;
 	}
@@ -54,12 +64,14 @@ public class HdfsOperUtil {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		try {
-			System.setProperty("HADOOP_USER_NAME","hadoop") ;
+			System.setProperty("hadoop.home.dir", "D:\\installer\\hadoop-2.7.7");
+			System.setProperty("HADOOP_USER_NAME","hdfs") ;
+			HdfsOperUtil operUtil = new HdfsOperUtil(null);
+			operUtil.uploadFileToHdfs("E:\\data\\sum_data_dir","/tmp/") ;
+			
 			/*
 			downFromHdfs() ;
-			uploadFileToHdfs() ;
 			mkdirToHdfs() ;
 			createFile() ;
 			renameFileOrDir() ;
@@ -97,7 +109,7 @@ public class HdfsOperUtil {
 	 * @param dictoryPath
 	 * @throws Exception
 	 */
-	public boolean uploadFileToHdfs(String localFilePath,String dictoryPath) throws Exception{
+	public boolean uploadFileToHdfs(String localFilePath, String dictoryPath) throws Exception{
 		try {
 			//针对这种权限问题，有集中解决方案，这是一种，还可以配置hdfs的xml文件来解决
 			//FileSystem是一个抽象类，我们可以通过查看源码来了解
@@ -117,6 +129,7 @@ public class HdfsOperUtil {
 			fs.close();
 			return true;
 		}catch (Exception e){
+			e.printStackTrace();
 			logger.error("文件上传失败");
 			return false;
 		}

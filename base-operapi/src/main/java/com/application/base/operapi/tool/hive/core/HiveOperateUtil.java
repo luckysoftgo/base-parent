@@ -1,6 +1,7 @@
 package com.application.base.operapi.tool.hive.core;
 
 import com.application.base.operapi.core.ColumnInfo;
+import com.application.base.operapi.tool.hive.common.config.HadoopConfig;
 import com.application.base.operapi.tool.hive.common.config.OperateConfig;
 import com.application.base.operapi.tool.hive.common.constant.Constant;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ public class HiveOperateUtil {
 	private static  HiveJdbcUtil hiveJdbcClient = null;
 	private static  Ssh2ServerUtil remoteOpera=null;
 	private static  HiveOperateUtil instance = null;
+	private static HdfsOperUtil hdfsOperUtil=null;
 	
 	/**
 	 * operate配置.
@@ -43,6 +45,7 @@ public class HiveOperateUtil {
 		if (instance == null) {
 			hiveJdbcClient = HiveJdbcUtil.getInstance(operateConfig.getHiveConfig());
 			remoteOpera = Ssh2ServerUtil.getInstance(operateConfig.getSshConfig());
+			hdfsOperUtil = HdfsOperUtil.getInstance(operateConfig.getHadoopConfig());
 			instance = new HiveOperateUtil(operateConfig);
 		}
 		return instance;
@@ -103,11 +106,14 @@ public class HiveOperateUtil {
 	 */
     public String  executeHiveOperate(String tableName,String tmpFile,List<ColumnInfo> columnMapList,String split,String localFilePath)throws Exception{
         String result = tableName ;
+	    HadoopConfig hadoopConfig = operateConfig.getHadoopConfig();
+	    String absolutePath = hadoopConfig.getHdfsFilePath();
         //上传服务器
-	    HdfsOperUtil operUtil = HdfsOperUtil.getInstance(operateConfig.getHiveConfig().getHdfsAddresss());
+	    HdfsOperUtil operUtil = HdfsOperUtil.getInstance(hadoopConfig);
 	
-	    boolean bool = operUtil.uploadFileToHdfs(localFilePath+tmpFile,operateConfig.getHiveConfig().getRemoteFilePath());
-	    //boolean bool = remoteOpera.uploadFile(localFilePath+tmpFile,operateConfig.getHiveConfig().getRemoteFilePath());
+	    //不能使用ssh的方式传递文件.得用hadoop的方式来搬运文件.
+	    boolean bool = operUtil.uploadFileToHdfs(localFilePath+tmpFile,absolutePath);
+	    //boolean bool = remoteOpera.uploadFile(localFilePath+tmpFile,absolutePath);
 	    if (!bool){
 	    	logger.error("上传文件"+localFilePath+tmpFile+"失败了.");
 	    	return "";
@@ -115,22 +121,33 @@ public class HiveOperateUtil {
         //根据表名 表头 拼接sql
         String createTableSql = genCreateTablesqlByColumnInfo(tableName,columnMapList,split);
         logger.info(createTableSql);
-        String absolutePath = operateConfig.getHiveConfig().getRemoteFilePath();
         try {
-            //建表 hive
+            //建 hive 表
             bool = hiveJdbcClient.excuteHiveql(createTableSql);
-            
-            String loadStr = "load data local inpath '" + absolutePath + tmpFile + "' overwrite into table "+tableName+" ";
+	
+            //在linx系统上,执行如下命令没有问题.
+	        //String loadStr = "load data local inpath '" + absolutePath + tmpFile + "' overwrite into table "+tableName+" ";
+	        //远程需要用hdfs来操作.
+            String loadStr = "load data inpath 'hdfs:" + absolutePath + tmpFile + "' overwrite into table "+tableName+" ";
 	        //String loadStr = "load data inpath 'hdfs://192.168.10.185:8020" + absolutePath + tmpFile + "' into table "+tableName+" ";
-            remoteOpera.excuteCmd("chmod -R 755 "+absolutePath + tmpFile);
+	        //在linx系统上,执行如下命令没有问题.
+	        //remoteOpera.excuteCmd("chmod -R 755 "+absolutePath + tmpFile);
 	        
-            System.out.println("execute command:\n\t"+loadStr);
+            System.out.println("loadStr \n\t"+loadStr);
             bool = hiveJdbcClient.excuteHiveql(loadStr);
 			
             //shell 删除临时文件
-            String execCommand = "rm -rf " + absolutePath + "/" + tmpFile;
-	        remoteOpera.excuteCmd(execCommand);
+            if (hadoopConfig.isDeleteFile()){
+	            //在 hadoop 环境下执行是 ok 的.
+	            // String execCommand = "hadoop fs -rm -f " + absolutePath + "/" + tmpFile;
+	            String execCommand = absolutePath + tmpFile;
+	            System.out.println("execCommand \n\t"+execCommand);
+				hdfsOperUtil.delFile(execCommand);
+	            //在linx系统上,执行如下命令没有问题.
+	            //remoteOpera.excuteCmd(execCommand);
+            }
         } catch (Exception e) {
+        	e.printStackTrace();
             logger.error("error: ",e);
             throw  new RuntimeException(e.getCause().getLocalizedMessage());
         }

@@ -13,9 +13,13 @@ import java.util.List;
  **/
 public class FileWrite {
 	
+	/**
+	 * 测试
+	 * @param args
+	 */
     public static void main(String[] args){
         try {
-            FileWriter fw = new FileWriter("e:/tmp1.txt");
+            FileWriter fw = new FileWriter("E:/tmp1.txt");
             BufferedWriter bw=new BufferedWriter(fw);
             fw.write("sss");
             fw.flush();

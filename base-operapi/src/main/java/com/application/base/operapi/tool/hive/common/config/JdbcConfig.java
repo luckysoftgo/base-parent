@@ -38,17 +38,14 @@ public class JdbcConfig {
 	 * 数据库的表名称.
 	 */
 	private String tableName;
-	/**
-	 * 本地占存文件路径
-	 */
-	private String localTmpPath;
+
 	
 	public JdbcConfig() {
 	
 	}
 	
 	public JdbcConfig(String host, int port, String userName, String passWord, String rdbsType, String driver,
-	                  String dataBase, String tableName, String localTmpPath) {
+	                  String dataBase, String tableName) {
 		this.host = host;
 		this.port = port;
 		this.userName = userName;
@@ -57,7 +54,6 @@ public class JdbcConfig {
 		this.driver = driver;
 		this.dataBase = dataBase;
 		this.tableName = tableName;
-		this.localTmpPath = localTmpPath;
 	}
 	
 	public String getHost() {
@@ -123,12 +119,5 @@ public class JdbcConfig {
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
 	}
-	
-	public String getLocalTmpPath() {
-		return localTmpPath;
-	}
-	
-	public void setLocalTmpPath(String localTmpPath) {
-		this.localTmpPath = localTmpPath;
-	}
+
 }

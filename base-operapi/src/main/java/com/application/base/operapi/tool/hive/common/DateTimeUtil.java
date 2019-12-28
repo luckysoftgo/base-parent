@@ -16,7 +16,8 @@ import java.util.regex.Pattern;
  **/
 public class DateTimeUtil {
 
-    private static Calendar calendar = Calendar.getInstance();  
+    private static Calendar calendar = Calendar.getInstance();
+    
     /** 
      * 将一个日期对象格式化为一个字符串。格式为：yyyy-MM-dd HH:mm:ss 
      *  
@@ -171,10 +172,7 @@ public class DateTimeUtil {
         return new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());  
     }
 
-
-
-  
-    /** 
+    /**
      * 根据生日计算年龄（到当前日期） 
      *  
      * @param birthday 
@@ -287,26 +285,19 @@ public class DateTimeUtil {
         calendar.add(unit, amount);
         return calendar.getTime();
     }
+    
     public static Boolean isDateString(String dateString){
-        if (dateString ==null ) return  false;
+        if (dateString ==null ){
+        	return  false;
+        }
         /**
          * 判断日期格式和范围
          */
         String rexp = "^((\\d{2}(([02468][048])|([13579][26]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])))))|(\\d{2}(([02468][1235679])|([13579][01345789]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|(1[0-9])|(2[0-8]))))))";
-
         Pattern pat = Pattern.compile(rexp);
-
         Matcher mat = pat.matcher(dateString);
-
         boolean dateType = mat.matches();
-
         return dateType;
-
-/*        if (dateString.length()==10){
-            dateString = dateString.replace("/","-");
-            return isDateStr(dateString,"yyyy-MM-dd");
-        }
-        return false ;*/
     }
 
     public static Boolean isDateTimeString(String dateString) {
@@ -314,24 +305,10 @@ public class DateTimeUtil {
 		    return false;
 	    }
         String rexp = "^((\\d{2}(([02468][048])|([13579][26]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])))))|(\\d{2}(([02468][1235679])|([13579][01345789]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|(1[0-9])|(2[0-8])))))) "+"([01]?[0-9]|2[0-3]):([0-5]?[0-9])(:([0-5]?[0-9]))?";
-
         Pattern pat = Pattern.compile(rexp);
-
         Matcher mat = pat.matcher(dateString);
-
         boolean dateType = mat.matches();
-
         return dateType;
-
-//        if (dateString.length()==14||dateString.length()==15||dateString.length()==16){
-//            dateString = dateString.replace("/","-");
-//            return isDateStr(dateString,"yyyy-MM-dd HH:mm");
-//        }
-//        if (dateString.length()==17||dateString.length()==18||dateString.length()==19){
-//            dateString = dateString.replace("/","-");
-//            return isDateStr(dateString,"yyyy-MM-dd HH:mm:ss ");
-//        }
-//        return false ;
     }
     public static String getDeadline(Date date){
         return addDate(date, Calendar.HOUR, +2);
@@ -341,25 +318,18 @@ public class DateTimeUtil {
         return new SimpleDateFormat(format).format(date);
     }
 
-    public static void main(String[] args){
-//        System.out.println(addDate(null, Calendar.HOUR, +
-        System.out.println(isDateString("2013-10-2"));
-        System.out.println(isDateString("2013-13-12"));
-        System.out.println(isDateString("2013/3/32"));
-
-        System.out.println(isDateString("2013-3-1 12"));
-        System.out.println(isDateTimeString("2013-3-1 12"));
-        System.out.println(isDateTimeString("2013-3-1 12:12"));
-        System.out.println(isDateTimeString("2013-03-01 12:12:12"));
-        System.out.println(isDateTimeString("2013-3-1 12:12:212"));
-        System.out.println(isDateTimeString("2013/3/1 12"));
-        System.out.println(isDateTimeString("2013/3/1 12:12"));
-        System.out.println(isDateTimeString("2013/3/1 12:12:12"));
-        System.out.println(isDateTimeString("2013/3/1 12:12:212"));
-
-
-
-
-
+    public static void main(String[] args) {
+	    System.out.println(isDateString("2013-10-2"));
+	    System.out.println(isDateString("2013-13-12"));
+	    System.out.println(isDateString("2013/3/32"));
+	    System.out.println(isDateString("2013-3-1 12"));
+	    System.out.println(isDateTimeString("2013-3-1 12"));
+	    System.out.println(isDateTimeString("2013-3-1 12:12"));
+	    System.out.println(isDateTimeString("2013-03-01 12:12:12"));
+	    System.out.println(isDateTimeString("2013-3-1 12:12:212"));
+	    System.out.println(isDateTimeString("2013/3/1 12"));
+	    System.out.println(isDateTimeString("2013/3/1 12:12"));
+	    System.out.println(isDateTimeString("2013/3/1 12:12:12"));
+	    System.out.println(isDateTimeString("2013/3/1 12:12:212"));
     }
 }

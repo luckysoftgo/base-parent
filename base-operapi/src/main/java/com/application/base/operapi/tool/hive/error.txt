@@ -1,0 +1,37 @@
+出现的错误一、
+10:12:14.754 [main] ERROR org.apache.hadoop.util.Shell - Failed to locate the winutils binary in the hadoop binary path
+java.io.IOException: Could not locate executable null\bin\winutils.exe in the Hadoop binaries.
+	at org.apache.hadoop.util.Shell.getQualifiedBinPath(Shell.java:355) ~[hadoop-common-2.6.1.jar:?]
+	at org.apache.hadoop.util.Shell.getWinUtilsPath(Shell.java:370) [hadoop-common-2.6.1.jar:?]
+	at org.apache.hadoop.util.Shell.<clinit>(Shell.java:363) [hadoop-common-2.6.1.jar:?]
+	at org.apache.hadoop.util.StringUtils.<clinit>(StringUtils.java:79) [hadoop-common-2.6.1.jar:?]
+	at org.apache.hadoop.security.Groups.parseStaticMapping(Groups.java:116) [hadoop-common-2.6.1.jar:?]
+	at org.apache.hadoop.security.Groups.<init>(Groups.java:93) [hadoop-common-2.6.1.jar:?]
+	at org.apache.hadoop.security.Groups.<init>(Groups.java:73) [hadoop-common-2.6.1.jar:?]
+	at org.apache.hadoop.security.Groups.getUserToGroupsMappingService(Groups.java:293) [hadoop-common-2.6.1.jar:?]
+	at org.apache.hadoop.security.UserGroupInformation.initialize(UserGroupInformation.java:283) [hadoop-common-2.6.1.jar:?]
+	at org.apache.hadoop.security.UserGroupInformation.ensureInitialized(UserGroupInformation.java:260) [hadoop-common-2.6.1.jar:?]
+	at org.apache.hadoop.security.UserGroupInformation.loginUserFromSubject(UserGroupInformation.java:789) [hadoop-common-2.6.1.jar:?]
+	at org.apache.hadoop.security.UserGroupInformation.getLoginUser(UserGroupInformation.java:774) [hadoop-common-2.6.1.jar:?]
+	at org.apache.hadoop.security.UserGroupInformation.getCurrentUser(UserGroupInformation.java:647) [hadoop-common-2.6.1.jar:?]
+	at org.apache.hadoop.fs.FileSystem$Cache$Key.<init>(FileSystem.java:2753) [hadoop-common-2.6.1.jar:?]
+	at org.apache.hadoop.fs.FileSystem$Cache$Key.<init>(FileSystem.java:2745) [hadoop-common-2.6.1.jar:?]
+	at org.apache.hadoop.fs.FileSystem$Cache.get(FileSystem.java:2611) [hadoop-common-2.6.1.jar:?]
+	at org.apache.hadoop.fs.FileSystem.get(FileSystem.java:370) [hadoop-common-2.6.1.jar:?]
+	at com.application.base.operapi.tool.hive.core.HdfsOperUtil.uploadFileToHdfs(HdfsOperUtil.java:116) [classes/:?]
+	at com.application.base.operapi.tool.hive.core.HdfsOperUtil.main(HdfsOperUtil.java:68) [classes/:?]
+
+
+解决方案:
+    缺少hadoop的可执行文件 winutils.exe,下载 hadoop,并在 bin 目录下放入 https://github.com/srccodes/hadoop-common-2.2.0-bin 下的 winutils.exe 文件.
+
+参考文献:
+    https://www.cnblogs.com/hyl8218/p/5492450.html
+    https://www.cnblogs.com/mdlcw/p/11106218.html
+
+错误二、
+    **org.apache.hive.service.cli.HiveSQLException: Error while compiling statement: No privilege 'Create' found for outputs { database:default }**
+    没有权限操作,可以给 hive 创建相应的权限来操作.
+
+参考文献:
+    https://blog.csdn.net/py_123456/article/details/80430244

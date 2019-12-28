@@ -3,10 +3,12 @@ package com.application.base.operapi.tool.hive.core;
 import com.application.base.operapi.core.ColumnInfo;
 import com.application.base.operapi.tool.hive.common.DbHelper;
 import com.application.base.operapi.tool.hive.common.FileWrite;
+import com.application.base.operapi.tool.hive.common.config.HadoopConfig;
 import com.application.base.operapi.tool.hive.common.config.JdbcConfig;
 import com.application.base.operapi.tool.hive.common.config.OperateConfig;
 import com.application.base.operapi.tool.hive.rdbs.DataSourceType;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -41,6 +43,7 @@ public class DataImportClient extends Thread {
 	 */
 	public boolean importData() {
 		JdbcConfig jdbcConfig = operateConfig.getJdbcConfig();
+		HadoopConfig hadoopConfig = operateConfig.getHadoopConfig();
 		String dataSourceType = jdbcConfig.getRdbsType();
 		String sourceTableName = jdbcConfig.getTableName();
 		
@@ -65,10 +68,11 @@ public class DataImportClient extends Thread {
 		//5、写入文件 并导入到hive
 		if (dataCount > 0) {
 			String tmpFile = sourceTableName;
+			String localFilePath = hadoopConfig.getLocalFilePath();
 			try {
-				fileWrite.writeMapList2File(resultList,  jdbcConfig.getLocalTmpPath() + tmpFile,split);
+				fileWrite.writeMapList2File(resultList,  localFilePath + File.separator + tmpFile,split);
 				HiveOperateUtil hiveOperateUtil = HiveOperateUtil.getInstance(operateConfig);
-				hiveOperateUtil.executeHiveOperate(sourceTableName,tmpFile,columnMapList,split,jdbcConfig.getLocalTmpPath());
+				hiveOperateUtil.executeHiveOperate(sourceTableName,tmpFile,columnMapList,split,localFilePath);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

@@ -1,6 +1,5 @@
 package com.application.base.operapi.tool.hive.common;
 
-import com.alibaba.fastjson.JSON;
 import com.application.base.operapi.core.ColumnInfo;
 import com.application.base.operapi.core.hive.rdbs.HiveDataType;
 import com.application.base.operapi.core.hive.rdbs.MysqlDataType;
@@ -42,7 +41,6 @@ public class DbHelper {
 			ResultSet res = stmt.executeQuery(sql);
 			ResultSetMetaData rsmd = res.getMetaData();
 			for(int i=1;i<=rsmd.getColumnCount();i++) {
-				System.out.println("info:"+ JSON.toJSONString(rsmd));
 				resultList.add(new ColumnInfo(rsmd.getColumnName(i), rsmd.getColumnTypeName(i)));
 			}
 		}catch (Exception e){

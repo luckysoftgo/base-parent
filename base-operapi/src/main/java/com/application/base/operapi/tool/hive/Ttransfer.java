@@ -1,5 +1,6 @@
 package com.application.base.operapi.tool.hive;
 
+import com.application.base.operapi.tool.hive.common.config.HadoopConfig;
 import com.application.base.operapi.tool.hive.common.config.HiveConfig;
 import com.application.base.operapi.tool.hive.common.config.JdbcConfig;
 import com.application.base.operapi.tool.hive.common.config.OperateConfig;
@@ -22,14 +23,28 @@ public class Ttransfer {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.setProperty("hadoop.home.dir", "D:\\installer\\hadoop-2.7.7");
+		//设置hadoop的环境.如果没有设置,会报错如下:
+		//java.io.IOException: Could not locate executable null\bin\winutils.exe in the Hadoop binaries.
+		//解决方案 1: https://www.cnblogs.com/hyl8218/p/5492450.html
+		//解决方案 2: https://www.cnblogs.com/mdlcw/p/11106218.html
+		
+		HadoopConfig hadoopConfig = new HadoopConfig();
+		hadoopConfig.setHadoopInstallDir("D:\\installer\\hadoop-2.7.7");
+		hadoopConfig.setHadoopUserName("hdfs");
+		hadoopConfig.setLocalFilePath("E:\\data\\");
+		hadoopConfig.setHdfsFilePath("/tmp/");
+		hadoopConfig.setHdfsRequestUrl("hdfs://manager:8020");
+		hadoopConfig.setDeleteFile(true);
+		
+		System.setProperty(HadoopConfig.HADOO_PHOME_DIR, hadoopConfig.getHadoopInstallDir());
+		//設置hadoop的用户名称: hdfs
+		System.setProperty(HadoopConfig.HADOOP_USER_NAME,hadoopConfig.getHadoopUserName()) ;
+		
 		HiveConfig hiveConfig = new HiveConfig();
 		hiveConfig.setDriver("org.apache.hive.jdbc.HiveDriver");
 		hiveConfig.setUrl("jdbc:hive2://192.168.10.185:10000/test");
-		hiveConfig.setRemoteFilePath("/user/hdfs/test/");
 		hiveConfig.setUsername("");
 		hiveConfig.setPassword("");
-		hiveConfig.setHdfsAddresss("hdfs://192.168.10.185:9000");
 		
 		JdbcConfig jdbcConfig = new JdbcConfig();
 		jdbcConfig.setDataBase("test");
@@ -40,7 +55,6 @@ public class Ttransfer {
 		jdbcConfig.setDriver("com.mysql.jdbc.Driver");
 		jdbcConfig.setHost("127.0.0.1");
 		jdbcConfig.setPort(3306);
-		jdbcConfig.setLocalTmpPath("E://data/");
 		
 		SshConfig sshConfig = new SshConfig();
 		sshConfig.setHost("192.168.10.185");
@@ -48,7 +62,11 @@ public class Ttransfer {
 		sshConfig.setUsername("root");
 		sshConfig.setPassword("admin123com");
 		
+		/**
+		 * 配置对象.
+		 */
 		OperateConfig operateConfig = new OperateConfig();
+		operateConfig.setHadoopConfig(hadoopConfig);
 		operateConfig.setHiveConfig(hiveConfig);
 		operateConfig.setJdbcConfig(jdbcConfig);
 		operateConfig.setSshConfig(sshConfig);
