@@ -58,7 +58,9 @@
 		<docx4j.version>3.2.2</docx4j.version>
 		<stringtemplate.version>3.2.1</stringtemplate.version>
 		<jdom.version>1.0</jdom.version>
-
+		
+		<ssh2.version>build210</ssh2.version>
+		
 		<!-- 下载需要的 jar  -->
 		<downloadSources>true</downloadSources>
 	</properties>
@@ -310,6 +312,11 @@
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20190722</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.ethz.ganymed</groupId>
+			<artifactId>ganymed-ssh2</artifactId>
+			<version>${ssh2.version}</version>
 		</dependency>
 	</dependencies>
 	
