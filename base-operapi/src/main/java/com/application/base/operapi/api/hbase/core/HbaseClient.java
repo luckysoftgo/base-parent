@@ -27,9 +27,13 @@ import org.apache.hadoop.hbase.client.TableDescriptor;
 import org.apache.hadoop.hbase.client.TableDescriptorBuilder;
 import org.apache.hadoop.hbase.filter.ColumnPrefixFilter;
 import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.filter.FilterList;
+import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
+import org.apache.hadoop.hbase.filter.PageFilter;
 import org.apache.hadoop.hbase.filter.PrefixFilter;
 import org.apache.hadoop.hbase.filter.QualifierFilter;
 import org.apache.hadoop.hbase.filter.RowFilter;
+import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 import org.apache.hadoop.hbase.filter.SubstringComparator;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.slf4j.Logger;
@@ -43,7 +47,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +80,10 @@ public class HbaseClient {
 	 * 配置信息
 	 */
 	private HbaseConfig hbaseConfig;
+	/**
+	 * postfix
+	 */
+	private final byte[] POSTFIX = new byte[] {0x00};
 	
 	/**
 	 * 存在的连接.
@@ -274,7 +281,7 @@ public class HbaseClient {
 		try {
 			List<TableName> tableNames=listTNTableNames(pattern);
 			for (int i = 0; i < tableNames.size(); i++) {
-				tableList.add(tableNames.get(i).toString());
+				tableList.add(tableNames.get(i).getNameAsString());
 			}
 		} catch (Exception e) {
 			logger.error("获得hbase所有表信息发生异常,异常信息是:{}",e.getMessage());
@@ -1079,7 +1086,7 @@ public class HbaseClient {
 		Connection conn = getConnection();
 		try {
 			table = conn.getTable(TableName.valueOf(tableName));
-			Get get = new Get(rowKey.getBytes());
+			Get get = new Get(Bytes.toBytes(rowKey));
 			Result rs = table.get(get);
 			for(Cell cell : rs.listCells()){
 				data4Bean(tableName,dataList, cell);
@@ -1271,30 +1278,6 @@ public class HbaseClient {
 	}
 	
 	/**
-	 * 将数据放入到 map 中去.
-	 * @param dataList
-	 * @param cell
-	 */
-	private void data4Map(List<Map<String, Object>> dataList, Cell cell) {
-		String rowKey = Bytes.toString(CellUtil.cloneRow(cell));
-		String columnFamily = Bytes.toString(CellUtil.cloneFamily(cell));
-		String columnKey = Bytes.toString(CellUtil.cloneQualifier(cell));
-		String columValue = Bytes.toString(CellUtil.cloneValue(cell));
-		long timestamp = cell.getTimestamp();
-		String hbaseKey = Bytes.toString(cell.getQualifierArray(), cell.getQualifierOffset(), cell.getQualifierLength());
-		String hbaseValue = Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength());
-		Map<String,Object> map = new HashMap<>();
-		map.put("rowKey",rowKey);
-		map.put("columnFamily",columnFamily);
-		map.put("columnKey",columnKey);
-		map.put("columValue",columValue);
-		map.put("timestamp",timestamp);
-		map.put("hbaseKey",hbaseKey);
-		map.put("hbaseValue",hbaseValue);
-		dataList.add(map);
-	}
-	
-	/**
 	 * 处理对象集合
 	 * @param dataList
 	 * @param cell
@@ -1407,6 +1390,140 @@ public class HbaseClient {
 			} catch (IOException e) {
 				logger.error("关闭table信息失败了!");
 			}
+		}
+	}
+	
+	/**
+	 * 根据不同条件查询数据
+	 * @param tableName      表名
+	 * @param columnFamily   列簇
+	 * @param queryParam     过滤列集合   ("topicFileId,6282")=>("列,值")
+	 * @param regex          分隔字符
+	 * @param bool           查询方式：true:and ; false:or
+	 *
+	 * @return
+	 */
+	public List<HbaseBean> selectTableDataByFilter(String tableName,String columnFamily,List<String> queryParam,String regex,boolean bool){
+		Scan scan = new Scan();
+		FilterList filterList = queryFilter(columnFamily, queryParam, regex, bool);
+		scan.setFilter(filterList);
+		return queryData(tableName,scan);
+	}
+	
+	/**
+	 * 查根据不同条件查询数据,并返回想要的单列 =>返回的列必须是过滤中存在
+	 * @param tableName         表名
+	 * @param columnFamily      列簇
+	 * @param queryParam        过滤列集合   ("topicFileId,6282")=>("列,值")
+	 * @param regex             分隔字符
+	 * @param column            返回的列
+	 * @param bool              查询方式：and 或 or | true : and ；false：or
+	 * @return
+	 */
+	public List<HbaseBean> selectColumnValueByFilter(String tableName,String columnFamily,List<String> queryParam,String regex,String column,boolean bool){
+		Scan scan = new Scan();
+		FilterList filterList = queryFilter(columnFamily, queryParam, regex, bool);
+		scan.setFilter(filterList);
+		scan.addColumn(Bytes.toBytes(columnFamily),Bytes.toBytes(column));
+		scan.setFilter(filterList);
+		return queryData(tableName,scan);
+	}
+	
+	/**
+	 * 分页的根据不同条件查询数据
+	 * @param tableName         表名
+	 * @param columnFamily      列簇
+	 * @param queryParam        过滤列集合   ("topicFileId,6282")=>("列,值")
+	 * @param regex             分隔字符
+	 * @param bool              查询方式：and 或 or | true : and ；false：or
+	 * @param pageSize          每页显示的数量
+	 * @param lastRow           当前页的最后一行
+	 * @return
+	 */
+	public List<HbaseBean> selectTableDataByFilterPage(String tableName,String columnFamily,List<String> queryParam,String regex,boolean bool,int pageSize,String lastRow){
+		Scan scan = new Scan();
+		FilterList filterList = queryFilter(columnFamily, queryParam, regex, bool);
+		FilterList pageFilterList = handlePageFilter(scan, pageSize, lastRow);
+		pageFilterList.addFilter(filterList);
+		scan.setFilter(pageFilterList);
+		return queryData(tableName,scan);
+	}
+	/**
+	 * 分页查询表中所有数据信息
+	 * @param tableName     表名
+	 * @param pageSize      每页数量
+	 * @param lastRow       当前页的最后一行
+	 * @return
+	 */
+	public  List<HbaseBean> selectTableDataByPage(String tableName,int pageSize,String lastRow){
+		Scan scan = new Scan();
+		FilterList pageFilterList = handlePageFilter(scan, pageSize, lastRow);
+		scan.setFilter(pageFilterList);
+		return queryData(tableName,scan);
+	}
+	
+	/**
+	 * 通用方法 -> 处理分页数据
+	 * @param scan          过滤的数据
+	 * @param pageSize      每页显示的数量
+	 * @param lastRowKey    当前页的最后一行（rowKey）
+	 * @return
+	 */
+	private FilterList handlePageFilter(Scan scan, int pageSize, String lastRowKey){
+		Filter pageFilter = new PageFilter(pageSize);
+		FilterList pageFilterList = new FilterList();
+		pageFilterList.addFilter(pageFilter);
+		if(!StringUtils.isEmpty(lastRowKey)){
+			byte[] startRow = Bytes.add(Bytes.toBytes(lastRowKey), POSTFIX);
+			scan.setStartRow(startRow);
+		}
+		return pageFilterList;
+	}
+	
+	/**
+	 * 通用方法 -> 处理查询条件
+	 * @param columnFamily   列簇
+	 * @param queryParam     过滤列集合   ("topicFileId,6282")=>("列,值")
+	 * @param regex          分隔字符
+	 * @param bool           查询方式：true:and ; false:or
+	 * @return
+	 */
+	private FilterList queryFilter(String columnFamily,List<String> queryParam,String regex,boolean bool){
+		FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
+		if(!bool){
+			filterList = new FilterList(FilterList.Operator.MUST_PASS_ONE);
+		}
+		for(String param: queryParam){
+			String[] queryArray = param.split(regex);
+			SingleColumnValueFilter singleColumnValueFilter = new SingleColumnValueFilter(Bytes.toBytes(columnFamily), Bytes.toBytes(queryArray[0]), CompareOperator.EQUAL,Bytes.toBytes(queryArray[1]));
+			singleColumnValueFilter.setFilterIfMissing(true);
+			filterList.addFilter(singleColumnValueFilter);
+		}
+		return filterList;
+	}
+	
+	/**
+	 * 通用方法 -> 统计
+	 * @param table
+	 * @param scan
+	 * @return
+	 */
+	private int queryDataCount(Table table,Scan scan){
+		scan.setFilter(new FirstKeyOnlyFilter());
+		ResultScanner resultScanner = null;
+		int rowCount = 0;
+		try {
+			resultScanner = table.getScanner(scan);
+			for(Result result : resultScanner){
+				rowCount += result.size();
+			}
+			logger.info("统计全表数据总数：表名：{0}，查询结果：{1}",Bytes.toString(table.getName().getName()),rowCount);
+			return rowCount;
+		} catch (Exception e) {
+			logger.error("查询指定表中数据信息：表名：{0}，错误信息：{1}",Bytes.toString(table.getName().getName()),e.getMessage());
+			return rowCount;
+		}finally {
+			close(null,null,resultScanner,table);
 		}
 	}
 }

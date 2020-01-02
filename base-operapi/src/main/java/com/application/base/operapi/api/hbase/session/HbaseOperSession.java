@@ -184,6 +184,29 @@ public class HbaseOperSession implements HbaseSession {
 	}
 	
 	@Override
+	public List<HbaseBean> selectTableDataByFilter(String tableName, String columnFamily, List<String> queryParam,
+	                                               String regex, boolean bool) {
+		return hbaseClient.selectTableDataByFilter(tableName,columnFamily,queryParam,regex,bool);
+	}
+	
+	@Override
+	public List<HbaseBean> selectColumnValueByFilter(String tableName, String columnFamily, List<String> queryParam,
+	                                                 String regex, String column, boolean bool) {
+		return hbaseClient.selectColumnValueByFilter(tableName,columnFamily,queryParam,regex,column,bool);
+	}
+	
+	@Override
+	public List<HbaseBean> selectTableDataByFilterPage(String tableName, String columnFamily, List<String> queryParam,
+	                                                   String regex, boolean bool, int pageSize, String lastRow) {
+		return hbaseClient.selectTableDataByFilterPage(tableName,columnFamily,queryParam,regex,bool,pageSize,lastRow);
+	}
+	
+	@Override
+	public List<HbaseBean> selectTableDataByPage(String tableName, int pageSize, String lastRow) {
+		return hbaseClient.selectTableDataByPage(tableName,pageSize,lastRow);
+	}
+	
+	@Override
 	public boolean updateData(String tableName, String rowKey, String columnFamily, String columkey, String updateData){
 		return hbaseClient.updateData(tableName,rowKey,columnFamily,columkey,updateData);
 	}

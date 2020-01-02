@@ -230,6 +230,7 @@ public interface HbaseSession {
 	/**
 	 * 查询行键中包含特定字符的数据
 	 * @param tableName 表名
+	 * @param compareOperator 表名
 	 * @param keyWord 包含指定关键词的行键
 	 */
 	public List<HbaseBean> getResultScannerRowFilter(String tableName, CompareOperator compareOperator, String keyWord);
@@ -238,9 +239,56 @@ public interface HbaseSession {
 	 * 查询列名中包含特定字符的数据
 	 * @author zifangsky
 	 * @param tableName 表名
+	 * @param compareOperator 表名
 	 * @param keyWord 包含指定关键词的列名
 	 */
 	public List<HbaseBean> getResultScannerQualifierFilter(String tableName,CompareOperator compareOperator, String keyWord);
+	
+	/**
+	 * 根据不同条件查询数据
+	 * @param tableName      表名
+	 * @param columnFamily   列簇
+	 * @param queryParam     过滤列集合   ("topicFileId,6282")=>("列,值")
+	 * @param regex          分隔字符
+	 * @param bool           查询方式：true:and ; false:or
+	 *
+	 * @return
+	 */
+	public List<HbaseBean> selectTableDataByFilter(String tableName,String columnFamily,List<String> queryParam,String regex,boolean bool);
+	
+	/**
+	 * 查根据不同条件查询数据,并返回想要的单列 =>返回的列必须是过滤中存在
+	 * @param tableName         表名
+	 * @param columnFamily      列簇
+	 * @param queryParam        过滤列集合   ("topicFileId,6282")=>("列,值")
+	 * @param regex             分隔字符
+	 * @param column            返回的列
+	 * @param bool              查询方式：and 或 or | true : and ；false：or
+	 * @return
+	 */
+	public List<HbaseBean> selectColumnValueByFilter(String tableName,String columnFamily,List<String> queryParam,String regex,String column,boolean bool);
+	
+	/**
+	 * 分页的根据不同条件查询数据
+	 * @param tableName         表名
+	 * @param columnFamily      列簇
+	 * @param queryParam        过滤列集合   ("topicFileId,6282")=>("列,值")
+	 * @param regex             分隔字符
+	 * @param bool              查询方式：and 或 or | true : and ；false：or
+	 * @param pageSize          每页显示的数量
+	 * @param lastRow           当前页的最后一行
+	 * @return
+	 */
+	public List<HbaseBean> selectTableDataByFilterPage(String tableName,String columnFamily,List<String> queryParam,String regex,boolean bool,int pageSize,String lastRow);
+	
+	/**
+	 * 分页查询表中所有数据信息
+	 * @param tableName     表名
+	 * @param pageSize      每页数量
+	 * @param lastRow       当前页的最后一行
+	 * @return
+	 */
+	public  List<HbaseBean> selectTableDataByPage(String tableName,int pageSize,String lastRow);
 	
 	/**
 	 * 更新数据 为表的某个单元格赋值
