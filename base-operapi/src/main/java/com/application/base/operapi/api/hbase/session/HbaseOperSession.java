@@ -28,6 +28,16 @@ public class HbaseOperSession implements HbaseSession {
 	}
 	
 	@Override
+	public boolean createNamespace(String namespace) {
+		return hbaseClient.createNamespace(namespace);
+	}
+	
+	@Override
+	public boolean deleteNamespace(String namespace) {
+		return hbaseClient.deleteNamespace(namespace);
+	}
+	
+	@Override
 	public boolean tableExist(String tableName){
 		return hbaseClient.tableExist(tableName);
 	}
@@ -190,6 +200,12 @@ public class HbaseOperSession implements HbaseSession {
 	@Override
 	public boolean insertMore(String tableName, String rowKey, String familyName, String[] columns, String[] values){
 		return hbaseClient.insertMore(tableName,rowKey,familyName,columns,values);
+	}
+	
+	@Override
+	public boolean insertBatchMore(String tableName, String rowKey, String familyName, String[] columns,
+	                               String[] values) {
+		return hbaseClient.insertBatchMore(tableName,rowKey,familyName,columns,values);
 	}
 	
 	@Override

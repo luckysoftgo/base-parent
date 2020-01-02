@@ -41,6 +41,10 @@ public class HbaseConfig extends GenericObjectPoolConfig {
 	 * 主机设置.
 	 */
 	public String master;
+	/**
+	 * 根目录:hdfs://10.23.12.183:8020/hbase
+	 */
+	public String rootDir;
 	
 	public HbaseConfig() {
 	}
@@ -73,13 +77,14 @@ public class HbaseConfig extends GenericObjectPoolConfig {
 	}
 	
 	public HbaseConfig(String hadoopDir, String zookeeperQuorum, String zookeeperPort, String loginUser,
-	                   String loginPass, String master) {
+	                   String loginPass, String master, String rootDir) {
 		this.hadoopDir = hadoopDir;
 		this.zookeeperQuorum = zookeeperQuorum;
 		this.zookeeperPort = zookeeperPort;
 		this.loginUser = loginUser;
 		this.loginPass = loginPass;
 		this.master = master;
+		this.rootDir =rootDir;
 	}
 	
 	public String getHadoopDir() {
@@ -128,5 +133,13 @@ public class HbaseConfig extends GenericObjectPoolConfig {
 	
 	public void setMaster(String master) {
 		this.master = master;
+	}
+	
+	public String getRootDir() {
+		return rootDir;
+	}
+	
+	public void setRootDir(String rootDir) {
+		this.rootDir = rootDir;
 	}
 }

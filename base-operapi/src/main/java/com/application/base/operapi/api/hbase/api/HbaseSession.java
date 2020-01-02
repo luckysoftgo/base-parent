@@ -17,6 +17,20 @@ import java.util.regex.Pattern;
 public interface HbaseSession {
 	
 	/**
+	 * 创建namespace
+	 * @param namespace
+	 * @return
+	 */
+	public boolean createNamespace(String namespace);
+	
+	/**
+	 * 删除namespace
+	 * @param namespace
+	 * @return
+	 */
+	public boolean deleteNamespace(String namespace);
+	
+	/**
 	 * 判断表是否存在
 	 * @param tableName
 	 * @return
@@ -259,7 +273,6 @@ public interface HbaseSession {
 	 */
 	public boolean insertOne(String tableName,String rowKey,String family,Map<String, String> map);
 
-	
 	/**
 	 * 往表中添加多数据
 	 * @param tableName Table
@@ -271,7 +284,18 @@ public interface HbaseSession {
 	 * @return
 	 */
 	public boolean insertMore(String tableName,String rowKey,String familyName, String[] columns, String[] values);
-
+	
+	/**
+	 * 往表中添加多数据
+	 * @param tableName Table
+	 * @param rowKey rowKey
+	 * @param tableName 表名
+	 * @param familyName 列族名
+	 * @param columns 列名数组
+	 * @param values 列值得数组
+	 * @return
+	 */
+	public boolean insertBatchMore(String tableName,String rowKey,String familyName, String[] columns, String[] values);
 	
 	/**
 	 * 根据tableName和rowKey精确查询一行的数据

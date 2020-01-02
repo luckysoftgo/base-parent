@@ -8,6 +8,7 @@ import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.CompareOperator;
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.NamespaceDescriptor;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.ColumnFamilyDescriptor;
@@ -19,6 +20,7 @@ import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.client.Row;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.client.TableDescriptor;
@@ -58,6 +60,7 @@ import java.util.regex.Pattern;
  *    https://help.aliyun.com/document_detail/119570.html
  *    https://blog.csdn.net/u010391342/article/details/81624914
  *    https://blog.csdn.net/qq_39192827/article/details/95459083
+ *    https://yq.aliyun.com/articles/674755
  **/
 public class HbaseClient {
 	
@@ -106,6 +109,9 @@ public class HbaseClient {
 		if (StringUtils.isNotBlank(hbaseConfig.getMaster())){
 			configuration.set("hbase.master", hbaseConfig.getMaster());
 		}
+		if (StringUtils.isNotBlank(hbaseConfig.getRootDir())){
+			configuration.set("hbase.rootdir", hbaseConfig.getRootDir());
+		}
 		//先检查实例是否存在，如果不存在才进入下面的同步块
 		Connection conn = null;
 		try {
@@ -145,6 +151,49 @@ public class HbaseClient {
 			logger.error("获取connect连接异常了,错误异常是:{}",e.getMessage());
 			return null;
 		}
+	}
+	
+	/**
+	 * 创建namespace
+	 * @param namespace
+	 * @return
+	 */
+	public boolean createNamespace(String namespace){
+		boolean exist = true;
+		Admin admin = null;
+		Connection conn = getConnection();
+		try {
+			admin = conn.getAdmin();
+			NamespaceDescriptor descriptor = NamespaceDescriptor.create(namespace).build();
+			admin.createNamespace(descriptor);
+		}catch (Exception e){
+			exist = false;
+			logger.error("创建目录异常,异常信息是:{}",e.getMessage());
+		}finally {
+			close(conn,admin,null,null);
+		}
+		return exist;
+	}
+	
+	/**
+	 * 删除namespace
+	 * @param namespace
+	 * @return
+	 */
+	public boolean deleteNamespace(String namespace){
+		boolean exist = true;
+		Admin admin = null;
+		Connection conn = getConnection();
+		try {
+			admin = conn.getAdmin();
+			admin.deleteNamespace(namespace);
+		}catch (Exception e){
+			exist = false;
+			logger.error("删除目录发生了异常,异常信息是:{}",e.getMessage());
+		}finally {
+			close(conn,admin,null,null);
+		}
+		return exist;
 	}
 	
 	/**
@@ -990,6 +1039,46 @@ public class HbaseClient {
 		return result;
 	}
 	
+	
+	/**
+	 * 往表中添加多数据
+	 * @param tableName Table
+	 * @param rowKey rowKey
+	 * @param tableName 表名
+	 * @param familyName 列族名
+	 * @param columns 列名数组
+	 * @param values 列值得数组
+	 * @return
+	 */
+	public boolean insertBatchMore(String tableName,String rowKey,String familyName, String[] columns, String[] values){
+		boolean result = true;
+		Table table = null;
+		try {
+			table =getTable(tableName);
+			//实例化put对象，传入行键
+			Put put =new Put(Bytes.toBytes(rowKey));
+			if(columns != null && values != null && columns.length == values.length){
+				for(int i=0;i<columns.length;i++){
+					if(columns[i] != null && values[i] != null){
+						put.addColumn(Bytes.toBytes(familyName), Bytes.toBytes(columns[i]), Bytes.toBytes(values[i]));
+					}else{
+						throw new NullPointerException(MessageFormat.format("列名和列数据都不能为空,column:{0},value:{1}" ,columns[i],values[i]));
+					}
+				}
+			}
+			ArrayList<Row> list = new ArrayList<>();
+			list.add(put);
+			Object[] array = new Object[list.size()];
+			table.batch(list,array);
+		} catch (Exception e) {
+			result = false;
+			logger.error("放入数据到hbase发生了异常,异常信息是:{}",e.getMessage());
+		}finally {
+			close(null,null,null,table);
+		}
+		return result;
+	}
+	
 	/**
 	 * 根据tableName和rowKey精确查询一行的数据
 	 * @param tableName
@@ -1193,21 +1282,28 @@ public class HbaseClient {
 	private void data4Map(List<Map<String, Object>> dataList, Cell cell) {
 		String row = Bytes.toString(CellUtil.cloneRow(cell));
 		String family = Bytes.toString(CellUtil.cloneFamily(cell));
+		String familyAll = Bytes.toString(cell.getFamilyArray(), cell.getFamilyOffset(), cell.getFamilyLength());
 		String qualifier = Bytes.toString(CellUtil.cloneQualifier(cell));
+		String qualifierAll = Bytes.toString(cell.getQualifierArray(), cell.getQualifierOffset(), cell.getQualifierLength());
 		String value = Bytes.toString(CellUtil.cloneValue(cell));
+		String valueAll = Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength());
 		String qualifierArray = Bytes.toString(cell.getQualifierArray());
 		String valueArray = Bytes.toString(cell.getValueArray());
 		long timestamp = cell.getTimestamp();
 		String hbaseKey = Bytes.toString(cell.getQualifierArray(), cell.getQualifierOffset(), cell.getQualifierLength());
 		String hbaseValue = Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength());
+		
 		Map<String,Object> map = new HashMap<>();
 		map.put("timestamp",timestamp);
 		map.put("qualifierArray",qualifierArray);
 		map.put("valueArray",valueArray);
 		map.put("row",row);
 		map.put("family",family);
+		map.put("familyAll",familyAll);
 		map.put("qualifier",qualifier);
+		map.put("qualifierAll",qualifierAll);
 		map.put("value",value);
+		map.put("valueAll",valueAll);
 		map.put("hbaseKey",hbaseKey);
 		map.put("hbaseValue",hbaseValue);
 		dataList.add(map);
