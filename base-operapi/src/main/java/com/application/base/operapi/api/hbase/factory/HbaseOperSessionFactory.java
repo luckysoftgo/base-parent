@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 /**
- * @NAME: HiveJdbcSessionFactory
+ * @NAME: HbaseOperSessionFactory
  * @DESC: 连接池工厂
  * @author : 孤狼
  **/
