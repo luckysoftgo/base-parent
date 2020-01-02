@@ -103,6 +103,9 @@ public class HbaseClient {
 		if (StringUtils.isNotBlank(hbaseConfig.getLoginPass())){
 			configuration.set("hbase.client.password", hbaseConfig.getLoginPass());
 		}
+		if (StringUtils.isNotBlank(hbaseConfig.getMaster())){
+			configuration.set("hbase.master", hbaseConfig.getMaster());
+		}
 		//先检查实例是否存在，如果不存在才进入下面的同步块
 		Connection conn = null;
 		try {

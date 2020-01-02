@@ -29,14 +29,18 @@ public class HbaseConfig extends GenericObjectPoolConfig {
 	public String zookeeperPort;
 	
 	/**
-	 * 登录的用户名
+	 * 登录的用户名.
 	 */
 	public String loginUser;
 	
 	/**
-	 * 登录的密码
+	 * 登录的密码.
 	 */
 	public String loginPass;
+	/**
+	 * 主机设置.
+	 */
+	public String master;
 	
 	public HbaseConfig() {
 	}
@@ -66,6 +70,16 @@ public class HbaseConfig extends GenericObjectPoolConfig {
 		this.zookeeperPort = zookeeperPort;
 		this.loginUser = loginUser;
 		this.loginPass = loginPass;
+	}
+	
+	public HbaseConfig(String hadoopDir, String zookeeperQuorum, String zookeeperPort, String loginUser,
+	                   String loginPass, String master) {
+		this.hadoopDir = hadoopDir;
+		this.zookeeperQuorum = zookeeperQuorum;
+		this.zookeeperPort = zookeeperPort;
+		this.loginUser = loginUser;
+		this.loginPass = loginPass;
+		this.master = master;
 	}
 	
 	public String getHadoopDir() {
@@ -106,5 +120,13 @@ public class HbaseConfig extends GenericObjectPoolConfig {
 	
 	public void setLoginPass(String loginPass) {
 		this.loginPass = loginPass;
+	}
+	
+	public String getMaster() {
+		return master;
+	}
+	
+	public void setMaster(String master) {
+		this.master = master;
 	}
 }
