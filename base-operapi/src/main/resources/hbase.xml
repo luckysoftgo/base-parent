@@ -20,6 +20,7 @@
         <property name="timeBetweenEvictionRunsMillis" value="${hbase.pool.timeBetweenEvictionRunsMillis}"/>
 		<property name="numTestsPerEvictionRun" value="${hbase.pool.numTestsPerEvictionRun}"/>
 		<property name="hadoopDir" value="${hbase.hadoopDir}"/>
+		<property name="rootDir" value="${hbase.rootDir}"/>
 		<property name="zookeeperQuorum" value="${hbase.zookeeperQuorum}"/>
 		<property name="zookeeperPort" value="${hbase.zookeeperPort}"/>
 		<property name="loginUser" value="${hbase.loginUser}"/>
