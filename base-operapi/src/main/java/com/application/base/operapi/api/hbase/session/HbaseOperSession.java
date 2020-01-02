@@ -99,8 +99,8 @@ public class HbaseOperSession implements HbaseSession {
 	}
 	
 	@Override
-	public boolean createTable(String tableName, String familyName){
-		return hbaseClient.createTable(tableName,familyName);
+	public boolean createTable(String tableName, String columnFamily){
+		return hbaseClient.createTable(tableName,columnFamily);
 	}
 	
 	@Override
@@ -129,8 +129,8 @@ public class HbaseOperSession implements HbaseSession {
 	}
 	
 	@Override
-	public boolean deleteData(String tableName, String rowKey, String family, String columkey){
-		return hbaseClient.deleteData(tableName,rowKey,family,columkey);
+	public boolean deleteData(String tableName, String rowKey, String columnFamily, String columkey){
+		return hbaseClient.deleteData(tableName,rowKey,columnFamily,columkey);
 	}
 	
 	@Override
@@ -184,8 +184,8 @@ public class HbaseOperSession implements HbaseSession {
 	}
 	
 	@Override
-	public boolean updateData(String tableName, String rowKey, String family, String columkey, String updateData){
-		return hbaseClient.updateData(tableName,rowKey,family,columkey,updateData);
+	public boolean updateData(String tableName, String rowKey, String columnFamily, String columkey, String updateData){
+		return hbaseClient.updateData(tableName,rowKey,columnFamily,columkey,updateData);
 	}
 	
 	@Override
@@ -194,8 +194,8 @@ public class HbaseOperSession implements HbaseSession {
 	}
 	
 	@Override
-	public boolean insertOne(String tableName, String rowKey, String family, Map<String, String> map){
-		return hbaseClient.insertOne(tableName,rowKey,family,map);
+	public boolean insertOne(String tableName, String rowKey, String columnFamily, Map<String, String> map){
+		return hbaseClient.insertOne(tableName,rowKey,columnFamily,map);
 	}
 	
 	@Override
@@ -204,9 +204,9 @@ public class HbaseOperSession implements HbaseSession {
 	}
 	
 	@Override
-	public boolean insertBatchMore(String tableName, String rowKey, String familyName, String[] columns,
+	public boolean insertBatchMore(String tableName, String rowKey, String columnFamily, String[] columns,
 	                               String[] values) {
-		return hbaseClient.insertBatchMore(tableName,rowKey,familyName,columns,values);
+		return hbaseClient.insertBatchMore(tableName,rowKey,columnFamily,columns,values);
 	}
 	
 	@Override
@@ -230,20 +230,20 @@ public class HbaseOperSession implements HbaseSession {
 	}
 	
 	@Override
-	public List<HbaseBean> getDataByFamilyColumn(String tableName, String family, String column){
-		return hbaseClient.getDataByFamilyColumn(tableName,family,column);
+	public List<HbaseBean> getDataByFamilyColumn(String tableName, String columnFamily, String column){
+		return hbaseClient.getDataByFamilyColumn(tableName,columnFamily,column);
 	}
 	
 	@Override
-	public List<HbaseBean> getDataByFamilyColumn(String tableName, String rowKey, String familyName,
+	public List<HbaseBean> getDataByFamilyColumn(String tableName, String rowKey, String columnFamily,
 	                                                       String columnName){
-		return hbaseClient.getDataByFamilyColumn(tableName,rowKey,familyName,columnName);
+		return hbaseClient.getDataByFamilyColumn(tableName,rowKey,columnFamily,columnName);
 	}
 	
 	@Override
-	public List<HbaseBean> getColumnValuesByVersion(String tableName, String rowKey, String familyName,
+	public List<HbaseBean> getColumnValuesByVersion(String tableName, String rowKey, String columnFamily,
 	                                                          String columnName, int versions){
-		return hbaseClient.getColumnValuesByVersion(tableName,rowKey,familyName,columnName,versions);
+		return hbaseClient.getColumnValuesByVersion(tableName,rowKey,columnFamily,columnName,versions);
 	}
 	
 	@Override

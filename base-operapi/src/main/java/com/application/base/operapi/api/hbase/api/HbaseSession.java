@@ -121,7 +121,7 @@ public interface HbaseSession {
 	 * @param tableName
 	 * @return
 	 */
-	public boolean createTable(String tableName,String familyName);
+	public boolean createTable(String tableName,String columnFamily);
 	
 	/**
 	 * 创建表结构
@@ -163,10 +163,10 @@ public interface HbaseSession {
 	 * 删除某条记录
 	 * @param tableName  表名
 	 * @param rowKey    rowKey
-	 * @param family    列族名
+	 * @param columnFamily    列族名
 	 * @param columkey  列名
 	 */
-	public boolean deleteData(String tableName,String rowKey,String family,String columkey);
+	public boolean deleteData(String tableName,String rowKey,String columnFamily,String columkey);
 	
 	/**
 	 * 根据columnFamily删除指定的列族
@@ -246,11 +246,11 @@ public interface HbaseSession {
 	 * 更新数据 为表的某个单元格赋值
 	 * @param tableName  表名
 	 * @param rowKey    rowKey
-	 * @param family    列族名
+	 * @param columnFamily    列族名
 	 * @param columkey  列名
 	 * @param updateData 列值
 	 */
-	public boolean updateData(String tableName,String rowKey,String family,String columkey,String updateData);
+	public boolean updateData(String tableName,String rowKey,String columnFamily,String columkey,String updateData);
 
 	
 	/**
@@ -268,11 +268,11 @@ public interface HbaseSession {
 	 * 往表中添加单条数据
 	 * @param tableName 表明
 	 * @param rowKey  指key
-	 * @param family 列族名
+	 * @param columnFamily 列族名
 	 * @param map    数据源
 	 * @return
 	 */
-	public boolean insertOne(String tableName,String rowKey,String family,Map<String, String> map);
+	public boolean insertOne(String tableName,String rowKey,String columnFamily,Map<String, String> map);
 
 	/**
 	 * 往表中添加多数据
@@ -291,12 +291,12 @@ public interface HbaseSession {
 	 * @param tableName Table
 	 * @param rowKey rowKey
 	 * @param tableName 表名
-	 * @param familyName 列族名
+	 * @param columnFamily 列族名
 	 * @param columns 列名数组
 	 * @param values 列值得数组
 	 * @return
 	 */
-	public boolean insertBatchMore(String tableName,String rowKey,String familyName, String[] columns, String[] values);
+	public boolean insertBatchMore(String tableName,String rowKey,String columnFamily, String[] columns, String[] values);
 	
 	/**
 	 * 根据tableName和rowKey精确查询一行的数据
@@ -316,7 +316,7 @@ public interface HbaseSession {
 	public String getValData(String tableName,String rowKey,String columnFamily,String column);
 	
 	/**
-	 * 根据tableName、rowKey、familyName、column查询指定单元格的数据
+	 * 根据tableName、rowKey、columnFamily、column查询指定单元格的数据
 	 * @param tableName 表名
 	 * @param rowKey rowKey
 	 * @param columnFamily 列族名
@@ -334,28 +334,28 @@ public interface HbaseSession {
 	/**
 	 * 通过列簇获取下面所有的列的数据
 	 * @param tableName
-	 * @param family
+	 * @param columnFamily
 	 */
-	public List<HbaseBean> getDataByFamilyColumn(String tableName,String family,String column);
+	public List<HbaseBean> getDataByFamilyColumn(String tableName,String columnFamily,String column);
 	
 	/**
-	 * 根据tableName、rowKey、familyName、column查询指定单元格的数据
+	 * 根据tableName、rowKey、columnFamily、column查询指定单元格的数据
 	 * @param tableName 表名
 	 * @param rowKey rowKey
-	 * @param familyName 列族名
+	 * @param columnFamily 列族名
 	 * @param columnName 列名
 	 */
-	public List<HbaseBean> getDataByFamilyColumn(String tableName, String rowKey, String familyName, String columnName);
+	public List<HbaseBean> getDataByFamilyColumn(String tableName, String rowKey, String columnFamily, String columnName);
 	
 	/**
-	 * 根据tableName、rowKey、familyName、column查询指定单元格多个版本的数据
+	 * 根据tableName、rowKey、columnFamily、column查询指定单元格多个版本的数据
 	 * @param tableName 表名
 	 * @param rowKey rowKey
-	 * @param familyName 列族名
+	 * @param columnFamily 列族名
 	 * @param columnName 列名
 	 * @param versions 需要查询的版本数
 	 */
-	public List<HbaseBean> getColumnValuesByVersion(String tableName, String rowKey, String familyName, String columnName,int versions) ;
+	public List<HbaseBean> getColumnValuesByVersion(String tableName, String rowKey, String columnFamily, String columnName,int versions) ;
 	
 	/**
 	 * 自定义获取分区splitKeys
