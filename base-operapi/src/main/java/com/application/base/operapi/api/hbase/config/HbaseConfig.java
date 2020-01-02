@@ -42,7 +42,7 @@ public class HbaseConfig extends GenericObjectPoolConfig {
 	 */
 	public String master;
 	/**
-	 * 根目录:hdfs://10.23.12.183:8020/hbase
+	 * 根目录:hdfs://192.168.10.185:8020/hbase
 	 */
 	public String rootDir;
 	
