@@ -1,9 +1,10 @@
 package com.application.base.operapi.api.hbase.session;
 
 import com.application.base.operapi.api.hbase.api.HbaseSession;
+import com.application.base.operapi.api.hbase.core.HbaseBean;
 import com.application.base.operapi.api.hbase.core.HbaseClient;
+import org.apache.hadoop.hbase.CompareOperator;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.TableDescriptor;
 
 import java.util.List;
@@ -103,8 +104,8 @@ public class HbaseOperSession implements HbaseSession {
 	}
 	
 	@Override
-	public boolean createTable(String tableName, List<String> fields){
-		return hbaseClient.createTable(tableName,fields);
+	public boolean createTable(String tableName, List<String> columnFamilies){
+		return hbaseClient.createTable(tableName,columnFamilies);
 	}
 	
 	@Override
@@ -148,38 +149,38 @@ public class HbaseOperSession implements HbaseSession {
 	}
 	
 	@Override
-	public List<Result> getAllResult(String tableName){
+	public List<HbaseBean> getAllResult(String tableName){
 		return hbaseClient.getAllResult(tableName);
 	}
 	
 	@Override
-	public Map<String, Map<String, String>> getResultScanner(String tableName){
+	public List<HbaseBean> getResultScanner(String tableName){
 		return hbaseClient.getResultScanner(tableName);
 	}
 	
 	@Override
-	public Map<String, Map<String, String>> getResultScanner(String tableName, String startRowKey, String stopRowKey){
+	public List<HbaseBean> getResultScanner(String tableName, String startRowKey, String stopRowKey){
 		return hbaseClient.getResultScanner(tableName,startRowKey,stopRowKey);
 	}
 	
 	@Override
-	public Map<String, Map<String, String>> getResultScannerPrefixFilter(String tableName, String prefix){
+	public List<HbaseBean> getResultScannerPrefixFilter(String tableName, String prefix){
 		return hbaseClient.getResultScannerPrefixFilter(tableName,prefix);
 	}
 	
 	@Override
-	public Map<String, Map<String, String>> getResultScannerColumnPrefixFilter(String tableName, String prefix){
+	public List<HbaseBean> getResultScannerColumnPrefixFilter(String tableName, String prefix){
 		return hbaseClient.getResultScannerColumnPrefixFilter(tableName,prefix);
 	}
 	
 	@Override
-	public Map<String, Map<String, String>> getResultScannerRowFilter(String tableName, String keyWord){
-		return hbaseClient.getResultScannerRowFilter(tableName,keyWord);
+	public List<HbaseBean> getResultScannerRowFilter(String tableName, CompareOperator compareOperator, String keyWord){
+		return hbaseClient.getResultScannerRowFilter(tableName,compareOperator,keyWord);
 	}
 	
 	@Override
-	public Map<String, Map<String, String>> getResultScannerQualifierFilter(String tableName, String keyWord){
-		return hbaseClient.getResultScannerQualifierFilter(tableName,keyWord);
+	public List<HbaseBean> getResultScannerQualifierFilter(String tableName, CompareOperator compareOperator, String keyWord){
+		return hbaseClient.getResultScannerQualifierFilter(tableName,compareOperator,keyWord);
 	}
 	
 	@Override
@@ -198,8 +199,8 @@ public class HbaseOperSession implements HbaseSession {
 	}
 	
 	@Override
-	public boolean insertMore(String tableName, String rowKey, String familyName, String[] columns, String[] values){
-		return hbaseClient.insertMore(tableName,rowKey,familyName,columns,values);
+	public boolean insertOrUpdate(String tableName, String rowKey, String columnFamily, String[] columns, String[] values){
+		return hbaseClient.insertOrUpdate(tableName,rowKey,columnFamily,columns,values);
 	}
 	
 	@Override
@@ -209,13 +210,13 @@ public class HbaseOperSession implements HbaseSession {
 	}
 	
 	@Override
-	public List<Map<String, Object>> getRowData(String tableName, String rowKey){
+	public List<HbaseBean> getRowData(String tableName, String rowKey){
 		return hbaseClient.getRowData(tableName,rowKey);
 	}
 	
 	@Override
-	public String getData(String tableName, String rowKey, String columnFamily, String column){
-		return hbaseClient.getData(tableName,rowKey,columnFamily,column);
+	public String getValData(String tableName, String rowKey, String columnFamily, String column){
+		return hbaseClient.getValData(tableName,rowKey,columnFamily,column);
 	}
 	
 	@Override
@@ -224,23 +225,23 @@ public class HbaseOperSession implements HbaseSession {
 	}
 	
 	@Override
-	public List<Map<String, Object>> getTableData(String tableName){
+	public List<HbaseBean> getTableData(String tableName){
 		return hbaseClient.getTableData(tableName);
 	}
 	
 	@Override
-	public List<Map<String, Object>> getDataByFamilyColumn(String tableName, String family, String column){
+	public List<HbaseBean> getDataByFamilyColumn(String tableName, String family, String column){
 		return hbaseClient.getDataByFamilyColumn(tableName,family,column);
 	}
 	
 	@Override
-	public List<Map<String, Object>> getDataByFamilyColumn(String tableName, String rowKey, String familyName,
+	public List<HbaseBean> getDataByFamilyColumn(String tableName, String rowKey, String familyName,
 	                                                       String columnName){
 		return hbaseClient.getDataByFamilyColumn(tableName,rowKey,familyName,columnName);
 	}
 	
 	@Override
-	public List<Map<String, Object>> getColumnValuesByVersion(String tableName, String rowKey, String familyName,
+	public List<HbaseBean> getColumnValuesByVersion(String tableName, String rowKey, String familyName,
 	                                                          String columnName, int versions){
 		return hbaseClient.getColumnValuesByVersion(tableName,rowKey,familyName,columnName,versions);
 	}

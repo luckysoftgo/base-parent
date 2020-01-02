@@ -1,7 +1,8 @@
 package com.application.base.operapi.api.hbase.api;
 
+import com.application.base.operapi.api.hbase.core.HbaseBean;
+import org.apache.hadoop.hbase.CompareOperator;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.TableDescriptor;
 
 import java.io.IOException;
@@ -125,10 +126,10 @@ public interface HbaseSession {
 	/**
 	 * 创建表结构
 	 * @param tableName
-	 * @param fields
+	 * @param columnFamilies
 	 * @return
 	 */
-	public boolean createTable(String tableName,List<String> fields);
+	public boolean createTable(String tableName,List<String> columnFamilies);
 	
 	/**
 	 * 预分区创建表
@@ -195,14 +196,14 @@ public interface HbaseSession {
 	 * @param tableName
 	 * @return
 	 */
-	public List<Result> getAllResult(String tableName);
+	public List<HbaseBean> getAllResult(String tableName);
 	
 	/***
 	 * 遍历查询指定表中的所有数据
 	 * @param tableName
 	 * @return
 	 */
-	public Map<String, Map<String,String>> getResultScanner(String tableName);
+	public List<HbaseBean> getResultScanner(String tableName);
 	
 	/**
 	 * 根据startRowKey和stopRowKey遍历查询指定表中的所有数据
@@ -210,28 +211,28 @@ public interface HbaseSession {
 	 * @param startRowKey 起始rowKey
 	 * @param stopRowKey 结束rowKey
 	 */
-	public Map<String,Map<String,String>> getResultScanner(String tableName, String startRowKey, String stopRowKey);
+	public List<HbaseBean> getResultScanner(String tableName, String startRowKey, String stopRowKey);
 	
 	/**
 	 * 通过行前缀过滤器查询数据
 	 * @param tableName 表名
 	 * @param prefix 以prefix开始的行键
 	 */
-	public Map<String,Map<String,String>> getResultScannerPrefixFilter(String tableName, String prefix);
+	public List<HbaseBean> getResultScannerPrefixFilter(String tableName, String prefix);
 	
 	/**
 	 * 通过列前缀过滤器查询数据
 	 * @param tableName 表名
 	 * @param prefix 以prefix开始的列名
 	 */
-	public Map<String,Map<String,String>> getResultScannerColumnPrefixFilter(String tableName, String prefix);
+	public List<HbaseBean> getResultScannerColumnPrefixFilter(String tableName, String prefix);
 	
 	/**
 	 * 查询行键中包含特定字符的数据
 	 * @param tableName 表名
 	 * @param keyWord 包含指定关键词的行键
 	 */
-	public Map<String,Map<String,String>> getResultScannerRowFilter(String tableName, String keyWord);
+	public List<HbaseBean> getResultScannerRowFilter(String tableName, CompareOperator compareOperator, String keyWord);
 	
 	/**
 	 * 查询列名中包含特定字符的数据
@@ -239,7 +240,7 @@ public interface HbaseSession {
 	 * @param tableName 表名
 	 * @param keyWord 包含指定关键词的列名
 	 */
-	public Map<String,Map<String,String>> getResultScannerQualifierFilter(String tableName, String keyWord);
+	public List<HbaseBean> getResultScannerQualifierFilter(String tableName,CompareOperator compareOperator, String keyWord);
 	
 	/**
 	 * 更新数据 为表的某个单元格赋值
@@ -278,12 +279,12 @@ public interface HbaseSession {
 	 * @param tableName Table
 	 * @param rowKey rowKey
 	 * @param tableName 表名
-	 * @param familyName 列族名
+	 * @param columnFamily 列族名
 	 * @param columns 列名数组
 	 * @param values 列值得数组
 	 * @return
 	 */
-	public boolean insertMore(String tableName,String rowKey,String familyName, String[] columns, String[] values);
+	public boolean insertOrUpdate(String tableName,String rowKey,String columnFamily, String[] columns, String[] values);
 	
 	/**
 	 * 往表中添加多数据
@@ -302,7 +303,7 @@ public interface HbaseSession {
 	 * @param tableName
 	 * @param rowKey
 	 */
-	public List<Map<String,Object>> getRowData(String tableName, String rowKey);
+	public List<HbaseBean> getRowData(String tableName, String rowKey);
 
 	
 	/**
@@ -312,7 +313,7 @@ public interface HbaseSession {
 	 * @param columnFamily 列族
 	 * @param column 列名
 	 */
-	public String getData(String tableName,String rowKey,String columnFamily,String column);
+	public String getValData(String tableName,String rowKey,String columnFamily,String column);
 	
 	/**
 	 * 根据tableName、rowKey、familyName、column查询指定单元格的数据
@@ -328,14 +329,14 @@ public interface HbaseSession {
 	 * @param tableName 表名
 	 * @throws IOException
 	 */
-	public List<Map<String,Object>> getTableData(String tableName);
+	public List<HbaseBean> getTableData(String tableName);
 	
 	/**
 	 * 通过列簇获取下面所有的列的数据
 	 * @param tableName
 	 * @param family
 	 */
-	public List<Map<String,Object>> getDataByFamilyColumn(String tableName,String family,String column);
+	public List<HbaseBean> getDataByFamilyColumn(String tableName,String family,String column);
 	
 	/**
 	 * 根据tableName、rowKey、familyName、column查询指定单元格的数据
@@ -344,7 +345,7 @@ public interface HbaseSession {
 	 * @param familyName 列族名
 	 * @param columnName 列名
 	 */
-	public List<Map<String,Object>> getDataByFamilyColumn(String tableName, String rowKey, String familyName, String columnName);
+	public List<HbaseBean> getDataByFamilyColumn(String tableName, String rowKey, String familyName, String columnName);
 	
 	/**
 	 * 根据tableName、rowKey、familyName、column查询指定单元格多个版本的数据
@@ -354,7 +355,7 @@ public interface HbaseSession {
 	 * @param columnName 列名
 	 * @param versions 需要查询的版本数
 	 */
-	public List<Map<String,Object>> getColumnValuesByVersion(String tableName, String rowKey, String familyName, String columnName,int versions) ;
+	public List<HbaseBean> getColumnValuesByVersion(String tableName, String rowKey, String familyName, String columnName,int versions) ;
 	
 	/**
 	 * 自定义获取分区splitKeys

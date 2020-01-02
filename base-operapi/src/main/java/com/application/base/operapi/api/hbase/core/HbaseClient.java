@@ -38,7 +38,10 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.text.MessageFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -215,23 +218,6 @@ public class HbaseClient {
 			close(conn,admin,null,null);
 		}
 		return exist;
-	}
-	
-	/**
-	 * 获得hbase的表信息.
-	 * @param tableName
-	 * @return
-	 */
-	private Table getTable(String tableName){
-		Connection conn = getConnection();
-		try {
-			return conn.getTable(TableName.valueOf(tableName));
-		}catch (Exception e){
-			logger.error("获得hbase表发生异常,异常信息是:{}",e.getMessage());
-		}finally {
-			close(conn,null,null,null);
-		}
-		return null;
 	}
 	
 	/**
@@ -500,11 +486,12 @@ public class HbaseClient {
 	}
 	
 	/**
-	 * 创建表结构
+	 *  创建表结构
 	 * @param tableName
+	 * @param columnFamily
 	 * @return
 	 */
-	public boolean createTable(String tableName,String familyName){
+	public boolean createTable(String tableName,String columnFamily){
 		boolean result = true;
 		Admin admin = null;
 		Connection conn = getConnection();
@@ -515,7 +502,7 @@ public class HbaseClient {
 			if (!tableFlag) {
 				TableDescriptorBuilder desc = TableDescriptorBuilder.newBuilder(name);
 				//构建列族对象
-				ColumnFamilyDescriptor family = ColumnFamilyDescriptorBuilder.newBuilder(Bytes.toBytes(familyName)).build();
+				ColumnFamilyDescriptor family = ColumnFamilyDescriptorBuilder.newBuilder(Bytes.toBytes(columnFamily)).build();
 				//设置列族
 				desc.setColumnFamily(family);
 				//创建表
@@ -533,10 +520,10 @@ public class HbaseClient {
 	/**
 	 * 创建表结构
 	 * @param tableName
-	 * @param fields
+	 * @param columnFamilies
 	 * @return
 	 */
-	public boolean createTable(String tableName,List<String> fields){
+	public boolean createTable(String tableName,List<String> columnFamilies){
 		boolean result = true;
 		Admin admin = null;
 		Connection conn = getConnection();
@@ -545,13 +532,15 @@ public class HbaseClient {
 			TableName name = TableName.valueOf(tableName);
 			boolean tableFlag = tableExist(tableName);
 			if (!tableFlag) {
+				// 创建一个表定义描述对象
 				TableDescriptorBuilder desc  = TableDescriptorBuilder.newBuilder(name);
 				//构建列族对象
 				//为描述器添加表的详细参数
-				fields.forEach(field->{
+				columnFamilies.forEach(field->{
 					// 列族描述对象
 					desc.setColumnFamily(ColumnFamilyDescriptorBuilder.newBuilder(Bytes.toBytes(field)).build());
 				});
+				
 				//创建表
 				admin.createTable(desc.build());
 			}
@@ -656,15 +645,16 @@ public class HbaseClient {
 	public boolean deleteByRowKey(String tableName,String rowKey){
 		boolean result = true;
 		Table table =null;
+		Connection conn = getConnection();
 		try {
-			table = getTable(tableName);
+			table = conn.getTable(TableName.valueOf(tableName));
 			Delete del = new Delete(Bytes.toBytes(rowKey));
 			table.delete(del);
 		}catch (Exception e){
 			result = false;
 			logger.error("通过row上次信息发生异常,异常信息是:{}",e.getMessage());
 		}finally {
-			close(null,null,null,table);
+			close(conn,null,null,table);
 		}
 		return result;
 	}
@@ -673,25 +663,26 @@ public class HbaseClient {
 	 * 删除某条记录
 	 * @param tableName  表名
 	 * @param rowKey    rowKey
-	 * @param family    列族名
+	 * @param columnFamily    列族名
 	 * @param columkey  列名
 	 */
-	public boolean deleteData(String tableName,String rowKey,String family,String columkey){
+	public boolean deleteData(String tableName,String rowKey,String columnFamily,String columkey){
 		Table table=null;
 		boolean result = true;
+		Connection conn = getConnection();
 		try {
-			table = getTable(tableName);
+			table = conn.getTable(TableName.valueOf(tableName));
 			//创建delete对象
 			Delete deletData= new Delete(Bytes.toBytes(rowKey));
 			//将要删除的数据的准确坐标添加到对象中
-			deletData.addColumn(Bytes.toBytes(family), Bytes.toBytes(columkey));
+			deletData.addColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(columkey));
 			//删除表中数据
 			table.delete(deletData);
 		} catch (Exception e) {
 			result = false;
 			logger.error("通过rowKey,family,columnKey删除信息发生异常,异常信息是:{}",e.getMessage());
 		}finally {
-			close(null,null,null,table);
+			close(conn,null,null,table);
 		}
 		return result;
 	}
@@ -730,8 +721,9 @@ public class HbaseClient {
 	public boolean deleteMultiRows(String tableName,String[] rowKeys){
 		boolean result = true;
 		Table table = null;
+		Connection conn = getConnection();
 		try {
-			table = getTable(tableName);
+			table = conn.getTable(TableName.valueOf(tableName));
 			List<Delete> delList = new ArrayList<>();
 			for (String rowKey : rowKeys ) {
 				Delete del = new Delete(Bytes.toBytes(rowKey));
@@ -742,7 +734,7 @@ public class HbaseClient {
 			result = false;
 			logger.error("通过row上次信息发生异常,异常信息是:{}",e.getMessage());
 		}finally {
-			close(null,null,null,table);
+			close(conn,null,null,table);
 		}
 		return result;
 	}
@@ -778,33 +770,37 @@ public class HbaseClient {
 	 * @param tableName
 	 * @return
 	 */
-	public List<Result> getAllResult(String tableName){
-		ArrayList<Result> list = new ArrayList<>();
+	public List<HbaseBean> getAllResult(String tableName){
+		ArrayList<HbaseBean> dataList = new ArrayList<>();
 		Table table = null;
+		ResultScanner scanner =null;
+		Connection conn = getConnection();
 		try {
-			table = getTable(tableName);
+			table = conn.getTable(TableName.valueOf(tableName));
 			Scan scan = new Scan();
-			ResultScanner scanner = table.getScanner(scan);
+			scanner = table.getScanner(scan);
 			for (Result res : scanner) {
-				list.add( res );
+				for (Cell cell : res.listCells() ) {
+					data4Bean(tableName,dataList,cell);
+				}
 			}
-			scanner.close();
-			table.close();
-			return list;
+			return dataList;
 		}catch (Exception e){
 			logger.error("获得hbase所有result的信息异常,异常信息是:{}",e.getMessage());
 		}finally {
-			close(null,null,null,table);
+			close(conn,null,scanner,table);
 		}
-		return list;
+		return dataList;
 	}
+	
+
 	
 	/***
 	 * 遍历查询指定表中的所有数据
 	 * @param tableName
 	 * @return
 	 */
-	public Map<String,Map<String,String>> getResultScanner(String tableName){
+	public List<HbaseBean> getResultScanner(String tableName){
 		Scan scan = new Scan();
 		return queryData(tableName,scan);
 	}
@@ -815,7 +811,7 @@ public class HbaseClient {
 	 * @param startRowKey 起始rowKey
 	 * @param stopRowKey 结束rowKey
 	 */
-	public Map<String,Map<String,String>> getResultScanner(String tableName, String startRowKey, String stopRowKey){
+	public List<HbaseBean> getResultScanner(String tableName, String startRowKey, String stopRowKey){
 		Scan scan = new Scan();
 		if(StringUtils.isNotBlank(startRowKey) && StringUtils.isNotBlank(stopRowKey)){
 			scan.withStartRow(Bytes.toBytes(startRowKey));
@@ -829,7 +825,7 @@ public class HbaseClient {
 	 * @param tableName 表名
 	 * @param prefix 以prefix开始的行键
 	 */
-	public Map<String,Map<String,String>> getResultScannerPrefixFilter(String tableName, String prefix){
+	public List<HbaseBean> getResultScannerPrefixFilter(String tableName, String prefix){
 		Scan scan = new Scan();
 		if(StringUtils.isNotBlank(prefix)){
 			Filter filter = new PrefixFilter(Bytes.toBytes(prefix));
@@ -843,7 +839,7 @@ public class HbaseClient {
 	 * @param tableName 表名
 	 * @param prefix 以prefix开始的列名
 	 */
-	public Map<String,Map<String,String>> getResultScannerColumnPrefixFilter(String tableName, String prefix){
+	public List<HbaseBean> getResultScannerColumnPrefixFilter(String tableName, String prefix){
 		Scan scan = new Scan();
 		if(StringUtils.isNotBlank(prefix)){
 			Filter filter = new ColumnPrefixFilter(Bytes.toBytes(prefix));
@@ -857,10 +853,10 @@ public class HbaseClient {
 	 * @param tableName 表名
 	 * @param keyWord 包含指定关键词的行键
 	 */
-	public Map<String,Map<String,String>> getResultScannerRowFilter(String tableName, String keyWord){
+	public List<HbaseBean> getResultScannerRowFilter(String tableName, CompareOperator compareOperator, String keyWord){
 		Scan scan = new Scan();
 		if(StringUtils.isNotBlank(keyWord)){
-			Filter filter = new RowFilter(CompareOperator.GREATER_OR_EQUAL,new SubstringComparator(keyWord));
+			Filter filter = new RowFilter(compareOperator,new SubstringComparator(keyWord));
 			scan.setFilter(filter);
 		}
 		return queryData(tableName,scan);
@@ -872,10 +868,10 @@ public class HbaseClient {
 	 * @param tableName 表名
 	 * @param keyWord 包含指定关键词的列名
 	 */
-	public Map<String,Map<String,String>> getResultScannerQualifierFilter(String tableName, String keyWord){
+	public List<HbaseBean> getResultScannerQualifierFilter(String tableName, CompareOperator compareOperator, String keyWord){
 		Scan scan = new Scan();
 		if(StringUtils.isNotBlank(keyWord)){
-			Filter filter = new QualifierFilter(CompareOperator.GREATER_OR_EQUAL,new SubstringComparator(keyWord));
+			Filter filter = new QualifierFilter(compareOperator,new SubstringComparator(keyWord));
 			scan.setFilter(filter);
 		}
 		return queryData(tableName,scan);
@@ -886,35 +882,27 @@ public class HbaseClient {
 	 * @param tableName 表名
 	 * @param scan 过滤条件
 	 */
-	private Map<String,Map<String,String>> queryData(String tableName,Scan scan){
-		Map<String,Map<String,String>> result = new HashMap<>();
-		ResultScanner rs = null;
+	private List<HbaseBean> queryData(String tableName,Scan scan){
+		List<HbaseBean> beanList = new ArrayList<>();
+		ResultScanner scanner = null;
 		// 获取表
 		Table table= null;
+		Connection conn = getConnection();
 		try {
-			table =getTable(tableName) ;
-			rs = table.getScanner(scan);
-			for (Result r : rs) {
+			table = conn.getTable(TableName.valueOf(tableName));
+			scanner = table.getScanner(scan);
+			for (Result res : scanner) {
 				//每一行数据
-				Map<String,String> columnMap = new HashMap<>();
-				String rowKey = null;
-				for (Cell cell : r.listCells()) {
-					if(rowKey == null){
-						rowKey = Bytes.toString(cell.getRowArray(),cell.getRowOffset(),cell.getRowLength());
-					}
-					columnMap.put(Bytes.toString(cell.getQualifierArray(), cell.getQualifierOffset(), cell.getQualifierLength()), Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength()));
-				}
-				
-				if(rowKey != null){
-					result.put(rowKey,columnMap);
+				for (Cell cell : res.listCells()) {
+					data4Bean(tableName,beanList,cell);
 				}
 			}
 		}catch (IOException e) {
 			logger.error("遍历查询指定表中的所有数据发生异常,异常信息是:{}",e.getMessage());
 		}finally{
-			close(null,null,null,table);
+			close(conn,null,scanner,table);
 		}
-		return result;
+		return beanList;
 	}
 	
 	/**
@@ -928,20 +916,21 @@ public class HbaseClient {
 	public boolean updateData(String tableName,String rowKey,String family,String columkey,String updateData){
 		boolean result = true;
 		Table table=null;
+		Connection conn = getConnection();
 		try {
+			table = conn.getTable(TableName.valueOf(tableName));
 			//hbase中更新数据同样采用put方法，在相同的位置put数据，则在查询时只会返回时间戳较新的数据
 			//且在文件合并时会将时间戳较旧的数据舍弃
 			Put put = new Put(Bytes.toBytes(rowKey));
 			//将新数据添加到put中
 			put.addColumn(Bytes.toBytes(family), Bytes.toBytes(columkey),Bytes.toBytes(updateData));
-			table = getTable(tableName);
 			//将put写入HBase
 			table.put(put);
 		} catch (Exception e) {
 			result = false;
 			logger.error("修改为表的某个单元格赋值发生异常,异常信息是:{}",e.getMessage());
 		}finally {
-			close(null,null,null,table);
+			close(conn,null,null,table);
 		}
 		return result;
 	}
@@ -957,8 +946,9 @@ public class HbaseClient {
 	public boolean insertOne(String tableName, String rowKey,String columnFamily, String column, String value){
 		boolean result = true;
 		Table table = null;
+		Connection conn = getConnection();
 		try {
-			table = getTable(tableName);
+			table = conn.getTable(TableName.valueOf(tableName));
 			Put put = new Put(Bytes.toBytes(rowKey));
 			put.addColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(column),Bytes.toBytes(value));
 			table.put(put);
@@ -967,7 +957,7 @@ public class HbaseClient {
 			result = false;
 			logger.error("放入数据到hbase发生了异常,异常信息是:{}",e.getMessage());
 		}finally {
-			close(null,null,null,table);
+			close(conn,null,null,table);
 		}
 		return result;
 	}
@@ -983,8 +973,9 @@ public class HbaseClient {
 	public boolean insertOne(String tableName,String rowKey,String family,Map<String, String> map){
 		boolean result = true;
 		Table table=null;
+		Connection conn = getConnection();
 		try {
-			table =getTable(tableName);
+			table = conn.getTable(TableName.valueOf(tableName));
 			//实例化put对象，传入行键
 			Put put =new Put(Bytes.toBytes(rowKey));
 			//调用addcolum方法，向i簇中添加字段
@@ -998,7 +989,7 @@ public class HbaseClient {
 			result = false;
 			logger.error("放入数据到hbase发生了异常,异常信息是:{}",e.getMessage());
 		}finally {
-			close(null,null,null,table);
+			close(conn,null,null,table);
 		}
 		return result;
 	}
@@ -1008,24 +999,23 @@ public class HbaseClient {
 	 * @param tableName Table
 	 * @param rowKey rowKey
 	 * @param tableName 表名
-	 * @param familyName 列族名
+	 * @param columnFamily 列族名
 	 * @param columns 列名数组
 	 * @param values 列值得数组
 	 * @return
 	 */
-	public boolean insertMore(String tableName,String rowKey,String familyName, String[] columns, String[] values){
+	public boolean insertOrUpdate(String tableName,String rowKey,String columnFamily, String[] columns, String[] values){
 		boolean result = true;
 		Table table = null;
+		Connection conn = getConnection();
 		try {
-			table =getTable(tableName);
+			table = conn.getTable(TableName.valueOf(tableName));
 			//实例化put对象，传入行键
 			Put put =new Put(Bytes.toBytes(rowKey));
 			if(columns != null && values != null && columns.length == values.length){
 				for(int i=0;i<columns.length;i++){
 					if(columns[i] != null && values[i] != null){
-						put.addColumn(Bytes.toBytes(familyName), Bytes.toBytes(columns[i]), Bytes.toBytes(values[i]));
-					}else{
-						throw new NullPointerException(MessageFormat.format("列名和列数据都不能为空,column:{0},value:{1}" ,columns[i],values[i]));
+						put.addColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(columns[i]), Bytes.toBytes(values[i]));
 					}
 				}
 			}
@@ -1034,7 +1024,7 @@ public class HbaseClient {
 			result = false;
 			logger.error("放入数据到hbase发生了异常,异常信息是:{}",e.getMessage());
 		}finally {
-			close(null,null,null,table);
+			close(conn,null,null,table);
 		}
 		return result;
 	}
@@ -1053,16 +1043,15 @@ public class HbaseClient {
 	public boolean insertBatchMore(String tableName,String rowKey,String familyName, String[] columns, String[] values){
 		boolean result = true;
 		Table table = null;
+		Connection conn = getConnection();
 		try {
-			table =getTable(tableName);
+			table = conn.getTable(TableName.valueOf(tableName));
 			//实例化put对象，传入行键
 			Put put =new Put(Bytes.toBytes(rowKey));
 			if(columns != null && values != null && columns.length == values.length){
 				for(int i=0;i<columns.length;i++){
 					if(columns[i] != null && values[i] != null){
 						put.addColumn(Bytes.toBytes(familyName), Bytes.toBytes(columns[i]), Bytes.toBytes(values[i]));
-					}else{
-						throw new NullPointerException(MessageFormat.format("列名和列数据都不能为空,column:{0},value:{1}" ,columns[i],values[i]));
 					}
 				}
 			}
@@ -1074,7 +1063,7 @@ public class HbaseClient {
 			result = false;
 			logger.error("放入数据到hbase发生了异常,异常信息是:{}",e.getMessage());
 		}finally {
-			close(null,null,null,table);
+			close(conn,null,null,table);
 		}
 		return result;
 	}
@@ -1084,20 +1073,21 @@ public class HbaseClient {
 	 * @param tableName
 	 * @param rowKey
 	 */
-	public List<Map<String,Object>> getRowData(String tableName, String rowKey){
-		List<Map<String,Object>> dataList = new ArrayList<>();
+	public List<HbaseBean> getRowData(String tableName, String rowKey){
+		List<HbaseBean> dataList = new ArrayList<>();
 		Table table = null;
+		Connection conn = getConnection();
 		try {
-			table = getTable(tableName);
+			table = conn.getTable(TableName.valueOf(tableName));
 			Get get = new Get(rowKey.getBytes());
 			Result rs = table.get(get);
 			for(Cell cell : rs.listCells()){
-				data4Map(dataList, cell);
+				data4Bean(tableName,dataList, cell);
 			}
 		}catch (Exception e){
 			logger.error("通过rowkey查找数据异常了,异常信息是:{}",e.getMessage());
 		}finally {
-			close(null,null,null,table);
+			close(conn,null,null,table);
 		}
 		return dataList;
 	}
@@ -1109,11 +1099,12 @@ public class HbaseClient {
 	 * @param columnFamily 列族
 	 * @param column 列名
 	 */
-	public String getData(String tableName,String rowKey,String columnFamily,String column){
+	public String getValData(String tableName,String rowKey,String columnFamily,String column){
 		String value = null;
 		Table table = null;
+		Connection conn = getConnection();
 		try {
-			table = getTable(tableName);
+			table = conn.getTable(TableName.valueOf(tableName));
 			Get get = new Get(Bytes.toBytes(rowKey));
 			Result result = table.get(get);
 			byte[] rb = result.getValue(Bytes.toBytes(columnFamily), Bytes.toBytes(column));
@@ -1121,7 +1112,7 @@ public class HbaseClient {
 		}catch (Exception e){
 			logger.error("获取hbase行数据发生异常,异常信息是:{}",e.getMessage());
 		}finally {
-			close(null,null,null,table);
+			close(conn,null,null,table);
 		}
 		return value;
 	}
@@ -1137,8 +1128,9 @@ public class HbaseClient {
 		String value = null;
 		// 获取表
 		Table table= null;
+		Connection conn = getConnection();
 		try {
-			table = getTable(tableName);
+			table = conn.getTable(TableName.valueOf(tableName));
 			Get get = new Get(Bytes.toBytes(rowKey));
 			Result result = table.get(get);
 			if (result != null && !result.isEmpty()) {
@@ -1150,7 +1142,7 @@ public class HbaseClient {
 		} catch (IOException e) {
 			logger.error("获取hbase行数据发生异常,异常信息是:{}",e.getMessage());
 		}finally{
-			close(null,null, null, table);
+			close(conn,null, null, table);
 		}
 		return value;
 	}
@@ -1160,24 +1152,25 @@ public class HbaseClient {
 	 * @param tableName 表名
 	 * @throws IOException
 	 */
-	public List<Map<String,Object>> getTableData(String tableName){
-		List<Map<String,Object>> dataList = new ArrayList<>();
+	public List<HbaseBean> getTableData(String tableName){
+		List<HbaseBean> dataList = new ArrayList<>();
 		Table table = null;
 		ResultScanner scanner = null;
+		Connection conn = getConnection();
 		try {
-			table = getTable(tableName);
+			table = conn.getTable(TableName.valueOf(tableName));
 			Scan scan = new Scan();
 			scanner = table.getScanner(scan);
 			for (Result result : scanner) {
 				List<Cell> cells= result.listCells();
 				for (Cell cell : cells) {
-					data4Map(dataList, cell);
+					data4Bean(tableName,dataList, cell);
 				}
 			}
 		}catch (Exception e){
 			logger.error("获取指定表的所有数据异常了,异常信息是:{}",e.getMessage());
 		}finally {
-			close(null,null,scanner,table);
+			close(conn,null,scanner,table);
 		}
 		return dataList;
 	}
@@ -1187,12 +1180,13 @@ public class HbaseClient {
 	 * @param tableName
 	 * @param family
 	 */
-	public List<Map<String,Object>> getDataByFamilyColumn(String tableName,String family,String column){
-		List<Map<String,Object>> dataList = new ArrayList<>();
+	public List<HbaseBean> getDataByFamilyColumn(String tableName,String family,String column){
+		List<HbaseBean> dataList = new ArrayList<>();
 		Table table = null;
 		ResultScanner scanner = null;
+		Connection conn = getConnection();
 		try {
-			table = getTable(tableName);
+			table = conn.getTable(TableName.valueOf(tableName));
 			Scan scan = new Scan();
 			if (!column.isEmpty()) {
 				scan.addColumn(Bytes.toBytes(family), Bytes.toBytes(column));
@@ -1203,13 +1197,13 @@ public class HbaseClient {
 			for (Result result : scanner) {
 				List<Cell> cells= result.listCells();
 				for (Cell cell : cells) {
-					data4Map(dataList, cell);
+					data4Bean(tableName,dataList, cell);
 				}
 			}
 		}catch (Exception e){
 			logger.error("通过family查找数据异常了,异常信息是:{}",e.getMessage());
 		}finally {
-			close(null,null,scanner,table);
+			close(conn,null,scanner,table);
 		}
 		return dataList;
 	}
@@ -1221,22 +1215,23 @@ public class HbaseClient {
 	 * @param familyName 列族名
 	 * @param columnName 列名
 	 */
-	public List<Map<String,Object>> getDataByFamilyColumn(String tableName, String rowKey, String familyName, String columnName){
-		List<Map<String,Object>> dataList = new ArrayList<>();
+	public List<HbaseBean> getDataByFamilyColumn(String tableName, String rowKey, String familyName, String columnName){
+		List<HbaseBean> dataList = new ArrayList<>();
 		// 获取表
 		Table table= null;
+		Connection conn = getConnection();
 		try {
-			table =getTable(tableName);
+			table = conn.getTable(TableName.valueOf(tableName));
 			Get get = new Get(Bytes.toBytes(rowKey));
 			Result result = table.get(get);
 			if (result != null && !result.isEmpty()) {
 				Cell cell = result.getColumnLatestCell(Bytes.toBytes(familyName), Bytes.toBytes(columnName));
-				data4Map(dataList,cell);
+				data4Bean(tableName,dataList,cell);
 			}
 		} catch (IOException e) {
 			logger.error("通过family,column查找数据异常了,异常信息是:{}",e.getMessage());
 		}finally{
-			close(null,null,null,table);
+			close(conn,null,null,table);
 		}
 		return dataList;
 	}
@@ -1249,13 +1244,14 @@ public class HbaseClient {
 	 * @param columnName 列名
 	 * @param versions 需要查询的版本数
 	 */
-	public List<Map<String,Object>> getColumnValuesByVersion(String tableName, String rowKey, String familyName, String columnName,int versions) {
+	public List<HbaseBean> getColumnValuesByVersion(String tableName, String rowKey, String familyName, String columnName,int versions) {
 		//返回数据
-		List<Map<String,Object>> dataList = new ArrayList<>();
+		List<HbaseBean> dataList = new ArrayList<>();
 		// 获取表
 		Table table= null;
+		Connection conn = getConnection();
 		try {
-			table =getTable(tableName);
+			table = conn.getTable(TableName.valueOf(tableName));
 			Get get = new Get(Bytes.toBytes(rowKey));
 			get.addColumn(Bytes.toBytes(familyName), Bytes.toBytes(columnName));
 			//读取多少个版本
@@ -1263,13 +1259,13 @@ public class HbaseClient {
 			Result hTableResult = table.get(get);
 			if (hTableResult != null && !hTableResult.isEmpty()) {
 				for (Cell cell : hTableResult.listCells()) {
-					data4Map(dataList,cell);
+					data4Bean(tableName,dataList,cell);
 				}
 			}
 		} catch (IOException e) {
 			logger.error("通过family,column,version查找数据异常了,异常信息是:{}",e.getMessage());
 		}finally{
-			close(null,null,null,table);
+			close(conn,null,null,table);
 		}
 		return dataList;
 	}
@@ -1280,33 +1276,56 @@ public class HbaseClient {
 	 * @param cell
 	 */
 	private void data4Map(List<Map<String, Object>> dataList, Cell cell) {
-		String row = Bytes.toString(CellUtil.cloneRow(cell));
-		String family = Bytes.toString(CellUtil.cloneFamily(cell));
-		String familyAll = Bytes.toString(cell.getFamilyArray(), cell.getFamilyOffset(), cell.getFamilyLength());
-		String qualifier = Bytes.toString(CellUtil.cloneQualifier(cell));
-		String qualifierAll = Bytes.toString(cell.getQualifierArray(), cell.getQualifierOffset(), cell.getQualifierLength());
-		String value = Bytes.toString(CellUtil.cloneValue(cell));
-		String valueAll = Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength());
-		String qualifierArray = Bytes.toString(cell.getQualifierArray());
-		String valueArray = Bytes.toString(cell.getValueArray());
+		String rowKey = Bytes.toString(CellUtil.cloneRow(cell));
+		String columnFamily = Bytes.toString(CellUtil.cloneFamily(cell));
+		String columnKey = Bytes.toString(CellUtil.cloneQualifier(cell));
+		String columValue = Bytes.toString(CellUtil.cloneValue(cell));
 		long timestamp = cell.getTimestamp();
 		String hbaseKey = Bytes.toString(cell.getQualifierArray(), cell.getQualifierOffset(), cell.getQualifierLength());
 		String hbaseValue = Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength());
-		
 		Map<String,Object> map = new HashMap<>();
+		map.put("rowKey",rowKey);
+		map.put("columnFamily",columnFamily);
+		map.put("columnKey",columnKey);
+		map.put("columValue",columValue);
 		map.put("timestamp",timestamp);
-		map.put("qualifierArray",qualifierArray);
-		map.put("valueArray",valueArray);
-		map.put("row",row);
-		map.put("family",family);
-		map.put("familyAll",familyAll);
-		map.put("qualifier",qualifier);
-		map.put("qualifierAll",qualifierAll);
-		map.put("value",value);
-		map.put("valueAll",valueAll);
 		map.put("hbaseKey",hbaseKey);
 		map.put("hbaseValue",hbaseValue);
 		dataList.add(map);
+	}
+	
+	/**
+	 * 处理对象集合
+	 * @param dataList
+	 * @param cell
+	 */
+	private void data4Bean(String tableName,List<HbaseBean> dataList, Cell cell) {
+		String rowKey = Bytes.toString(CellUtil.cloneRow(cell));
+		String columnFamily = Bytes.toString(CellUtil.cloneFamily(cell));
+		//Bytes.toString(cell.getQualifierArray(), cell.getQualifierOffset(), cell.getQualifierLength());
+		String columnKey = Bytes.toString(CellUtil.cloneQualifier(cell));
+		//Bytes.toString(cell.getValueArray(), cell.getValueOffset(), cell.getValueLength());
+		String columValue = Bytes.toString(CellUtil.cloneValue(cell));
+		long timestamp = cell.getTimestamp();
+		HbaseBean bean = new HbaseBean();
+		bean.setTableName(tableName);
+		bean.setRowKey(rowKey);
+		bean.setColumnFamily(columnFamily);
+		bean.setColumnKey(columnKey);
+		bean.setColumnValue(columValue);
+		bean.setDateTime(getDate(timestamp));
+		bean.setTimestamp(timestamp);
+		dataList.add(bean);
+	}
+	
+	/**
+	 * 获取时间
+	 * @param timestamp
+	 * @return
+	 */
+	private String getDate(Long timestamp){
+		DateTimeFormatter ftf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		return ftf.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp),ZoneId.systemDefault()));
 	}
 	
 	/**
