@@ -1,4 +1,4 @@
-package com.application.base.operapi.hive.test;
+package com.application.base.operapi.hdfs.test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,9 +10,7 @@ public class HiveTest {
         Class.forName("org.apache.hive.jdbc.HiveDriver");
         Connection con = DriverManager.getConnection("jdbc:hive2://192.168.10.185:10000/default", "", "");
         Statement st = con.createStatement();
-
         st.execute("load data inpath 'hdfs:/tmp/data.txt' into table test_partition ");
-
         st.close();
         con.close();
     }

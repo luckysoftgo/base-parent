@@ -28,8 +28,8 @@ public class HiveJdbcFactory extends BasePooledObjectFactory<HiveJdbcClient> {
 	}
 	
 	@Override
-	public PooledObject<HiveJdbcClient> wrap(HiveJdbcClient conn) {
+	public PooledObject<HiveJdbcClient> wrap(HiveJdbcClient client) {
 		//包装实际对象
-		return new DefaultPooledObject<>(conn);
+		return new DefaultPooledObject<>(client);
 	}
 }

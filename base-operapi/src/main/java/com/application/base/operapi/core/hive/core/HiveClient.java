@@ -528,7 +528,7 @@ public class HiveClient {
 		String schema;
 		schema = conn.getMetaData().getUserName();
 		if ((schema == null) || (schema.length() == 0)) {
-			throw new Exception("ORACLE数据库模式不允许为空");
+			throw new Exception("oracle 数据库模式不允许为空");
 		}
 		return schema.toUpperCase().toString();
 		

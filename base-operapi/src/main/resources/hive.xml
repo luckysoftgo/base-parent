@@ -9,28 +9,28 @@
    		http://www.springframework.org/schema/context/spring-context.xsd">
     
     <!-- hive jdbc 基础信息配置 (公共使用) -->
-    <bean id="kylinJdbcConfig" class="com.application.base.operapi.hive.config.HiveJdbcConfig">
-        <property name="maxTotal" value="${kylin.pool.maxTotal}"/>
-        <property name="maxIdle" value="${kylin.pool.maxIdle}"/>
-        <property name="minIdle" value="${kylin.pool.minIdle}"/>
-        <property name="maxWaitMillis" value="${kylin.pool.maxWaitMillis}"/>
-        <property name="testOnBorrow" value="${kylin.pool.testOnBorrow}"/>
-        <property name="testOnReturn" value="${kylin.pool.testOnReturn}"/>
-        <property name="testWhileIdle" value="${kylin.pool.testWhileIdle}"/>
-        <property name="timeBetweenEvictionRunsMillis" value="${kylin.pool.timeBetweenEvictionRunsMillis}"/>
-		<property name="numTestsPerEvictionRun" value="${kylin.pool.numTestsPerEvictionRun}"/>
-		<property name="hiveDriver" value="${kylin.driver}"/>
-		<property name="userName" value="${kylin.name}"/>
-		<property name="userPass" value="${kylin.pass}"/>
-		<property name="hiveUrl" value="${kylin.url}"/>
+    <bean id="hiveJdbcConfig" class="com.application.base.operapi.api.hive.config.HiveJdbcConfig">
+        <property name="maxTotal" value="${hive.pool.maxTotal}"/>
+        <property name="maxIdle" value="${hive.pool.maxIdle}"/>
+        <property name="minIdle" value="${hive.pool.minIdle}"/>
+        <property name="maxWaitMillis" value="${hive.pool.maxWaitMillis}"/>
+        <property name="testOnBorrow" value="${hive.pool.testOnBorrow}"/>
+        <property name="testOnReturn" value="${hive.pool.testOnReturn}"/>
+        <property name="testWhileIdle" value="${hive.pool.testWhileIdle}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${hive.pool.timeBetweenEvictionRunsMillis}"/>
+		<property name="numTestsPerEvictionRun" value="${hive.pool.numTestsPerEvictionRun}"/>
+		<property name="hiveDriver" value="${hive.driver}"/>
+		<property name="userName" value="${hive.name}"/>
+		<property name="userPass" value="${hive.pass}"/>
+		<property name="hiveUrl" value="${hive.url}"/>
 	</bean>
  
 	<!-- 1. hive 单点服务器,只存在一个 hive 的服务器 -->
-	<bean id = "apiJdbcPoolPool" class="com.application.base.operapi.hive.pool.HiveJdbcOperPool">
-		<constructor-arg name="jdbcConfig" ref="kylinJdbcConfig"/>
+	<bean id = "apiJdbcPoolPool" class="com.application.base.operapi.api.hive.pool.HiveJdbcOperPool">
+		<constructor-arg name="jdbcConfig" ref="hiveJdbcConfig"/>
 	</bean>
 	
-	<bean id="kylinJdbcFactory" class="com.application.base.operapi.hive.factory.HiveJdbcSessionFactory">
+	<bean id="hiveJdbcFactory" class="com.application.base.operapi.api.hive.factory.HiveJdbcSessionFactory">
 		<property name="jdbcOperPool" ref="apiJdbcPoolPool"/>
 	</bean>
 

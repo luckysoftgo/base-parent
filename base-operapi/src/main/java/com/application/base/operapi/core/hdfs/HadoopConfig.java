@@ -1,4 +1,4 @@
-package com.application.base.operapi.tool.hive.common.config;
+package com.application.base.operapi.core.hdfs;
 
 /**
  * @author : 孤狼

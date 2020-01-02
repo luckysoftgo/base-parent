@@ -1,7 +1,7 @@
 package com.application.base.operapi.tool.hive.core;
 
 import com.application.base.operapi.core.ColumnInfo;
-import com.application.base.operapi.tool.hive.common.config.HadoopConfig;
+import com.application.base.operapi.core.hdfs.HadoopConfig;
 import com.application.base.operapi.tool.hive.common.config.OperateConfig;
 import com.application.base.operapi.tool.hive.common.constant.Constant;
 import org.slf4j.Logger;

@@ -55,15 +55,17 @@ public class HiveJdbcClient {
 	/**
 	 * 创建连接池.
 	 */
-	public Connection initConnect(){
+	public Connection hiveConnect(){
 		try {
 			if(StringUtils.isNotBlank(jdbcConfig.getHiveDriver())){
 				hiveDriver = jdbcConfig.getHiveDriver();
 			}
-			Class.forName(hiveDriver);
-			Connection connn = DriverManager.getConnection(jdbcConfig.getHiveUrl(),jdbcConfig.getUserName(),jdbcConfig.getUserPass());
-			connections.put(connn);
-			return connn;
+			synchronized (HiveJdbcClient.class){
+				Class.forName(hiveDriver);
+				Connection connn = DriverManager.getConnection(jdbcConfig.getHiveUrl(),jdbcConfig.getUserName(),jdbcConfig.getUserPass());
+				connections.put(connn);
+				return connn;
+			}
 		}catch (Exception e){
 			logger.error("初始化连接异常了,异常信息是:{}",e.getMessage());
 			throw new HiveException("hive获得连接异常了,异常信息是:{"+e.getMessage()+"}");
@@ -83,17 +85,17 @@ public class HiveJdbcClient {
 				if (connections.size() < count){
 					int addCount = maxTotal - count;
 					for (int i = 0; i < addCount ; i++) {
-						initConnect();
+						hiveConnect();
 					}
 				}
 			}else{
 				for (int i = 0; i < maxTotal ; i++) {
-					initConnect();
+					hiveConnect();
 				}
 			}
 			return connections.take();
 		}catch (InterruptedException e){
-			logger.error("获取connect连接失败了,错误异常是:{}",e.getMessage());
+			logger.error("获取connect连接异常了,错误异常是:{}",e.getMessage());
 			return null;
 		}
 	}
@@ -112,7 +114,7 @@ public class HiveJdbcClient {
 			statement = connn.createStatement();
 			return statement.execute(hiveSql);
 		} catch (SQLException e) {
-			logger.error("执行操作失败,失败原因是:{}",e.getMessage());
+			logger.error("执行操作异常了,异常原因是:{}",e.getMessage());
 			return false;
 		}finally {
 			close(connn,statement,null,null);
@@ -151,7 +153,7 @@ public class HiveJdbcClient {
 			}
 			return dataBases;
 		} catch (SQLException e) {
-			logger.error("查询数据库失败,失败原因是:{}",e.getMessage());
+			logger.error("查询数据库异常了,异常原因是:{}",e.getMessage());
 			return dataBases;
 		}finally {
 			close(connn,statement,null,resultSet);
@@ -271,7 +273,7 @@ public class HiveJdbcClient {
 			}
 			return tables;
 		} catch (SQLException e) {
-			logger.error("查询数据库表失败,失败原因是:{}",e.getMessage());
+			logger.error("查询数据库表异常了,异常原因是:{}",e.getMessage());
 			return tables;
 		}finally {
 			close(connn,statement,null,resultSet);
@@ -307,7 +309,7 @@ public class HiveJdbcClient {
 			}
 			return tableDesc;
 		} catch (SQLException e) {
-			logger.error("查询数据库表结构失败,失败原因是:{}",e.getMessage());
+			logger.error("查询数据库表结构异常了,异常原因是:{}",e.getMessage());
 			return tableDesc;
 		}finally {
 			close(connn,statement,null,resultSet);
@@ -322,6 +324,17 @@ public class HiveJdbcClient {
 	 */
 	public boolean loadDataByPath(String filePath,String tableName){
 		String sql = "load data local inpath '" + filePath + "' overwrite into table "+tableName;
+		return execHiveSql(sql);
+	}
+	
+	/**
+	 * 给固定的表添加数据文件.
+	 * @param filePath
+	 * @param tableName
+	 * @return
+	 */
+	public boolean loadDataByHdfsPath(String filePath,String tableName){
+		String sql = "load data inpath 'hdfs:" + filePath + "' overwrite into table "+tableName;
 		return execHiveSql(sql);
 	}
 	
@@ -359,7 +372,7 @@ public class HiveJdbcClient {
 			}
 			return tableDatas;
 		} catch (SQLException e) {
-			logger.error("查询数据库表结构失败,失败原因是:{}",e.getMessage());
+			logger.error("查询数据库表结构异常了,异常原因是:{}",e.getMessage());
 			return tableDatas;
 		}finally {
 			close(connn,statement,null,resultSet);
@@ -396,7 +409,7 @@ public class HiveJdbcClient {
 			}
 			return tableDatas;
 		} catch (SQLException e) {
-			logger.error("查询数据库表结构失败,失败原因是:{}",e.getMessage());
+			logger.error("查询数据库表结构异常了,异常原因是:{}",e.getMessage());
 			return tableDatas;
 		}finally {
 			close(connn,statement,null,resultSet);
@@ -447,7 +460,7 @@ public class HiveJdbcClient {
 				resultList.add(map);
 			}
 		}catch (Exception e){
-			logger.error("查询数据出错了,错误信息是:{}",e.getMessage());
+			logger.error("查询数据异常了,异常信息是:{}",e.getMessage());
 		}
 		return resultList;
 	}
@@ -472,7 +485,7 @@ public class HiveJdbcClient {
 			}
 			return count;
 		} catch (SQLException e) {
-			logger.error("查询数据库总条数失败,失败原因是:{}",e.getMessage());
+			logger.error("查询数据库总条数异常了,异常原因是:{}",e.getMessage());
 			return count;
 		}finally {
 			close(connn,statement,null,resultSet);

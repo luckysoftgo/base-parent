@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans 
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+   		http://www.springframework.org/schema/context 
+   		http://www.springframework.org/schema/context/spring-context.xsd">
+    
+    <!-- hive jdbc 基础信息配置 (公共使用) -->
+    <bean id="kylinJdbcConfig" class="com.application.base.operapi.api.hbase.config.HbaseConfig">
+        <property name="maxTotal" value="${hbase.pool.maxTotal}"/>
+        <property name="maxIdle" value="${hbase.pool.maxIdle}"/>
+        <property name="minIdle" value="${hbase.pool.minIdle}"/>
+        <property name="maxWaitMillis" value="${hbase.pool.maxWaitMillis}"/>
+        <property name="testOnBorrow" value="${hbase.pool.testOnBorrow}"/>
+        <property name="testOnReturn" value="${hbase.pool.testOnReturn}"/>
+        <property name="testWhileIdle" value="${hbase.pool.testWhileIdle}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${hbase.pool.timeBetweenEvictionRunsMillis}"/>
+		<property name="numTestsPerEvictionRun" value="${hbase.pool.numTestsPerEvictionRun}"/>
+		<property name="hadoopDir" value="${hbase.hadoopDir}"/>
+		<property name="zookeeperQuorum" value="${hbase.zookeeperQuorum}"/>
+		<property name="zookeeperPort" value="${hbase.zookeeperPort}"/>
+		<property name="loginUser" value="${hbase.loginUser}"/>
+		<property name="loginPass" value="${hbase.loginPass}"/>
+	</bean>
+ 
+	<!-- 1. hive 单点服务器,只存在一个 hive 的服务器 -->
+	<bean id = "apiJdbcPoolPool" class="com.application.base.operapi.api.hive.pool.HiveJdbcOperPool">
+		<constructor-arg name="jdbcConfig" ref="kylinJdbcConfig"/>
+	</bean>
+	
+	<bean id="kylinJdbcFactory" class="com.application.base.operapi.api.hive.factory.HiveJdbcSessionFactory">
+		<property name="jdbcOperPool" ref="apiJdbcPoolPool"/>
+	</bean>
+
+</beans>
+

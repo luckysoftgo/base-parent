@@ -1,7 +1,7 @@
 package com.application.base.operapi.tool.hive;
 
 import com.application.base.operapi.core.hive.rdbs.RdbmsType;
-import com.application.base.operapi.tool.hive.common.config.HadoopConfig;
+import com.application.base.operapi.core.hdfs.HadoopConfig;
 import com.application.base.operapi.tool.hive.common.config.HiveConfig;
 import com.application.base.operapi.tool.hive.common.config.JdbcConfig;
 import com.application.base.operapi.tool.hive.common.config.OperateConfig;

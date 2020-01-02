@@ -1,5 +1,7 @@
 package com.application.base.operapi.tool.hive.common.config;
 
+import com.application.base.operapi.core.hdfs.HadoopConfig;
+
 /**
  * @author : 孤狼
  * @NAME: OperateConfig

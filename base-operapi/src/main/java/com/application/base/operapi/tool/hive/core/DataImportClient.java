@@ -4,7 +4,7 @@ import com.application.base.operapi.core.ColumnInfo;
 import com.application.base.operapi.core.hive.core.HiveClient;
 import com.application.base.operapi.core.hive.rdbs.RdbmsType;
 import com.application.base.operapi.tool.hive.common.FileWrite;
-import com.application.base.operapi.tool.hive.common.config.HadoopConfig;
+import com.application.base.operapi.core.hdfs.HadoopConfig;
 import com.application.base.operapi.tool.hive.common.config.JdbcConfig;
 import com.application.base.operapi.tool.hive.common.config.OperateConfig;
 
