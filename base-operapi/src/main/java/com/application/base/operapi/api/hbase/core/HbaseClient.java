@@ -329,14 +329,14 @@ public class HbaseClient {
 	 * @param tableName
 	 * @return
 	 */
-	public TableDescriptor getTableDesc(String tableName){
+	public TableDesc getTableDesc(String tableName){
 		Admin admin=null;
 		Connection conn = getConnection();
 		try {
 			admin = conn.getAdmin();
 			TableDescriptor descriptor = admin.getDescriptor(TableName.valueOf(tableName));
 			if (descriptor!=null){
-				return descriptor;
+				return HbaseConvertUtil.constructTableDesc(descriptor);
 			}
 		} catch (Exception e) {
 			logger.error("获得hbase表:{}信息发生异常,异常信息是:{}",tableName,e.getMessage());

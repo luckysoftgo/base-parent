@@ -2,10 +2,10 @@ package com.application.base.operapi.api.hbase.session;
 
 import com.application.base.operapi.api.hbase.api.HbaseSession;
 import com.application.base.operapi.api.hbase.bean.HbaseBean;
+import com.application.base.operapi.api.hbase.bean.TableDesc;
 import com.application.base.operapi.api.hbase.core.HbaseClient;
 import org.apache.hadoop.hbase.CompareOperator;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.TableDescriptor;
 
 import java.util.List;
 import java.util.Map;
@@ -49,7 +49,7 @@ public class HbaseOperSession implements HbaseSession {
 	}
 	
 	@Override
-	public List<TableDescriptor> listTablesDesc(Pattern pattern){
+	public List<TableDesc> listTablesDesc(Pattern pattern){
 		return hbaseClient.listTablesDesc(pattern);
 	}
 	
@@ -64,7 +64,7 @@ public class HbaseOperSession implements HbaseSession {
 	}
 	
 	@Override
-	public TableDescriptor getTableDesc(String tableName){
+	public TableDesc getTableDesc(String tableName){
 		return hbaseClient.getTableDesc(tableName);
 	}
 	
