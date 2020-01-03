@@ -9,10 +9,14 @@ import java.util.Map;
 import java.util.Set;
 
 
-//定义表名和列簇名（目前只支持单个表对应一个列簇）
-@HbaseTable(table = "hbase-demo",family = "column1")
+/**
+ * 定义表名和列簇名（目前只支持单个表对应一个列簇）
+ */
+@HbaseTable(table = "hbase_demo",columnFamily = "column1")
 public class HbaseDemo {
-	
+	/**
+	 * 行标识.
+	 */
     @HbaseRowKey(desc = "rowKey")
     @HbaseField(desc = "userId")
     private Long userId;

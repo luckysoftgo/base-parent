@@ -12,6 +12,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface HbaseTable {
+	
 	/**
 	 * hbase table 的名称
 	 * @return
@@ -22,6 +23,6 @@ public @interface HbaseTable {
 	 * hbase family 的名称
 	 * @return
 	 */
-	String family() default "#DEFAULT_FAMILY#";
+	String columnFamily() default "#DEFAULT_FAMILY#";
 	
 }

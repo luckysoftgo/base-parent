@@ -34,9 +34,10 @@ public class HbaseToolTest {
 		BasicHbaseClient hbaseClient = new BasicHbaseClient(factory);
 		boolean result = false;
 		result = hbaseClient.hasTable(HbaseDemo.class);
-		if (!result){
-			hbaseClient.createTable(HbaseDemo.class);
+		if (result){
+			hbaseClient.deleteTable(HbaseDemo.class);
 		}
+		hbaseClient.createTable(HbaseDemo.class);
 		//new实体类并设置相关属性
 		HbaseDemo user = new HbaseDemo();
 		user.setUserId(1010001L);
@@ -66,7 +67,6 @@ public class HbaseToolTest {
 		System.out.println(JSON.toJSONString(ins));
 		//根据key判断记录是否存在
 		System.out.println(hbaseClient.hasRow(1010001L,HbaseDemo.class));
-		//删除指定记录
-		//System.out.println(hbaseClient.delete(1010001L,HbaseDemo.class));
+		
 	}
 }

@@ -26,7 +26,7 @@ public class HbaseAnnontationUtil {
 	 * @return
 	 */
 	public static String getColumnFamily(Class<?> clazz){
-        return clazz.getAnnotation(HbaseTable.class).family();
+        return clazz.getAnnotation(HbaseTable.class).columnFamily();
     }
 	
 	/**
