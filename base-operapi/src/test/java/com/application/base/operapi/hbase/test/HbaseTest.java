@@ -1,11 +1,13 @@
 package com.application.base.operapi.hbase.test;
 
 import com.alibaba.fastjson.JSON;
+import com.application.base.operapi.api.hbase.bean.HbaseBean;
 import com.application.base.operapi.api.hbase.config.HbaseConfig;
-import com.application.base.operapi.api.hbase.core.HbaseBean;
 import com.application.base.operapi.api.hbase.factory.HbaseOperSessionFactory;
 import com.application.base.operapi.api.hbase.pool.HbaseOperPool;
+import org.apache.hadoop.hbase.CompareOperator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +26,7 @@ public class HbaseTest {
 		HbaseOperPool operPool = getPool(config);
 		HbaseOperSessionFactory sessionFactory = getFactory(operPool);
 		boolean result = sessionFactory.getHbaseSession().tableExist("wangbo");
-		/*
+		
 		System.out.println("result 1 ="+result);
 		result = sessionFactory.getHbaseSession().tableExist("Test");
 		System.out.println("result 2 ="+result);
@@ -47,23 +49,23 @@ public class HbaseTest {
 		System.out.println(resultStr);
 		List<HbaseBean> dataList = sessionFactory.getHbaseSession().getRowData("tbl_abc","rowKey1");
 		System.out.println(dataList);
-		List<HbaseBean> dataList = sessionFactory.getHbaseSession().getResultScannerRowFilter("tbl_abc", CompareOperator.GREATER_OR_EQUAL,"rowKey1");
-		System.out.println(JSON.toJSONString(dataList));
-		String[] columns =new String[]{"value11","value12","value13","value14","value15","value16"};
-		String[] values =new String[]{"100011","100012","100013","100014","100015","100016"};
-		result=sessionFactory.getHbaseSession().insertBatchMore( "tbl_abc","rowKey1","cf1",columns,values);
+		List<HbaseBean> dataList1 = sessionFactory.getHbaseSession().getResultScannerRowFilter("tbl_abc", CompareOperator.GREATER_OR_EQUAL,"rowKey1");
+		System.out.println(JSON.toJSONString(dataList1));
+		String[] columns1 =new String[]{"value11","value12","value13","value14","value15","value16"};
+		String[] values1 =new String[]{"100011","100012","100013","100014","100015","100016"};
+		result=sessionFactory.getHbaseSession().insertBatchMore( "tbl_abc","rowKey1","cf1",columns1,values1);
 		System.out.println(result);
 		result = sessionFactory.getHbaseSession().insertOne("tbl_abc","rowKey1","cf1","value22","100022");
 		System.out.println("result="+result);
 		result = sessionFactory.getHbaseSession().addColumnFamily("tbl_abc","cf3");
 		System.out.println("result="+result);
-		String[] columns =new String[]{"value1","value2","value3","value4","value5","value6"};
-		String[] values =new String[]{"10001","10002","10003","10004","10005","10006"};
-		sessionFactory.getHbaseSession().insertOrUpdate( "tbl_abc","rowKey1","cf2",columns,values);
-		sessionFactory.getHbaseSession().insertOrUpdate( "tbl_abc","rowKey1","cf3",columns,values);
-		*/
-		List<HbaseBean> dataList = sessionFactory.getHbaseSession().getTableData("tbl_abc");
-		System.out.println(JSON.toJSONString(dataList));
+		String[] columns2 =new String[]{"value1","value2","value3","value4","value5","value6"};
+		String[] values2 =new String[]{"10001","10002","10003","10004","10005","10006"};
+		sessionFactory.getHbaseSession().insertOrUpdate( "tbl_abc","rowKey1","cf2",columns2,values2);
+		sessionFactory.getHbaseSession().insertOrUpdate( "tbl_abc","rowKey1","cf3",columns2,values2);
+		
+		List<HbaseBean> dataList2 = sessionFactory.getHbaseSession().getTableData("tbl_abc");
+		System.out.println(JSON.toJSONString(dataList2));
 	}
 	
 	/**
