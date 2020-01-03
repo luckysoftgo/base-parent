@@ -1,6 +1,6 @@
 package com.application.base.operapi.api.hbase.api;
 
-import com.application.base.operapi.api.hbase.core.HbaseBean;
+import com.application.base.operapi.api.hbase.bean.HbaseBean;
 import org.apache.hadoop.hbase.CompareOperator;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.TableDescriptor;

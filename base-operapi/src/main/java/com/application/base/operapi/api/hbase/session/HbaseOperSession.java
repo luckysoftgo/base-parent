@@ -1,7 +1,7 @@
 package com.application.base.operapi.api.hbase.session;
 
 import com.application.base.operapi.api.hbase.api.HbaseSession;
-import com.application.base.operapi.api.hbase.core.HbaseBean;
+import com.application.base.operapi.api.hbase.bean.HbaseBean;
 import com.application.base.operapi.api.hbase.core.HbaseClient;
 import org.apache.hadoop.hbase.CompareOperator;
 import org.apache.hadoop.hbase.TableName;

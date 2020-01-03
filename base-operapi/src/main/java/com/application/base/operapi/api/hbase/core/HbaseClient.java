@@ -1,7 +1,10 @@
 package com.application.base.operapi.api.hbase.core;
 
+import com.application.base.operapi.api.hbase.bean.HbaseBean;
+import com.application.base.operapi.api.hbase.bean.TableDesc;
 import com.application.base.operapi.api.hbase.config.HbaseConfig;
 import com.application.base.operapi.api.hbase.exception.HbaseException;
+import com.application.base.operapi.api.hbase.util.HbaseConvertUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Cell;
@@ -235,10 +238,10 @@ public class HbaseClient {
 	public List<String> listTables(Pattern pattern){
 		List<String> tableList=new ArrayList<>();
 		try {
-			List<TableDescriptor> tableDescs = listTablesDesc(pattern);
+			List<TableDesc> tableDescs = listTablesDesc(pattern);
 			if (!tableDescs.isEmpty()){
 				for (int i = 0; i < tableDescs.size(); i++) {
-					tableList.add(tableDescs.get(i).getTableName().toString());
+					tableList.add(tableDescs.get(i).getTableName());
 				}
 			}
 		} catch (Exception e) {
@@ -252,21 +255,25 @@ public class HbaseClient {
 	 * @param pattern
 	 * @return
 	 */
-	public List<TableDescriptor> listTablesDesc(Pattern pattern){
-		List<TableDescriptor> tableList=new ArrayList<>();
+	public List<TableDesc> listTablesDesc(Pattern pattern){
+		List<TableDesc> tableList=new ArrayList<>();
 		Admin admin=null;
 		Connection conn = getConnection();
+		List<TableDescriptor> tmpList=new ArrayList<>();
 		try {
 			admin = conn.getAdmin();
 			if(pattern==null){
-				tableList=admin.listTableDescriptors();
+				tmpList = admin.listTableDescriptors();
 			}else{
-				tableList=admin.listTableDescriptors(pattern);
+				tmpList =admin.listTableDescriptors(pattern);
 			}
 		} catch (Exception e) {
 			logger.error("获得hbase列出所有用户空间表信息发生异常,异常信息是:{}",e.getMessage());
 		}finally{
 			close(conn,admin,null,null);
+		}
+		for (TableDescriptor descriptor : tmpList ) {
+			tableList.add(HbaseConvertUtil.constructTableDesc(descriptor));
 		}
 		return tableList;
 	}

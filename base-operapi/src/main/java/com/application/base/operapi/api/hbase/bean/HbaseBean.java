@@ -1,4 +1,4 @@
-package com.application.base.operapi.api.hbase.core;
+package com.application.base.operapi.api.hbase.bean;
 
 /**
  * @author : 孤狼
