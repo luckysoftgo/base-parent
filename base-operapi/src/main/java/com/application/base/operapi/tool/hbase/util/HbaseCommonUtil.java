@@ -239,24 +239,20 @@ public class HbaseCommonUtil {
 		String firstLetter = name.substring(0, 1).toUpperCase();
 		String setMethodName = "set" + firstLetter + name.substring(1);
 		Method method = null;
-		
 		try {
 			Method[] methods = bean.getClass().getDeclaredMethods();
-			Method[] var7 = methods;
-			int var8 = methods.length;
-			
-			for(int var9 = 0; var9 < var8; ++var9) {
-				Method method1 = var7[var9];
+			Method[] array = methods;
+			int count = methods.length;
+			for(int i = 0; i < count; ++i) {
+				Method method1 = array[i];
 				if (setMethodName.equals(method1.getName())) {
 					method = method1;
 					break;
 				}
 			}
-			
 			method.invoke(bean, value);
 		} catch (Exception var11) {
 			var11.printStackTrace();
 		}
-		
 	}
 }

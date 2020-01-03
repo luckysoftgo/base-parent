@@ -78,6 +78,20 @@ public class HbaseConfigFactory {
 	 */
 	private LinkedBlockingQueue<Connection> connections = new LinkedBlockingQueue<>(1024);
 	
+	public HbaseConfigFactory() {
+	}
+	
+	public HbaseConfigFactory(String zookeeperQuorum, String zookeeperPort) {
+		this.zookeeperQuorum = zookeeperQuorum;
+		this.zookeeperPort = zookeeperPort;
+	}
+	
+	public HbaseConfigFactory(String hadoopDir, String zookeeperQuorum, String zookeeperPort, String rootDir) {
+		this.hadoopDir = hadoopDir;
+		this.zookeeperQuorum = zookeeperQuorum;
+		this.zookeeperPort = zookeeperPort;
+		this.rootDir = rootDir;
+	}
 	
 	/**
 	 * 初始化 hbase 的操作.
