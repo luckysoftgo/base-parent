@@ -1003,7 +1003,7 @@ public class HbaseClient {
 	
 	/**
 	 * 往表中添加多数据
-	 * @param tableName Table
+	 * @param tableName HbaseTable
 	 * @param rowKey rowKey
 	 * @param tableName 表名
 	 * @param columnFamily 列族名
@@ -1039,7 +1039,7 @@ public class HbaseClient {
 	
 	/**
 	 * 往表中添加多数据
-	 * @param tableName Table
+	 * @param tableName HbaseTable
 	 * @param rowKey rowKey
 	 * @param tableName 表名
 	 * @param familyName 列族名
