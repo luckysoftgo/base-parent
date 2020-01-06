@@ -1,5 +1,6 @@
 package com.application.base.utils.common;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +33,14 @@ public class HttpRequestUtils {
 	public static String sendGet(String url, String method, String param) throws Exception {
 		String result = "";
 		BufferedReader in = null;
-		String urlNameString = url + method + "?" + param;
-		URL realUrl = new URL(urlNameString);
+		String urlNameStr = url;
+		if (StringUtils.isNotBlank(method)){
+			urlNameStr=urlNameStr +"/"+ method;
+		}
+		if (StringUtils.isNotBlank(param)){
+			urlNameStr=urlNameStr +"?"+ param;
+		}
+		URL realUrl = new URL(urlNameStr);
 		// 打开和URL之间的连接
 		HttpURLConnection connection = (HttpURLConnection) realUrl.openConnection();
 		connection.setConnectTimeout(60000);
@@ -75,7 +82,11 @@ public class HttpRequestUtils {
 		}
 		catch (Exception e) {
 		}
-		URL realUrl = new URL(url + method);
+		String urlNameStr = url;
+		if (StringUtils.isNotBlank(method)){
+			urlNameStr=urlNameStr +"/"+ method;
+		}
+		URL realUrl = new URL(urlNameStr);
 		// 打开和URL之间的连接
 		HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
 		conn.setConnectTimeout(60000);
@@ -92,7 +103,7 @@ public class HttpRequestUtils {
 		conn.connect();
 		// 获取URLConnection对象对应的输出流
 		out = new PrintWriter(new OutputStreamWriter(conn.getOutputStream(), ENCODING));
-		// 发送请求参数
+		//发送请求参数
 		out.print(param);
 
 		// flush输出流的缓冲
