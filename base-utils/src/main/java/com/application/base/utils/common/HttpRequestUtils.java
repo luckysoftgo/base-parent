@@ -1,8 +1,6 @@
 package com.application.base.utils.common;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -16,10 +14,19 @@ import java.net.URL;
  * @author 孤狼
  */
 public class HttpRequestUtils {
-
-	static Logger logger = LoggerFactory.getLogger(HttpRequestUtils.class.getName());
+	/**
+	 * 编码
+	 */
+	private static final String ENCODING = "UTF-8";
 	
-	static String ENCODING = "UTF-8";
+	/**
+	 * 连接超时时间
+	 */
+	private static final int CONNECT_TIMEOUT = 1000 * 120;
+	/**
+	 * 读取数据超时时间
+	 */
+	private static final int SOCKET_TIMEOUT = 1000 * 180;
 	
 	/**
 	 * 向指定URL发送GET方法的请求
@@ -30,25 +37,25 @@ public class HttpRequestUtils {
 	 *            请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
 	 * @return URL 所代表远程资源的响应结果
 	 */
-	public static String sendGet(String url, String method, String param) throws Exception {
+	public static String sendGet(String url,String param) throws Exception {
 		String result = "";
 		BufferedReader in = null;
 		String urlNameStr = url;
-		if (StringUtils.isNotBlank(method)){
-			urlNameStr=urlNameStr +"/"+ method;
-		}
 		if (StringUtils.isNotBlank(param)){
 			urlNameStr=urlNameStr +"?"+ param;
 		}
 		URL realUrl = new URL(urlNameStr);
 		// 打开和URL之间的连接
 		HttpURLConnection connection = (HttpURLConnection) realUrl.openConnection();
-		connection.setConnectTimeout(60000);
+		connection.setConnectTimeout(CONNECT_TIMEOUT);
+		connection.setReadTimeout(SOCKET_TIMEOUT);
 		// 设置通用的请求属性
 		connection.setRequestProperty("accept", "*/*");
 		connection.setRequestProperty("connection", "Keep-Alive");
 		connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-
+		connection.setRequestProperty("Content-Type", "application/json");
+		connection.setRequestProperty("Accept", "application/json");
+		
 		// 建立实际的连接
 		connection.connect();
 		// 获取所有响应头字段
@@ -73,7 +80,7 @@ public class HttpRequestUtils {
 	 *            请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
 	 * @return 所代表远程资源的响应结果
 	 */
-	public static String sendPost(String url, String method, String param) throws Exception {
+	public static String sendPost(String url,String param) throws Exception {
 		PrintWriter out = null;
 		BufferedReader in = null;
 		String result = "";
@@ -82,21 +89,18 @@ public class HttpRequestUtils {
 		}
 		catch (Exception e) {
 		}
-		String urlNameStr = url;
-		if (StringUtils.isNotBlank(method)){
-			urlNameStr=urlNameStr +"/"+ method;
-		}
-		URL realUrl = new URL(urlNameStr);
+		URL realUrl = new URL(url);
 		// 打开和URL之间的连接
 		HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
-		conn.setConnectTimeout(60000);
-		conn.setReadTimeout(60000);
-
+		conn.setConnectTimeout(CONNECT_TIMEOUT);
+		conn.setReadTimeout(SOCKET_TIMEOUT);
 		// 设置通用的请求属性
 		conn.setRequestProperty("accept", "*/*");
 		conn.setRequestProperty("connection", "Keep-Alive");
 		conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-
+		conn.setRequestProperty("Content-Type", "application/json");
+		conn.setRequestProperty("Accept", "application/json");
+		
 		// 发送POST请求必须设置如下两行
 		conn.setDoOutput(true);
 		conn.setDoInput(true);
