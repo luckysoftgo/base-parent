@@ -18,7 +18,7 @@ import org.xml.sax.InputSource;
  * @desc 手机号归属地区查询
  * @author 孤狼
  */
-public class MobileLocationUtil {
+public class MobileLocalUtil {
     
     /**
      * 手机号判断正则
@@ -93,7 +93,7 @@ public class MobileLocationUtil {
     
     public static void main(String[] args) {
         try {
-            System.out.println(MobileLocationUtil.getMobileLocation("15789798374"));
+            System.out.println(MobileLocalUtil.getMobileLocation("15789798374"));
         } catch (Exception e) {
             e.printStackTrace();
         }
