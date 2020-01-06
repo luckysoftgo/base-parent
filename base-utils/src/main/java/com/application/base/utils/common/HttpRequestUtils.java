@@ -40,6 +40,36 @@ public class HttpRequestUtils {
 	 * @return URL 所代表远程资源的响应结果
 	 */
 	public static String sendGet(String url,String param) throws Exception {
+		return sendGet(url,param,null);
+	}
+	
+	
+	
+	/**
+	 * 向指定 URL 发送POST方法的请求
+	 * 
+	 * @param url
+	 *            发送请求的 URL
+	 * @param param
+	 *            请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
+	 * @return 所代表远程资源的响应结果
+	 */
+	public static String sendPost(String url,String param) throws Exception {
+		return sendPost(url,param,null);
+	}
+	
+	/**
+	 * 向指定URL发送GET方法的请求
+	 *
+	 * @param url
+	 *            发送请求的URL
+	 * @param param
+	 *            请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
+	 * @param cookie
+	 *            请求参数cookie的设置。
+	 * @return URL 所代表远程资源的响应结果
+	 */
+	public static String sendGet(String url,String param,String cookie) throws Exception {
 		String result = "";
 		BufferedReader in = null;
 		String urlNameStr = url;
@@ -53,7 +83,7 @@ public class HttpRequestUtils {
 		connection.setReadTimeout(SOCKET_TIMEOUT);
 		// 设置通用的请求属性
 		connection.setRequestMethod("GET");
-		settings(connection);
+		settings(connection,cookie);
 		
 		// 建立实际的连接
 		connection.connect();
@@ -70,28 +100,20 @@ public class HttpRequestUtils {
 		return result;
 	}
 	
-	/**
-	 * 公共属性设置.
-	 * @param connection
-	 */
-	private static void settings(HttpURLConnection connection) {
-		connection.setRequestProperty("accept", "*/*");
-		connection.setRequestProperty("connection", "Keep-Alive");
-		connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-		connection.setRequestProperty("Content-Type","application/json;charset=UTF-8");
-		connection.setRequestProperty("Accept", "application/json");
-	}
+	
 	
 	/**
 	 * 向指定 URL 发送POST方法的请求
-	 * 
+	 *
 	 * @param url
 	 *            发送请求的 URL
 	 * @param param
 	 *            请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
+	 * @param cookie
+	  *            请求参数cookie的设置。
 	 * @return 所代表远程资源的响应结果
 	 */
-	public static String sendPost(String url,String param) throws Exception {
+	public static String sendPost(String url,String param,String cookie) throws Exception {
 		PrintWriter out = null;
 		BufferedReader in = null;
 		String result = "";
@@ -107,7 +129,7 @@ public class HttpRequestUtils {
 		conn.setReadTimeout(SOCKET_TIMEOUT);
 		conn.setRequestMethod("POST");
 		// 设置通用的请求属性
-		settings(conn);
+		settings(conn,cookie);
 		
 		// 发送POST请求必须设置如下两行
 		conn.setDoOutput(true);
@@ -117,7 +139,7 @@ public class HttpRequestUtils {
 		out = new PrintWriter(new OutputStreamWriter(conn.getOutputStream(), ENCODING));
 		//发送请求参数
 		out.print(param);
-
+		
 		// flush输出流的缓冲
 		out.flush();
 		// 定义BufferedReader输入流来读取URL的响应
@@ -135,6 +157,7 @@ public class HttpRequestUtils {
 		conn.disconnect();
 		return result;
 	}
+	
 	
 	/**
 	 * 向指定 URL 发送POST方法的请求
@@ -159,7 +182,7 @@ public class HttpRequestUtils {
 		conn.setConnectTimeout(CONNECT_TIMEOUT);
 		conn.setReadTimeout(SOCKET_TIMEOUT);
 		// 设置通用的请求属性
-		settings(conn);
+		settings(conn,null);
 		// 发送POST请求必须设置如下两行
 		conn.setDoOutput(true);
 		conn.setDoInput(true);
@@ -180,5 +203,21 @@ public class HttpRequestUtils {
 		}
 		conn.disconnect();
 		return headerFields;
+	}
+	
+	/**
+	 * 公共属性设置.
+	 * @param connection
+	 * @param cookie
+	 */
+	private static void settings(HttpURLConnection connection,String cookie) {
+		if (StringUtils.isNotBlank(cookie)){
+			connection.setRequestProperty("Cookie", cookie);
+		}
+		connection.setRequestProperty("accept", "*/*");
+		connection.setRequestProperty("connection", "Keep-Alive");
+		connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+		connection.setRequestProperty("Content-Type","application/json;charset=UTF-8");
+		connection.setRequestProperty("Accept", "application/json");
 	}
 }
