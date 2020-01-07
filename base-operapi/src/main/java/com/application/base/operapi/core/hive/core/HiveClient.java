@@ -89,7 +89,7 @@ public class HiveClient {
 				buffer.append(" `"+info.getColumnName()+"` "+info.getColumnHiveType()+"  COMMENT '"+info.getColumnComment()+"'");
 			}
 		}
-		buffer.append(") row format delimited fields terminated by ','");
+		buffer.append(") row format delimited fields terminated by '\t' null defined as '' stored as textfile ");
 		return buffer.toString();
 	}
 	
