@@ -19,10 +19,10 @@
         <property name="testWhileIdle" value="${hive.pool.testWhileIdle}"/>
         <property name="timeBetweenEvictionRunsMillis" value="${hive.pool.timeBetweenEvictionRunsMillis}"/>
 		<property name="numTestsPerEvictionRun" value="${hive.pool.numTestsPerEvictionRun}"/>
-		<property name="hiveDriver" value="${hive.driver}"/>
-		<property name="userName" value="${hive.name}"/>
-		<property name="userPass" value="${hive.pass}"/>
-		<property name="hiveUrl" value="${hive.url}"/>
+		<property name="hiveDriver" value="${hive.hiveDriver}"/>
+		<property name="userName" value="${hive.userName}"/>
+		<property name="userPass" value="${hive.userPass}"/>
+		<property name="hiveUrl" value="${hive.hiveUrl}"/>
 	</bean>
  
 	<!-- 1. hive 单点服务器,只存在一个 hive 的服务器 -->
