@@ -1,7 +1,7 @@
 package com.application.base.operapi.tool.hbase.core.impl;
 
 import com.application.base.operapi.tool.hbase.annotation.HbaseField;
-import com.application.base.operapi.tool.hbase.config.HbaseConfigFactory;
+import com.application.base.operapi.tool.hbase.config.HbaseToolConfig;
 import com.application.base.operapi.tool.hbase.core.HbaseInterface;
 import com.application.base.operapi.tool.hbase.util.AnnoatationsUtil;
 import com.application.base.operapi.tool.hbase.util.HbaseAnnontationUtil;
@@ -47,12 +47,12 @@ public class BasicHbaseClient implements HbaseInterface {
 	/**
 	 * 创建工厂实例
 	 */
-	private HbaseConfigFactory hbaseFactory;
+	private HbaseToolConfig hbaseFactory;
 	
 	/**
 	 * 构造方法
 	 */
-	public BasicHbaseClient(HbaseConfigFactory hbaseFactory){
+	public BasicHbaseClient(HbaseToolConfig hbaseFactory){
 		this.hbaseFactory = hbaseFactory;
 	}
 	

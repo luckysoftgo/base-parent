@@ -1,7 +1,7 @@
 package com.application.base.operapi.hbase.test;
 
 import com.alibaba.fastjson.JSON;
-import com.application.base.operapi.tool.hbase.config.HbaseConfigFactory;
+import com.application.base.operapi.tool.hbase.config.HbaseToolConfig;
 import com.application.base.operapi.tool.hbase.core.impl.BasicHbaseClient;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class HbaseToolTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		HbaseConfigFactory factory =new HbaseConfigFactory();
+		HbaseToolConfig factory =new HbaseToolConfig();
 		factory.setHadoopDir("");
 		factory.setHadoopDir("D:\\installer\\hadoop-2.7.7");
 		factory.setRootDir("hdfs://manager:8020/hbase");

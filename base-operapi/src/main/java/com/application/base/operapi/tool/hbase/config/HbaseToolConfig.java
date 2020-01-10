@@ -14,12 +14,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author : 孤狼
- * @NAME: HbaseConfigFactory
+ * @NAME: HbaseToolConfig
  * @DESC: 配置信息.
  **/
-public class HbaseConfigFactory {
+public class HbaseToolConfig {
 	
-	private Logger logger = LoggerFactory.getLogger(HbaseConfigFactory.class.getName());
+	private Logger logger = LoggerFactory.getLogger(HbaseToolConfig.class.getName());
 	
 	/**
 	 * hadoop 根信息配置.
@@ -78,15 +78,15 @@ public class HbaseConfigFactory {
 	 */
 	private LinkedBlockingQueue<Connection> connections = new LinkedBlockingQueue<>(1024);
 	
-	public HbaseConfigFactory() {
+	public HbaseToolConfig() {
 	}
 	
-	public HbaseConfigFactory(String zookeeperQuorum, String zookeeperPort) {
+	public HbaseToolConfig(String zookeeperQuorum, String zookeeperPort) {
 		this.zookeeperQuorum = zookeeperQuorum;
 		this.zookeeperPort = zookeeperPort;
 	}
 	
-	public HbaseConfigFactory(String hadoopDir, String zookeeperQuorum, String zookeeperPort, String rootDir) {
+	public HbaseToolConfig(String hadoopDir, String zookeeperQuorum, String zookeeperPort, String rootDir) {
 		this.hadoopDir = hadoopDir;
 		this.zookeeperQuorum = zookeeperQuorum;
 		this.zookeeperPort = zookeeperPort;
