@@ -32,7 +32,7 @@ public class HdfsOperUtil {
 	 * 获取hadoop下文件的命令: hadoop  fs -ls /tmp/
 	 *                      hadoop  fs -ls /
 	 */
-	private static String hdfsAddress = "hdfs://manager:9000" ;
+	private static String hdfsAddress = "hdfs://manager:8020" ;
 	/**
 	 * 文件实例.
 	 */
