@@ -280,6 +280,14 @@ public class HiveJdbcClient {
 		}
 	}
 	
+	/*
+	1. 查询创建表信息（show create table）
+	2. 查询表的字段信息（desc）
+	3. 查看表的详细属性信息（desc formatted）
+	4.  查看表的详细信息（describe extended）
+	5. 查看表的partitions信息（show partitions ）
+	*/
+	
 	/**
 	 * 显示表的结构
 	 * @param tableName
