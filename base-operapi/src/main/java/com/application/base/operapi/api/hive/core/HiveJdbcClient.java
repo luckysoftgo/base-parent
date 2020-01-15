@@ -316,6 +316,31 @@ public class HiveJdbcClient {
 		}
 	}
 	
+	/*
+	CREATE TABLE `sum_data_dir`(
+	  `id` string COMMENT '主键id',
+	  `sort_no` int COMMENT ' 排序number',
+	  `class_name` string COMMENT '分类名称',
+	  `data_type` string COMMENT '数据类型',
+	  `data_volume` int COMMENT '分类结果值',
+	  `second_level_name` string COMMENT '二级分类',
+	  `first_level_name` string COMMENT '一级分类',
+	  `create_time` string)
+	ROW FORMAT SERDE
+	  'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe'
+	WITH SERDEPROPERTIES (
+	  'field.delim'='\t',
+	  'serialization.format'='\t')
+	STORED AS INPUTFORMAT
+	  'org.apache.hadoop.mapred.TextInputFormat'
+	OUTPUTFORMAT
+	  'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'
+	LOCATION
+	  'hdfs://manager:8020/user/hive/warehouse/sum_data_dir'
+	TBLPROPERTIES (
+	  'transient_lastDdlTime'='1577172432')
+	 */
+		
 	/**
 	 * 获得hive存储的信息.
 	 * @param tableName
