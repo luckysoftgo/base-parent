@@ -68,12 +68,27 @@ public interface HiveJdbcSession {
 	public LinkedList<Map<String,String>> descTable(String tableName);
 	
 	/**
+	 * 获得hive存储的信息.
+	 * @param tableName
+	 * @return
+	 */
+	public Map<String,String> getHiveInfo(String tableName);
+	
+	/**
 	 * 给固定的表添加数据文件.
 	 * @param filePath
 	 * @param tableName
 	 * @return
 	 */
 	public boolean loadDataByPath(String filePath, String tableName);
+	
+	/**
+	 * 给固定的表添加数据文件.
+	 * @param hdfsPath
+	 * @param tableName
+	 * @return
+	 */
+	public boolean loadDataByHdfsPath(String hdfsPath,String tableName);
 	
 	/**
 	 * 查询表中的数据.

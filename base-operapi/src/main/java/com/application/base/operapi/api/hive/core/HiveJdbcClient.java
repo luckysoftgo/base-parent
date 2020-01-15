@@ -317,14 +317,56 @@ public class HiveJdbcClient {
 	}
 	
 	/**
-	 * 给固定的表添加数据文件.
-	 * @param filePath
+	 * 获得hive存储的信息.
 	 * @param tableName
 	 * @return
 	 */
-	public boolean loadDataByPath(String filePath,String tableName){
-		String sql = "load data local inpath '" + filePath + "' overwrite into table "+tableName;
-		return execHiveSql(sql);
+	public Map<String,String> getHiveInfo(String tableName){
+		String sql = "show create table  "+tableName;
+		Connection connn = null;
+		Statement statement = null;
+		ResultSet resultSet = null;
+		Map<String,String> hiveInfo = new HashMap<>();
+		try {
+			connn = getConnection();
+			statement = connn.createStatement();
+			resultSet = statement.executeQuery(sql);
+			ResultSetMetaData rsmd = resultSet.getMetaData();
+			LinkedList<String> tmpList = new LinkedList<>();
+			while(resultSet.next()) {
+				for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+					tmpList.add(resultSet.getString(rsmd.getColumnName(i)));
+				}
+			}
+			if (tmpList.size()%2==0){
+				for (int i = 0; i <tmpList.size() ; i++) {
+					if (i<=tmpList.size()-2){
+						String key = tmpList.get(i);
+						String value = tmpList.get(i+1);
+						hiveInfo.put(key,value);
+					}else{
+						hiveInfo.put(tmpList.getLast(),tmpList.getFirst());
+					}
+				}
+			}else{
+				tmpList.addFirst("NULL");
+				for (int i = 0; i <tmpList.size() ; i++) {
+					if (i<=tmpList.size()-2){
+						String key = tmpList.get(i);
+						String value = tmpList.get(i+1);
+						hiveInfo.put(key,value);
+					}else{
+						hiveInfo.put(tmpList.getLast(),tmpList.getFirst());
+					}
+				}
+			}
+			return hiveInfo;
+		} catch (SQLException e) {
+			logger.error("查询数据库表结构异常了,异常原因是:{}",e.getMessage());
+			return hiveInfo;
+		}finally {
+			close(connn,statement,null,resultSet);
+		}
 	}
 	
 	/**
@@ -333,8 +375,19 @@ public class HiveJdbcClient {
 	 * @param tableName
 	 * @return
 	 */
-	public boolean loadDataByHdfsPath(String filePath,String tableName){
-		String sql = "load data inpath 'hdfs:" + filePath + "' overwrite into table "+tableName;
+	public boolean loadDataByPath(String filePath,String tableName){
+		String sql= "load data local inpath '" + filePath + "' overwrite into table "+tableName;
+		return execHiveSql(sql);
+	}
+	
+	/**
+	 * 给固定的表添加数据文件.
+	 * @param hdfsPath
+	 * @param tableName
+	 * @return
+	 */
+	public boolean loadDataByHdfsPath(String hdfsPath,String tableName){
+		String sql = "load data inpath 'hdfs:" + hdfsPath + "' overwrite into table "+tableName;
 		return execHiveSql(sql);
 	}
 	

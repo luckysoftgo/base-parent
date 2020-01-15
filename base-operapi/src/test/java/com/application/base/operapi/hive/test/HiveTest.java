@@ -1,10 +1,13 @@
 package com.application.base.operapi.hive.test;
 
+import com.alibaba.fastjson.JSON;
 import com.application.base.operapi.api.hive.config.HiveJdbcConfig;
 import com.application.base.operapi.api.hive.factory.HiveJdbcSessionFactory;
 import com.application.base.operapi.api.hive.pool.HiveJdbcOperPool;
 import com.application.base.operapi.core.hive.core.HiveClient;
 import com.application.base.operapi.core.hive.rdbs.RdbmsType;
+
+import java.util.Map;
 
 /**
  * @author : 孤狼
@@ -26,10 +29,11 @@ public class HiveTest {
 		String pwd = "123456";
 		String url = "jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=UTF-8";
 		String table = "sum_data_dir";
-		String sql = HiveClient.getCreateHiveTableSql(url,user,pwd,table,RdbmsType.MYSQL);
+		String sql = HiveClient.getCreateHiveTableSql(url,user,pwd,table, RdbmsType.MYSQL);
 		boolean result = factory.getJdbcSession().createTable(sql);
 		System.out.println("result = "+result);
-		
+		Map<String,String> datas = factory.getJdbcSession().getHiveInfo(table);
+		System.out.println(JSON.toJSONString(datas));
 	}
 	
 	/**

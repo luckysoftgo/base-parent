@@ -65,8 +65,18 @@ public class HiveJdbcOperSession implements HiveJdbcSession {
 	}
 	
 	@Override
+	public Map<String, String> getHiveInfo(String tableName) {
+		return jdbcClient.getHiveInfo(tableName);
+	}
+	
+	@Override
 	public boolean loadDataByPath(String filePath, String tableName) {
 		return jdbcClient.loadDataByPath(filePath,tableName);
+	}
+	
+	@Override
+	public boolean loadDataByHdfsPath(String hdfsPath, String tableName) {
+		return jdbcClient.loadDataByHdfsPath(hdfsPath,tableName);
 	}
 	
 	@Override
