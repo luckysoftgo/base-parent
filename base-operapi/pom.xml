@@ -55,6 +55,12 @@
 			<artifactId>hive-jdbc</artifactId>
 			<version>${hive.version}</version>
 		</dependency>
+		<!--cdh环境下用的包:https://www.cloudera.com/downloads/connectors/hive/jdbc/2-6-2.html -->
+		<dependency>
+			<groupId>org.apache.hive</groupId>
+			<artifactId>HiveJDBC41</artifactId>
+			<version>4.1</version>
+		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
