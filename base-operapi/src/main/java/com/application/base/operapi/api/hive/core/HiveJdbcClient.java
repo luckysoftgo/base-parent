@@ -589,7 +589,7 @@ public class HiveJdbcClient {
 	}
 	
 	/**
-	 * 刪除数据库表.
+	 * 清空数据库表.
 	 * @param tableName
 	 * @return
 	 */
