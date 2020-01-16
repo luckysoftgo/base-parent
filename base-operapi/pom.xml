@@ -60,6 +60,8 @@
 			<groupId>org.apache.hive</groupId>
 			<artifactId>HiveJDBC41</artifactId>
 			<version>4.1</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/src/main/lib/HiveJDBC41.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
@@ -76,7 +78,6 @@
 			<artifactId>hbase-client</artifactId>
 			<version>${hbase.version}</version>
 		</dependency>
-		
 		<!-- demo 要使用的jar 配置 end -->
 	</dependencies>
 	
