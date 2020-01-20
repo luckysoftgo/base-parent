@@ -76,6 +76,11 @@ public class HiveJdbcOperSession implements HiveJdbcSession {
 	}
 	
 	@Override
+	public String getRdbmsCreateTableSql(String hiveTableName, String rdbmsTableName) {
+		return jdbcClient.getRdbmsCreateTableSql(hiveTableName,rdbmsTableName);
+	}
+	
+	@Override
 	public boolean loadDataByPath(String filePath, String tableName) {
 		return jdbcClient.loadDataByPath(filePath,tableName);
 	}

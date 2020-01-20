@@ -84,6 +84,13 @@ public interface HiveJdbcSession {
 	public List<ColumnInfo> getHiveColumns(String tableName);
 	
 	/**
+	 * 获取列信息.
+	 * @param hiveTableName
+	 * @return
+	 */
+	public String getRdbmsCreateTableSql(String hiveTableName,String rdbmsTableName);
+	
+	/**
 	 * 给固定的表添加数据文件.
 	 * @param filePath
 	 * @param tableName

@@ -438,6 +438,119 @@ public class HiveJdbcClient {
 	}
 	
 	/**
+	 * 获取列信息.
+	 * @param hiveTableName
+	 * @return
+	 */
+	public String getRdbmsCreateTableSql(String hiveTableName,String rdbmsTableName) {
+		if (StringUtils.isBlank(rdbmsTableName)){
+			rdbmsTableName = hiveTableName;
+		}
+		StringBuffer buffer = new StringBuffer(" create table "+rdbmsTableName+" (\n");
+		try {
+			List<ColumnInfo> columnInfos = getHiveColumns(hiveTableName);
+			if (columnInfos.isEmpty()){
+				logger.info("没有取得列的信息");
+				return "";
+			}
+			for (int i = 0; i < columnInfos.size(); i++) {
+				ColumnInfo columnInfo = columnInfos.get(i);
+				if (i==columnInfos.size()-1){
+					buffer.append(" "+columnInfo.getColumnName()+" "+getHive2RdbmsType(columnInfo.getColumnHiveType())+" comment '"+columnInfo.getColumnComment()+"'\n");
+				}else{
+					buffer.append(" "+columnInfo.getColumnName()+" "+getHive2RdbmsType(columnInfo.getColumnHiveType())+" comment '"+columnInfo.getColumnComment()+"',\n");
+				}
+			}
+			buffer.append(") \n");
+			buffer.append(" ENGINE = InnoDB AUTO_INCREMENT = 0 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '"+rdbmsTableName+"表信息'");
+		} catch (Exception e) {
+			logger.error("查询数据库表结构异常了,异常原因是:{}",e.getMessage());
+		}
+		return buffer.toString();
+	}
+	
+	/**
+	 * 获取 rdbms 的类型.
+	 * @param type
+	 * @return
+	 */
+	private  String getRdbms2HiveType(String type) {
+		String result = "";
+		if (type.equalsIgnoreCase("varchar")){
+			result = "string";
+		}else if (type.equalsIgnoreCase("tinyint")||
+				type.equalsIgnoreCase("smallint")||
+				type.equalsIgnoreCase("int")||
+				type.equalsIgnoreCase("bigint") ){
+			result = "int";
+		}else if (type.equalsIgnoreCase("double")||
+				type.equalsIgnoreCase("float")){
+			result = "float";
+		}else if (type.equalsIgnoreCase("date")||
+				type.equalsIgnoreCase("timestamp")||
+				type.equalsIgnoreCase("datetime")){
+			result = "date ";
+		}else{
+			result = "string";
+		}
+		return result;
+	}
+	
+	/**
+	 * 获取 rdbms 的类型.
+	 * @param type
+	 * @return
+	 */
+	private  String getRdbms2RdbmsType(String type) {
+		String result = "";
+		if (type.equalsIgnoreCase("varchar")){
+			result = "varchar (200)";
+		}else if (type.equalsIgnoreCase("tinyint")||
+				type.equalsIgnoreCase("smallint")||
+				type.equalsIgnoreCase("int")||
+				type.equalsIgnoreCase("bigint") ){
+			result = "int (11)";
+		}else if (type.equalsIgnoreCase("double")||
+				type.equalsIgnoreCase("float")){
+			result = "decimal(15,2)";
+		}else if (type.equalsIgnoreCase("date")||
+				type.equalsIgnoreCase("timestamp")||
+				type.equalsIgnoreCase("datetime")){
+			result = "datetime ";
+		}else{
+			result = "varchar (200)";
+		}
+		return result;
+	}
+	
+	/**
+	 * 获取 hive 的类型.
+	 * @param type
+	 * @return
+	 */
+	private  String getHive2RdbmsType(String type) {
+		String result = "";
+		if (type.equalsIgnoreCase("string")){
+			result = "varchar (200)";
+		}else if (type.equalsIgnoreCase("tinyint")||
+				type.equalsIgnoreCase("smallint")||
+				type.equalsIgnoreCase("int")||
+				type.equalsIgnoreCase("bigint") ){
+			result = "int (11)";
+		}else if (type.equalsIgnoreCase("double")||
+				type.equalsIgnoreCase("float")){
+			result = "decimal(15,2)";
+		}else if (type.equalsIgnoreCase("date")||
+				type.equalsIgnoreCase("timestamp")||
+				type.equalsIgnoreCase("datetime")){
+			result = "datetime ";
+		}else{
+			result = "varchar (200)";
+		}
+		return result;
+	}
+	
+	/**
 	 * 给固定的表添加数据文件.
 	 * @param filePath
 	 * @param tableName
