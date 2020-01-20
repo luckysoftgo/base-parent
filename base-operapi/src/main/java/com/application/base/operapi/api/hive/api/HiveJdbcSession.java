@@ -1,5 +1,7 @@
 package com.application.base.operapi.api.hive.api;
 
+import com.application.base.operapi.core.ColumnInfo;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +75,13 @@ public interface HiveJdbcSession {
 	 * @return
 	 */
 	public Map<String,String> getHiveInfo(String tableName);
+	
+	/**
+	 * 获得hive表的列结构信息.
+	 * @param tableName
+	 * @return
+	 */
+	public List<ColumnInfo> getHiveColumns(String tableName);
 	
 	/**
 	 * 给固定的表添加数据文件.

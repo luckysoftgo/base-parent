@@ -2,6 +2,7 @@ package com.application.base.operapi.api.hive.session;
 
 import com.application.base.operapi.api.hive.api.HiveJdbcSession;
 import com.application.base.operapi.api.hive.core.HiveJdbcClient;
+import com.application.base.operapi.core.ColumnInfo;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -67,6 +68,11 @@ public class HiveJdbcOperSession implements HiveJdbcSession {
 	@Override
 	public Map<String, String> getHiveInfo(String tableName) {
 		return jdbcClient.getHiveInfo(tableName);
+	}
+	
+	@Override
+	public List<ColumnInfo> getHiveColumns(String tableName) {
+		return jdbcClient.getHiveColumns(tableName);
 	}
 	
 	@Override

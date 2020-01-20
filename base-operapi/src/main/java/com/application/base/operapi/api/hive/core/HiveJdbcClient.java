@@ -2,6 +2,7 @@ package com.application.base.operapi.api.hive.core;
 
 import com.application.base.operapi.api.hive.config.HiveJdbcConfig;
 import com.application.base.operapi.api.hive.exception.HiveException;
+import com.application.base.operapi.core.ColumnInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -403,6 +404,40 @@ public class HiveJdbcClient {
 	}
 	
 	/**
+	 * 获取列信息.
+	 * @param tableName
+	 * @return
+	 */
+	public List<ColumnInfo> getHiveColumns(String tableName) {
+		String sql = "describe "+tableName;
+		Connection connn = null;
+		Statement statement = null;
+		ResultSet resultSet = null;
+		LinkedList<ColumnInfo> tableColumns = new LinkedList<>();
+		try {
+			connn = getConnection();
+			statement = connn.createStatement();
+			resultSet = statement.executeQuery(sql);
+			while(resultSet.next()) {
+				String columnName = resultSet.getString(1);
+				String columnType = resultSet.getString(2);
+				String columnComment = resultSet.getString(3);
+				ColumnInfo columnInfo = new ColumnInfo();
+				columnInfo.setColumnName(columnName);
+				columnInfo.setColumnHiveType(columnType);
+				columnInfo.setColumnComment(columnComment);
+				tableColumns.add(columnInfo);
+			}
+			return tableColumns;
+		} catch (SQLException e) {
+			logger.error("查询数据库表结构异常了,异常原因是:{}",e.getMessage());
+			return tableColumns;
+		}finally {
+			close(connn,statement,null,resultSet);
+		}
+	}
+	
+	/**
 	 * 给固定的表添加数据文件.
 	 * @param filePath
 	 * @param tableName
@@ -648,4 +683,5 @@ public class HiveJdbcClient {
 			}
 		}
 	}
+	
 }
