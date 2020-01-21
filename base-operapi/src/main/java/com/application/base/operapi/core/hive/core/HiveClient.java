@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -57,9 +58,9 @@ public class HiveClient {
 		
 		//mysql
 		String user = "root";
-		String pwd = "123456";
-		String url = "jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=UTF-8";
-		String table = "sum_data_dir";
+		String pwd = "db#@!123WC";
+		String url = "jdbc:mysql://192.168.10.143:3306/datax_web?useUnicode=true&characterEncoding=UTF-8";
+		String table = "datax_test1";
 		
 		List list = getTableMapInfo(url,user,pwd,table, RdbmsType.MYSQL);
 		System.out.println(list);
@@ -80,13 +81,13 @@ public class HiveClient {
 	 */
 	public static String getCreateHiveTableSql(Connection conn, String tableName,RdbmsType rdbmsType){
 		List<ColumnInfo> columnInfos = getTableBeanInfo(conn,tableName,rdbmsType);
-		StringBuffer buffer = new StringBuffer( "create table if not exists `"+tableName+"` (");
+		StringBuffer buffer = new StringBuffer( "create table if not exists `"+tableName+"` (\n");
 		for (int i = 0; i <columnInfos.size() ; i++) {
 			ColumnInfo info = columnInfos.get(i);
 			if (i!=columnInfos.size()-1){
-				buffer.append(" `"+info.getColumnName()+"` "+info.getColumnHiveType()+"  COMMENT '"+info.getColumnComment()+"',");
+				buffer.append(" `"+info.getColumnName()+"` "+info.getColumnHiveType()+"  COMMENT '"+ Objects.toString(info.getColumnComment(),"") +"',\n");
 			}else{
-				buffer.append(" `"+info.getColumnName()+"` "+info.getColumnHiveType()+"  COMMENT '"+info.getColumnComment()+"'");
+				buffer.append(" `"+info.getColumnName()+"` "+info.getColumnHiveType()+"  COMMENT '"+Objects.toString(info.getColumnComment(),"") +"'\n");
 			}
 		}
 		buffer.append(") row format delimited fields terminated by '\t' null defined as '' stored as textfile ");
@@ -204,15 +205,13 @@ public class HiveClient {
 		ResultSet rs = null;
 		try {
 			dbmd = conn.getMetaData();
-			resultSet = dbmd.getTables(null, "%", table, new String[] { "TABLE" });
+			resultSet = dbmd.getTables(null, null, table, new String[] { "TABLE" });
 			while (resultSet.next()) {
 				String tableName=resultSet.getString("TABLE_NAME");
-				System.out.println(tableName);
 				if(tableName.equals(table)){
 					rs = conn.getMetaData().getColumns(null, getSchema(conn),tableName.toUpperCase(), "%");
 					while(rs.next()){
 						ColumnInfo columnInfo = new ColumnInfo();
-						Map<String,Object> map = new HashMap();
 						String colName = rs.getString("COLUMN_NAME");
 						columnInfo.setColumnName(colName);
 						String remarks = rs.getString("REMARKS");
@@ -234,16 +233,88 @@ public class HiveClient {
 			}
 			rs.close();
 			resultSet.close();
+		} catch (Exception e) {
+			if (beanList.isEmpty()){
+				beanList = getTableInfo(conn,table,rdbmsType);
+			}
+		}
+		if (beanList.isEmpty()){
+			beanList = getTableInfo(conn,table,rdbmsType);
+		}
+		try {
+			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally{
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
+		}
+		return beanList;
+	}
+	
+	/**
+	 * 获取表的信息
+	 * @param conn
+	 * @param table
+	 * @param rdbmsType
+	 * @return
+	 */
+	private static List<ColumnInfo> getTableInfo(Connection conn, String table, RdbmsType rdbmsType) {
+		List<ColumnInfo> beanList = new ArrayList();
+		try {
+			String sql = "select * from "+table+" limit 1";
+			Statement statement = null;
+			ResultSet resultSet = null;
+			statement = conn.createStatement();
+			resultSet = statement.executeQuery(sql);
+			while(resultSet.next()) {
+				ResultSetMetaData data = resultSet.getMetaData();
+				for (int i = 1; i <= data.getColumnCount(); i++) {
+					//获得所有列的数目及实际列数
+					int columnCount = data.getColumnCount();
+					//获得指定列的列名
+					String columnName = data.getColumnName(i);
+					//获得指定列的列值
+					String columnValue = resultSet.getString(i);
+					//获得指定列的数据类型
+					int columnType = data.getColumnType(i);
+					//获得指定列的数据类型名
+					String columnTypeName = data.getColumnTypeName(i);
+					//所在的Catalog名字
+					String catalogName = data.getCatalogName(i);
+					//对应数据类型的类
+					String columnClassName = data.getColumnClassName(i);
+					//在数据库中类型的最大字符个数
+					int columnDisplaySize = data.getColumnDisplaySize(i);
+					//默认的列的标题
+					String columnLabel = data.getColumnLabel(i);
+					//获得列的模式
+					String schemaName = data.getSchemaName(i);
+					//某列类型的精确度(类型的长度)
+					int precision = data.getPrecision(i);
+					//小数点后的位数
+					int scale = data.getScale(i);
+					//获取某列对应的表名
+					String tableName = data.getTableName(i);
+					// 是否自动递增
+					boolean isAutoInctement = data.isAutoIncrement(i);
+					//在数据库中是否为货币型
+					boolean isCurrency = data.isCurrency(i);
+					//是否为空
+					int isNullable = data.isNullable(i);
+					//是否为只读
+					boolean isReadOnly = data.isReadOnly(i);
+					//能否出现在where中
+					boolean isSearchable = data.isSearchable(i);
+					ColumnInfo columnInfo =new ColumnInfo();
+					columnInfo.setColumnName(columnName);
+					columnInfo.setColumnDbType(columnTypeName);
+					columnInfo.setColumnHiveType(changeHiveType(columnTypeName,rdbmsType));
+					columnInfo.setColumnJavaType(columnClassName);
+					beanList.add(columnInfo);
+				}
 			}
+			resultSet.close();
+			statement.close();
+		}catch (Exception e){
+			e.printStackTrace();
 		}
 		return beanList;
 	}
