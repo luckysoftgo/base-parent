@@ -3,8 +3,10 @@ package com.application.base.elastic.elastic.transport.session;
 import com.application.base.elastic.core.ElasticSession;
 import com.application.base.elastic.elastic.query.EsQueryBuilderInstance;
 import com.application.base.elastic.entity.ElasticData;
+import com.application.base.elastic.entity.ElasticInfo;
 import com.application.base.elastic.exception.ElasticException;
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
@@ -29,6 +31,8 @@ import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.cluster.health.ClusterHealthStatus;
+import org.elasticsearch.cluster.health.ClusterIndexHealth;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -92,6 +96,41 @@ public class ElasticTransportSession implements ElasticSession {
 	public boolean judgeIndexExist(String index) throws ElasticException {
 		IndicesExistsResponse response=getTransportClient().admin().indices().exists(new IndicesExistsRequest().indices(new String[]{index})).actionGet();
 		return response.isExists();
+	}
+	
+	@Override
+	public ElasticInfo getIndexs() throws ElasticException {
+		ElasticInfo info = new ElasticInfo();
+		try {
+			ClusterHealthResponse healths = getTransClient().admin().cluster().prepareHealth().get();
+			String clusterName = healths.getClusterName();
+			info.setEsClusterName(clusterName);
+			//输出集群名
+			int numberOfDataNodes = healths.getNumberOfDataNodes();
+			//输出节点数量
+			info.setNumberOfDataNodes(numberOfDataNodes);
+			//输出每个索引信息
+			List<ElasticInfo.EsItemInfo> elasticInfos = new ArrayList<>();
+			for(ClusterIndexHealth health:healths.getIndices().values()) {
+				String indexName = health.getIndex();
+				if (indexName.startsWith(".mon") || indexName.startsWith(".kiban")){
+					continue;
+				}
+				ElasticInfo.EsItemInfo itemInfo = new ElasticInfo().new EsItemInfo();
+				int numberOfShards = health.getNumberOfShards();
+				int numberOfReplicas = health.getNumberOfReplicas();
+				ClusterHealthStatus clusterHealthStatus = health.getStatus();
+				itemInfo.setIndexName(indexName);
+				itemInfo.setNumberOfShards(numberOfShards);
+				itemInfo.setNumberOfReplicas(numberOfReplicas);
+				itemInfo.setClusterHealthStatus(clusterHealthStatus.toString());
+				elasticInfos.add(itemInfo);
+			}
+			info.setElasticInfos(elasticInfos);
+		}catch (Exception e){
+			return info;
+		}
+		return info;
 	}
 	
 	@Override
@@ -332,7 +371,7 @@ public class ElasticTransportSession implements ElasticSession {
 		if (builderInstance==null){
 			return null;
 		}
-		int MAX = 10000;
+		int max = 10000;
 		try {
 			SearchRequestBuilder searchRequestBuilder = getTransportClient().prepareSearch(index).setTypes(type);
 			//排序
@@ -349,8 +388,8 @@ public class ElasticTransportSession implements ElasticSession {
 			if (size < 0) {
 				size = 0;
 			}
-			if (size > MAX) {
-				size = MAX;
+			if (size > max) {
+				size = max;
 			}
 			//返回条目数
 			searchRequestBuilder.setSize(size);

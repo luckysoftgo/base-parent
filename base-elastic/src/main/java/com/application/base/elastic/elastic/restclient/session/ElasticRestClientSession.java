@@ -3,6 +3,7 @@ package com.application.base.elastic.elastic.restclient.session;
 import com.application.base.elastic.core.ElasticSession;
 import com.application.base.elastic.elastic.query.EsQueryBuilderInstance;
 import com.application.base.elastic.entity.ElasticData;
+import com.application.base.elastic.entity.ElasticInfo;
 import com.application.base.elastic.exception.ElasticException;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.ActionListener;
@@ -102,8 +103,14 @@ public class ElasticRestClientSession implements ElasticSession {
         }
         return false;
     }
-    
-    @Override
+	
+	@Override
+	@Deprecated
+	public ElasticInfo getIndexs() throws ElasticException {
+		return null;
+	}
+	
+	@Override
     public boolean judgeTypeExist(String index, String type) throws ElasticException {
         try{
             GetRequest request =new GetRequest();

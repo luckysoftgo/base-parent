@@ -3,6 +3,7 @@ package com.application.base.elastic.core;
 
 import com.application.base.elastic.elastic.query.EsQueryBuilderInstance;
 import com.application.base.elastic.entity.ElasticData;
+import com.application.base.elastic.entity.ElasticInfo;
 import com.application.base.elastic.exception.ElasticException;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.transport.TransportClient;
@@ -42,6 +43,12 @@ public interface ElasticSession {
 	 * @return
 	 */
 	public boolean judgeIndexExist(String index) throws ElasticException;
+	
+	/**
+	 * 获得所有的索引.
+	 * @return
+	 */
+	public ElasticInfo getIndexs() throws ElasticException;
 	
 	/**
 	 * 判断指定的索引的类型是否存在
