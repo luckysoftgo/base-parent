@@ -256,6 +256,12 @@ public class KylinRestApiClient {
 		return execute(requestUrl,authToken,param,method,null);
 	}
 	
+	public String getCubeSql(String cubeName) throws KylinException {
+		String method = "GET";
+		String param = "/cubes/"+cubeName+"/sql";
+		return execute(requestUrl,authToken,param,method,null);
+	}
+	
 	/**
 	 * 执行http请求.
 	 * @param basicUrl

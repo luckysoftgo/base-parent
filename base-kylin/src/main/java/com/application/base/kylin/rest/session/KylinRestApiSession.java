@@ -284,4 +284,14 @@ public class KylinRestApiSession implements KylinRestSession {
 		}
 		return null;
 	}
+	
+	@Override
+	public String getCubeSql(String cubeName) throws KylinException {
+		try {
+			return kylinRestApiClient.getCubeSql(cubeName);
+		}catch (KylinException e){
+			logger.error("获得Cube SQL 出错,错误信息是:{}",e.getMessage());
+		}
+		return null;
+	}
 }

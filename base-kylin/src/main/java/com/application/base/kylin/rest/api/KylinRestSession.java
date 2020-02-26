@@ -237,4 +237,11 @@ public interface KylinRestSession {
 	 * @throws KylinException
 	 */
 	public String fillCubeHole(String cubeName) throws KylinException;
+	
+	/**
+	 * 获得建模下的sql信息.
+	 * @param cubeName
+	 * @return
+	 */
+	public String getCubeSql(String cubeName)  throws KylinException;
 }
