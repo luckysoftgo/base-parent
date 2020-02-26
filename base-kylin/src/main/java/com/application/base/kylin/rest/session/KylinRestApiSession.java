@@ -290,7 +290,7 @@ public class KylinRestApiSession implements KylinRestSession {
 		try {
 			return kylinRestApiClient.getCubeSql(cubeName);
 		}catch (KylinException e){
-			logger.error("获得Cube SQL 出错,错误信息是:{}",e.getMessage());
+			logger.error("获得Cube中的SQL 出错,错误信息是:{}",e.getMessage());
 		}
 		return null;
 	}
