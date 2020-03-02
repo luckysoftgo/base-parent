@@ -19,6 +19,16 @@ import java.util.Set;
  **/
 public class KylinJdbc {
 	
+	public Connection getConn() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		Driver driver = (Driver) Class.forName("org.apache.kylin.jdbc.Driver").newInstance();
+		Properties info = new Properties();
+		info.put("user", "ADMIN");
+		info.put("password", "KYLIN");
+		Connection conn = driver.connect("jdbc:kylin://192.168.10.185:7070/Kkklin", info);
+		return conn;
+	}
+	
+	
 	public void connentJdbc() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		Driver driver = (Driver) Class.forName("org.apache.kylin.jdbc.Driver").newInstance();
 		Properties info = new Properties();
@@ -46,6 +56,8 @@ public class KylinJdbc {
 		}
 		
 	}
+	
+	
 	public static void main(String[] args) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException{
 		KylinJdbc ky = new KylinJdbc();
 		ky.connentJdbc();
