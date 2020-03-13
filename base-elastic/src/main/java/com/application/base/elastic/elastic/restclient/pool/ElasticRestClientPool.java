@@ -25,7 +25,7 @@ public class ElasticRestClientPool extends RestClientPool<RestHighLevelClient> {
 	private Set<EsRestClientNodeConfig> clusterNodes;
 	
 	public ElasticRestClientPool(EsRestClientPoolConfig restPoolConfig){
-		super(restPoolConfig, new ElasticRestClientFactory(restPoolConfig.getClusterName(), restPoolConfig.getEsNodes()));
+		super(restPoolConfig, new ElasticRestClientFactory(restPoolConfig));
 		this.clusterName=restPoolConfig.getClusterName();
 		this.clusterNodes=restPoolConfig.getEsNodes();
 	}

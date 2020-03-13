@@ -33,6 +33,7 @@
                 <ref bean="transPortNodeConfig"/>
             </set>
         </property>
+		<property name="authLogin" value="${elastic.auth}"/>
     </bean>
     
     <!-- 1. elastic 单点服务器,只存在一个elastic的服务器 -->
@@ -71,6 +72,7 @@
                 <ref bean="jestNodeConfig"/>
             </set>
         </property>
+		<property name="authLogin" value="${elastic.auth}"/>
     </bean>
     
     <!-- 1. elastic 单点服务器,只存在一个elastic的服务器 -->

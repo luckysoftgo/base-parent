@@ -103,6 +103,10 @@ public class ElasticTransportSession implements ElasticSession {
 		ElasticInfo info = new ElasticInfo();
 		try {
 			ClusterHealthResponse healths = getTransClient().admin().cluster().prepareHealth().get();
+			/*
+	        IndicesStatsResponse resp = client.admin().indices().prepareStats().execute().actionGet();
+	        GetIndexResponse resp = client.admin().indices().prepareGetIndex().execute().actionGet();
+	        */
 			String clusterName = healths.getClusterName();
 			info.setEsClusterName(clusterName);
 			//输出集群名

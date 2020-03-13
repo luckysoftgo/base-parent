@@ -24,7 +24,14 @@ public class EsTransportNodeConfig implements Serializable {
 	 * 节点schema
 	 */
 	private String nodeSchema;
-	
+	/**
+	 * 认证用户名
+	 */
+	private String authName;
+	/**
+	 * 认证密码
+	 */
+	private String authPass;
 	
 	public String getNodeName() {
 		return nodeName;
@@ -56,5 +63,21 @@ public class EsTransportNodeConfig implements Serializable {
 	
 	public void setNodeSchema(String nodeSchema) {
 		this.nodeSchema = nodeSchema;
+	}
+	
+	public String getAuthName() {
+		return authName;
+	}
+	
+	public void setAuthName(String authName) {
+		this.authName = authName;
+	}
+	
+	public String getAuthPass() {
+		return authPass;
+	}
+	
+	public void setAuthPass(String authPass) {
+		this.authPass = authPass;
 	}
 }

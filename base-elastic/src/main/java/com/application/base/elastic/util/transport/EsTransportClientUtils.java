@@ -90,10 +90,10 @@ public class EsTransportClientUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static TransportClient getParamClient(String clusterName,String serverIPs,boolean isAppend) throws Exception {
+	public static TransportClient getParamClient(String clusterName,String serverIPs,boolean isAppend,String authLogin) throws Exception {
 		if (paramClient==null) {
 			EsTransportClientBuilder client = new EsTransportClientBuilder();
-			paramClient = client.initParamsClient(clusterName, serverIPs, isAppend);
+			paramClient = client.initParamsClient(clusterName, serverIPs, isAppend,authLogin);
 		}
 		return paramClient;
 	}

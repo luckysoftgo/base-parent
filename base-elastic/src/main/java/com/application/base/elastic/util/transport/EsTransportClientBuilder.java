@@ -3,6 +3,7 @@ package com.application.base.elastic.util.transport;
 import com.application.base.elastic.exception.ElasticException;
 import com.application.base.utils.common.BaseStringUtil;
 import com.application.base.utils.common.PropStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
@@ -42,6 +43,10 @@ public class EsTransportClientBuilder {
 	 */
 	private String serverIPs="127.0.0.1:9300";
 	/**
+	 * 认证信息.
+	 */
+	private String authLogin="elastic:elastic";
+	/**
 	 * 是否自动加载集群的机器到列表中：true.是;false.否.
 	 */
 	private boolean isAppend=true;
@@ -67,19 +72,20 @@ public class EsTransportClientBuilder {
 		            	if (!BaseStringUtil.isEmpty(inputPath)){
 				            infoPath=inputPath;
 			            }
-		            	Map<String,String> value = PropStringUtils.getValues(infoPath);
-		            	if (value.isEmpty()){
+		            	Map<String,String> values = PropStringUtils.getValues(infoPath);
+		            	if (values.isEmpty()){
 		            		logger.info("根据配置文件:"+infoPath+"获取的配置信息为空!");
 		            		return null;
 			            }
-			            clusterName = value.get("elastic.cluster.name");
-			            serverIPs = value.get("elastic.serverIps");
-			            String sniff = value.get("elastic.transport.sniff");
+			            clusterName = values.get("elastic.cluster.name");
+			            serverIPs = values.get("elastic.serverIps");
+			            String sniff = values.get("elastic.transport.sniff");
+			            authLogin = values.get("elastic.auth");
 			            if (!BaseStringUtil.isEmpty(sniff)){
 				            isAppend=Boolean.getBoolean(sniff);
 			            }
 			            //初始化操作实现
-			            settingClient=initClient(clusterName,isAppend,serverIPs);
+			            settingClient=initClient(clusterName,isAppend,serverIPs,authLogin);
 		            }
 	            }
                 return settingClient;
@@ -97,20 +103,37 @@ public class EsTransportClientBuilder {
 	
 	/**
 	 * 返回创建的客户端信息
+	 * https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/transport-client.html
 	 * @param clusterName
 	 * @param isAppend
 	 * @param serverIPs
 	 * @return
 	 */
-	private TransportClient initClient(String clusterName,boolean isAppend,String serverIPs) {
-		Settings settings = Settings.builder()
-				// 集群名
-				.put("cluster.name", clusterName)
-				// 自动把集群下的机器添加到列表中:true.是;false.否
-				//.put("client.transport.sniff", isAppend)
-				// 忽略集群名字验证, 打开后集群名字不对也能连接上
-				//.put("client.transport.ignore_cluster_name", true)
-				.build();
+	private TransportClient initClient(String clusterName,boolean isAppend,String serverIPs,String authLogin) {
+		Settings settings = null;
+		if (StringUtils.isNotBlank(authLogin)){
+			settings = Settings.builder()
+					// 集群名
+					.put("cluster.name", clusterName)
+					// 自动把集群下的机器添加到列表中:true.是;false.否
+					//.put("client.transport.sniff", isAppend)
+					// 忽略集群名字验证, 打开后集群名字不对也能连接上
+					//.put("client.transport.ignore_cluster_name", true)
+					//安全认证:
+					.put("xpack.security.user",authLogin)
+					.build();
+		}else{
+			settings = Settings.builder()
+					// 集群名
+					.put("cluster.name", clusterName)
+					// 自动把集群下的机器添加到列表中:true.是;false.否
+					//.put("client.transport.sniff", isAppend)
+					// 忽略集群名字验证, 打开后集群名字不对也能连接上
+					//.put("client.transport.ignore_cluster_name", true)
+					//安全认证:
+					.build();
+		}
+		
 		try {
 			TransportClient settingClient = new PreBuiltTransportClient(settings);
 			//节点信息
@@ -140,7 +163,7 @@ public class EsTransportClientBuilder {
 	 * @return TransportClient
 	 */
     @SuppressWarnings("unchecked")
-	public TransportClient initParamsClient(String clusterName,String serverIPs,boolean isAppend) {
+	public TransportClient initParamsClient(String clusterName,String serverIPs,boolean isAppend,String authLogin) {
         try {
             if (paramClient == null) {
 	            synchronized (EsTransportClientBuilder.class){
@@ -148,7 +171,7 @@ public class EsTransportClientBuilder {
 	                    return null;
 	                }
 		            //初始化操作实现
-		            paramClient=initClient(clusterName,isAppend,serverIPs);
+		            paramClient=initClient(clusterName,isAppend,serverIPs,authLogin);
                 }
                 return paramClient;
             } else {

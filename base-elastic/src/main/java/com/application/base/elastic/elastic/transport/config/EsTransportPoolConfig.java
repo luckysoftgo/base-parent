@@ -20,9 +20,15 @@ public class EsTransportPoolConfig extends GenericObjectPoolConfig {
 	 */
 	private String clusterName;
 	/**
+	 * 登录认证信息.
+	 */
+	private String authLogin;
+	
+	/**
 	 * 节点数据
 	 */
 	Set<EsTransportNodeConfig> esNodes = new HashSet<EsTransportNodeConfig>();
+	
 	
 	public long getConnectTimeMillis() {
 		return connectTimeMillis;
@@ -61,5 +67,12 @@ public class EsTransportPoolConfig extends GenericObjectPoolConfig {
 				.append("maxTotal:").append(getMaxTotal()).append("\n");
 		return buffer.toString();
 	}
-
+	
+	public String getAuthLogin() {
+		return authLogin;
+	}
+	
+	public void setAuthLogin(String authLogin) {
+		this.authLogin = authLogin;
+	}
 }

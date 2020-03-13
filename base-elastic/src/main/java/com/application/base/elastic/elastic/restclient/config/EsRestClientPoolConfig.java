@@ -21,6 +21,11 @@ public class EsRestClientPoolConfig extends GenericObjectPoolConfig {
 	 */
 	private String clusterName;
 	/**
+	 * 登录认证信息.
+	 */
+	private String authLogin;
+	
+	/**
 	 * 节点数据
 	 */
 	Set<EsRestClientNodeConfig> esNodes = new HashSet<EsRestClientNodeConfig>();
@@ -62,5 +67,12 @@ public class EsRestClientPoolConfig extends GenericObjectPoolConfig {
 				.append("maxTotal:").append(getMaxTotal()).append("\n");
 		return buffer.toString();
 	}
-
+	
+	public String getAuthLogin() {
+		return authLogin;
+	}
+	
+	public void setAuthLogin(String authLogin) {
+		this.authLogin = authLogin;
+	}
 }

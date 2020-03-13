@@ -1,10 +1,17 @@
 package com.application.base.elastic.elastic.restclient.factory;
 
 import com.application.base.elastic.elastic.restclient.config.EsRestClientNodeConfig;
+import com.application.base.elastic.elastic.restclient.config.EsRestClientPoolConfig;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.PooledObjectFactory;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
 import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
@@ -28,10 +35,20 @@ public class ElasticRestClientFactory implements PooledObjectFactory<RestHighLev
 	 * 群集名称
 	 */
 	private String clusterName;
+	/**
+	 * 认证用户名
+	 */
+	private String authName;
+	/**
+	 * 认证密码
+	 */
+	private String authPass;
 	
-	public ElasticRestClientFactory(String clusterName, Set<EsRestClientNodeConfig> clusterNodes) {
-		this.clusterName = clusterName;
-		this.nodesReference.set(clusterNodes);
+	public ElasticRestClientFactory(EsRestClientPoolConfig restPoolConfig) {
+		this.clusterName = restPoolConfig.getClusterName();
+		this.nodesReference.set(restPoolConfig.getEsNodes());
+		this.authName = restPoolConfig.getAuthName();
+		this.authPass = restPoolConfig.getAuthPass();
 	}
 	
 	@Override
@@ -43,6 +60,20 @@ public class ElasticRestClientFactory implements PooledObjectFactory<RestHighLev
 		}
 		nodes = nodeList.toArray(nodes);
 		RestClientBuilder clientBuilder = RestClient.builder(nodes);
+		//安全认证.
+		if (StringUtils.isNotBlank(authName) && StringUtils.isNotBlank(authPass)){
+			final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+			//es账号密码（默认用户名为elastic）
+			credentialsProvider.setCredentials(AuthScope.ANY,new UsernamePasswordCredentials(authName, authPass));
+			//添加认证信息.
+			clientBuilder.setHttpClientConfigCallback(new RestClientBuilder.HttpClientConfigCallback() {
+				@Override
+				public HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder) {
+					httpClientBuilder.disableAuthCaching();
+					return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+				}
+			});
+		}
 		RestHighLevelClient client = new RestHighLevelClient(clientBuilder);
 		return new DefaultPooledObject(client);
 	}

@@ -2,7 +2,13 @@ package com.application.base.elastic.util.jest;
 
 import com.application.base.utils.common.BaseStringUtil;
 import com.application.base.utils.common.PropStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -34,6 +40,10 @@ public class EsJestClientBuilder {
 	 * node IP 地址.
 	 */
 	private String serverIPs="127.0.0.1:9200";
+	/**
+	 * node auth.
+	 */
+	private String serverAuth = "elastic:elastic";
 	
 	/**
 	 *配置文件信息记录
@@ -56,14 +66,15 @@ public class EsJestClientBuilder {
 						if (!BaseStringUtil.isEmpty(inputPath)){
 							infoPath=inputPath;
 						}
-						Map<String,String> value = PropStringUtils.getValues(infoPath);
-						if (value.isEmpty()){
+						Map<String,String> values = PropStringUtils.getValues(infoPath);
+						if (values.isEmpty()){
 							logger.info("根据配置文件:"+infoPath+"获取的配置信息为空!");
 							return null;
 						}
-						serverIPs = value.get("elastic.serverIps");
 						//初始化操作实现
-						settingClient=initClient(serverIPs);
+						serverIPs = values.get("elastic.serverIps");
+						serverAuth = values.get("elastic.auth");
+						settingClient=initClient(serverIPs,serverAuth);
 					}
 				}
 				return settingClient;
@@ -86,9 +97,10 @@ public class EsJestClientBuilder {
 	/**
 	 * 返回创建的客户端信息
 	 * @param serverIPs
+	 * @param serverAuth
 	 * @return
 	 */
-	private RestHighLevelClient initClient(String serverIPs) {
+	private RestHighLevelClient initClient(String serverIPs,String serverAuth) {
 		Map<String, Integer> data = parseNodeIps(serverIPs);
 		HttpHost[] hosts = new HttpHost[data.size()];
 		int index=0;
@@ -97,10 +109,25 @@ public class EsJestClientBuilder {
 			index++;
 		}
 		RestClientBuilder builder = RestClient.builder(hosts);
+		//安全认证.
+		if (StringUtils.isNotBlank(serverAuth)){
+			String name = serverAuth.split(":")[0];
+			String pass = serverAuth.split(":")[1];
+			final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+			//es账号密码（默认用户名为elastic）
+			credentialsProvider.setCredentials(AuthScope.ANY,new UsernamePasswordCredentials(name, pass));
+			//添加认证信息.
+			builder.setHttpClientConfigCallback(new RestClientBuilder.HttpClientConfigCallback() {
+				@Override
+				public HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder) {
+					httpClientBuilder.disableAuthCaching();
+					return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+				}
+			});
+		}
 		RestHighLevelClient levelClient = new RestHighLevelClient(builder);
 		return levelClient;
 	}
-	
 	
 	
 	/**
@@ -112,12 +139,12 @@ public class EsJestClientBuilder {
 	 * @return TransportClient
 	 */
 	@SuppressWarnings("unchecked")
-	public RestHighLevelClient initParamsClient(String serverIPs) {
+	public RestHighLevelClient initParamsClient(String serverIPs,String serverAuth) {
 		try {
 			if (paramClient == null) {
 				synchronized (EsJestClientBuilder.class){
 					//初始化操作实现
-					paramClient=initClient(serverIPs);
+					paramClient=initClient(serverIPs,serverAuth);
 				}
 				return paramClient;
 			} else {
@@ -157,4 +184,11 @@ public class EsJestClientBuilder {
 		this.serverIPs = serverIPs;
 	}
 	
+	public String getServerAuth() {
+		return serverAuth;
+	}
+	
+	public void setServerAuth(String serverAuth) {
+		this.serverAuth = serverAuth;
+	}
 }

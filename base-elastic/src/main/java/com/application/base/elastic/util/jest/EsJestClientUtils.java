@@ -79,10 +79,10 @@ public class EsJestClientUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static RestHighLevelClient getParamClient(String serverIPs) throws Exception {
+	public static RestHighLevelClient getParamClient(String serverIPs,String serverAuth) throws Exception {
 		if (paramClient==null) {
 			EsJestClientBuilder client = new EsJestClientBuilder();
-			paramClient = client.initParamsClient(serverIPs);
+			paramClient = client.initParamsClient(serverIPs,serverAuth);
 		}
 		return paramClient;
 	}
