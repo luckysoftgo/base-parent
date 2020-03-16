@@ -1,14 +1,15 @@
 package com.application.test;
 
-import com.application.base.elastic.elastic.transport.config.EsTransportNodeConfig;
 import com.application.base.elastic.elastic.transport.config.EsTransportPoolConfig;
 import com.application.base.elastic.elastic.transport.factory.EsTransportSessionPoolFactory;
 import com.application.base.elastic.elastic.transport.pool.ElasticTransportPool;
 import com.application.base.elastic.entity.ElasticData;
+import com.application.base.elastic.entity.NodeInfo;
 import com.application.base.utils.json.JsonConvertUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,17 +20,17 @@ import java.util.Map;
 public class FactoryTest {
 	
 	public static void main(String[] args) {
-		
 		test();
 	}
 	
 	public static void test(){
-		HashSet<EsTransportNodeConfig> esNodes = getTransportNodeInfos();
-		EsTransportPoolConfig poolConfig = new EsTransportPoolConfig();
-		poolConfig.setClusterName("elasticsearch");
-		poolConfig.setEsNodes(esNodes);
+		List<NodeInfo> esNodes = getTransportNodeInfos();
+		EsTransportPoolConfig poolConfig = new EsTransportPoolConfig("elasticsearch","192.168.10.216:9300",null);
+		//poolConfig.setClusterName("elasticsearch");
+		//poolConfig.setServerNodes(esNodes);
 		ElasticTransportPool transportPool = new ElasticTransportPool(poolConfig);
 		EsTransportSessionPoolFactory transportSessionFactory = new EsTransportSessionPoolFactory(transportPool);
+		List<ElasticData> dataList = new ArrayList<>();
 		for (int i = 0; i <500 ; i++) {
 			ElasticData data = new ElasticData();
 			data.setIndex("hahaha");
@@ -43,18 +44,19 @@ public class FactoryTest {
 			info.put("info5","分库"+i);
 			data.setMapFlag(false);
 			data.setData(JsonConvertUtils.toJson(info));
-			boolean flag = transportSessionFactory.getElasticSession().addEsData(data);
-			System.out.printf("index="+i+",flag="+flag);
+			dataList.add(data);
 		}
+		boolean flag = transportSessionFactory.getElasticSession().addEsDataList(dataList,true);
+		System.out.printf("flag="+flag);
 	}
 	
 	/**
 	 * 获得 node 信息
 	 * @return
 	 */
-	private static HashSet<EsTransportNodeConfig> getTransportNodeInfos(){
-		HashSet<EsTransportNodeConfig> nodeConfigs = new HashSet<>();
-		EsTransportNodeConfig nodeConfig = new EsTransportNodeConfig();
+	private static List<NodeInfo> getTransportNodeInfos(){
+		List<NodeInfo> nodeConfigs = new ArrayList<>();
+		NodeInfo nodeConfig = new NodeInfo();
 		nodeConfig.setNodeName("es0");
 		nodeConfig.setNodeHost("192.168.10.216");
 		nodeConfig.setNodePort(9300);

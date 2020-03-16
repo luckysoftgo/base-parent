@@ -63,6 +63,7 @@ public class BulkProcessDemo {
 	 */
 	public static void createIndex(String indexName) throws IOException {
 		RestHighLevelClient client = new RestHighLevelClient(RestClient.builder(new HttpHost("hdp06", 8577, "http")));
+		
 		// ES 索引默认需要小写，故笔者将其转为小写
 		CreateIndexRequest requestIndex = new CreateIndexRequest(indexName.toLowerCase());
 		// 注： 设置副本数为0，索引刷新时间为-1对大批量索引数据效率的提升有不小的帮助

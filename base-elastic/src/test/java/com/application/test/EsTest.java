@@ -134,7 +134,7 @@ public class EsTest {
 	
 	private static void test1() throws Exception {
 		
-		TransportClient client = EsTransportClientUtils.getParamClient(clusterName, serverIPs, false);
+		TransportClient client = EsTransportClientUtils.getParamClient(clusterName, serverIPs, false,null);
 		ElasticData data = new ElasticData(dbName,tableName, "123456789",createJson1(),false);
 		EsTransportClientUtils.addDocument(client, data);
 		System.out.println("添加到ES中成功了...");

@@ -21,10 +21,9 @@
         <property name="numTestsPerEvictionRun" value="${elastic.pool.numTestsPerEvictionRun}"/>
         <property name="connectTimeMillis" value="5000"/>
 		
-		<property name="clusterName" value="${elastic.clusterName}"/>
-		<property name="transportServerInfos" value="${transport.serverInfos}"/>
-		<property name="authLogin" value="${elastic.authLogin}"/>
-		
+		<constructor-arg name="clusterName" value="${elastic.clusterName}"/>
+		<constructor-arg name="transportServerInfos" value="${transport.serverInfos}"/>
+		<constructor-arg name="authLogin" value="${elastic.authLogin}"/>
     </bean>
     
     <!-- 1. elastic 单点服务器,只存在一个elastic的服务器 -->
@@ -48,9 +47,10 @@
         <property name="timeBetweenEvictionRunsMillis" value="${elastic.pool.timeBetweenEvictionRunsMillis}"/>
         <property name="numTestsPerEvictionRun" value="${elastic.pool.numTestsPerEvictionRun}"/>
         <property name="connectTimeMillis" value="5000"/>
-		<property name="clusterName" value="${elastic.clusterName}"/>
-		<property name="restcientServerInfos" value="${restcient.serverInfos}"/>
-		<property name="authLogin" value="${elastic.authLogin}"/>
+		
+		<constructor-arg name="clusterName" value="${elastic.clusterName}"/>
+		<constructor-arg name="restcientServerInfos" value="${restcient.serverInfos}"/>
+		<constructor-arg name="authLogin" value="${elastic.authLogin}"/>
     </bean>
     
     <!-- 1. elastic 单点服务器,只存在一个elastic的服务器 -->

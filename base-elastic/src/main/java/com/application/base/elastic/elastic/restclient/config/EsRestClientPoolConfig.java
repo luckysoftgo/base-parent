@@ -60,21 +60,21 @@ public class EsRestClientPoolConfig extends GenericObjectPoolConfig {
 	 * 构造函数.
 	 */
 	public EsRestClientPoolConfig() {
-		List<NodeInfo> nodeInfos = NodeExecUtil.getNodes(getRestcientServerInfos());
-		if (nodeInfos!=null && nodeInfos.size()>0){
-			serverNodes = nodeInfos;
-		}
 	}
 	/**
 	 * 构造函数.
 	 */
-	public EsRestClientPoolConfig(String restcientInfos) {
-		if (StringUtils.isNotBlank(restcientInfos)){
-			restcientServerInfos = restcientInfos;
+	public EsRestClientPoolConfig(String clusterName,String restcientServerInfos,String authLogin) {
+		this.clusterName = clusterName;
+		if (StringUtils.isNotBlank(restcientServerInfos)){
+			restcientServerInfos = restcientServerInfos;
 		}
-		List<NodeInfo> nodeInfos = NodeExecUtil.getNodes(restcientInfos);
+		List<NodeInfo> nodeInfos = NodeExecUtil.getNodes(restcientServerInfos);
 		if (nodeInfos!=null && nodeInfos.size()>0){
 			serverNodes = nodeInfos;
+		}
+		if (StringUtils.isNotBlank(authLogin)){
+			this.authLogin = authLogin;
 		}
 	}
 	

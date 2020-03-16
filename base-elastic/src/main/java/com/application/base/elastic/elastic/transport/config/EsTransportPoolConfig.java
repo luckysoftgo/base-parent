@@ -58,22 +58,22 @@ public class EsTransportPoolConfig extends GenericObjectPoolConfig {
 	 * 构造函数.
 	 */
 	public EsTransportPoolConfig() {
-		List<NodeInfo> nodeInfos = NodeExecUtil.getNodes(getTransportServerInfos());
-		if (nodeInfos!=null && nodeInfos.size()>0){
-			serverNodes = nodeInfos;
-		}
 	}
 	
 	/**
 	 * 构造函数.
 	 */
-	public EsTransportPoolConfig(String restcientInfos) {
-		if (StringUtils.isNotBlank(restcientInfos)){
-			transportServerInfos = restcientInfos;
+	public EsTransportPoolConfig(String clusterName,String transportServerInfos,String authLogin) {
+		this.clusterName = clusterName;
+		if (StringUtils.isNotBlank(transportServerInfos)){
+			this.transportServerInfos = transportServerInfos;
 		}
-		List<NodeInfo> nodeInfos = NodeExecUtil.getNodes(restcientInfos);
+		List<NodeInfo> nodeInfos = NodeExecUtil.getNodes(transportServerInfos);
 		if (nodeInfos!=null && nodeInfos.size()>0){
 			serverNodes = nodeInfos;
+		}
+		if (StringUtils.isNotBlank(authLogin)){
+			this.authLogin = authLogin;
 		}
 	}
 	
