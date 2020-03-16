@@ -22,7 +22,7 @@
         <property name="connectTimeMillis" value="5000"/>
 		
 		<constructor-arg name="clusterName" value="${elastic.clusterName}"/>
-		<constructor-arg name="transportServerInfos" value="${transport.serverInfos}"/>
+		<constructor-arg name="transportServerInfos" value="${elastic.transportServerInfos}"/>
 		<constructor-arg name="authLogin" value="${elastic.authLogin}"/>
     </bean>
     
@@ -49,7 +49,7 @@
         <property name="connectTimeMillis" value="5000"/>
 		
 		<constructor-arg name="clusterName" value="${elastic.clusterName}"/>
-		<constructor-arg name="restcientServerInfos" value="${restcient.serverInfos}"/>
+		<constructor-arg name="restcientServerInfos" value="${elastic.restcientServerInfos}"/>
 		<constructor-arg name="authLogin" value="${elastic.authLogin}"/>
     </bean>
     
