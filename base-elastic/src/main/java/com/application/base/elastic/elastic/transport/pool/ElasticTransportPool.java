@@ -1,16 +1,16 @@
 package com.application.base.elastic.elastic.transport.pool;
 
-import com.application.base.elastic.elastic.transport.config.EsTransportNodeConfig;
 import com.application.base.elastic.elastic.transport.config.EsTransportPoolConfig;
 import com.application.base.elastic.elastic.transport.factory.ElasticTransportFactory;
+import com.application.base.elastic.entity.NodeInfo;
 import org.elasticsearch.client.transport.TransportClient;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * @NAME: ElasticTransportPool
  * @DESC: es连接池.
- * @USER: 孤狼.
+ * @AUTHOR : 孤狼.
  **/
 public class ElasticTransportPool extends TransportPool<TransportClient> {
 	/**
@@ -20,7 +20,7 @@ public class ElasticTransportPool extends TransportPool<TransportClient> {
 	/**
 	 * 节点信息.
 	 */
-	private Set<EsTransportNodeConfig> clusterNodes;
+	private List<NodeInfo> clusterNodes;
 	
 	/**
 	 * 登录连接串
@@ -31,16 +31,10 @@ public class ElasticTransportPool extends TransportPool<TransportClient> {
 	}
 	
 	public ElasticTransportPool(EsTransportPoolConfig transportPoolConfig){
-		super(transportPoolConfig, new ElasticTransportFactory(transportPoolConfig.getClusterName(), transportPoolConfig.getEsNodes()));
+		super(transportPoolConfig, new ElasticTransportFactory(transportPoolConfig));
 		this.clusterName=transportPoolConfig.getClusterName();
-		this.clusterNodes=transportPoolConfig.getEsNodes();
-	}
-	
-	public ElasticTransportPool(EsTransportPoolConfig transportPoolConfig,String loginAuth){
-		super(transportPoolConfig, new ElasticTransportFactory(transportPoolConfig.getClusterName(), transportPoolConfig.getEsNodes(),loginAuth));
-		this.clusterName=transportPoolConfig.getClusterName();
-		this.clusterNodes=transportPoolConfig.getEsNodes();
-		this.loginAuth=loginAuth;
+		this.clusterNodes=transportPoolConfig.getServerNodes();
+		this.loginAuth = transportPoolConfig.getAuthLogin();
 	}
 	
 	public String getClusterName() {
@@ -51,11 +45,11 @@ public class ElasticTransportPool extends TransportPool<TransportClient> {
 		this.clusterName = clusterName;
 	}
 	
-	public Set<EsTransportNodeConfig> getClusterNodes() {
+	public List<NodeInfo> getClusterNodes() {
 		return clusterNodes;
 	}
 	
-	public void setClusterNodes(Set<EsTransportNodeConfig> clusterNodes) {
+	public void setClusterNodes(List<NodeInfo> clusterNodes) {
 		this.clusterNodes = clusterNodes;
 	}
 	

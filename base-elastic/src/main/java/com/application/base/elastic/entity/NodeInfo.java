@@ -1,13 +1,14 @@
-package com.application.base.elastic.elastic.transport.config;
+package com.application.base.elastic.entity;
 
 import java.io.Serializable;
 
 /**
- * @NAME: EsTransportNodeConfig
- * @DESC: 节点配置信息
- * @USER: 孤狼
+ * @author : 孤狼
+ * @NAME: NodeInfo
+ * @DESC: 节点信息.
  **/
-public class EsTransportNodeConfig implements Serializable {
+public class NodeInfo implements Serializable {
+	
 	/**
 	 * 节点名称
 	 */
@@ -32,6 +33,20 @@ public class EsTransportNodeConfig implements Serializable {
 	 * 认证密码
 	 */
 	private String authPass;
+	
+	public NodeInfo() {
+	}
+	
+	public NodeInfo(String nodeHost, Integer nodePort) {
+		this.nodeHost = nodeHost;
+		this.nodePort = nodePort;
+	}
+	
+	public NodeInfo(String nodeHost, Integer nodePort, String nodeSchema) {
+		this.nodeHost = nodeHost;
+		this.nodePort = nodePort;
+		this.nodeSchema = nodeSchema;
+	}
 	
 	public String getNodeName() {
 		return nodeName;

@@ -1,7 +1,7 @@
 package com.application.base.elastic.elastic.restclient.factory;
 
-import com.application.base.elastic.elastic.restclient.config.EsRestClientNodeConfig;
 import com.application.base.elastic.elastic.restclient.config.EsRestClientPoolConfig;
+import com.application.base.elastic.entity.NodeInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.PooledObjectFactory;
@@ -19,7 +19,6 @@ import org.elasticsearch.client.RestHighLevelClient;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -29,8 +28,11 @@ import java.util.concurrent.atomic.AtomicReference;
  **/
 public class ElasticRestClientFactory implements PooledObjectFactory<RestHighLevelClient> {
 	
-	private AtomicReference<Set<EsRestClientNodeConfig>> nodesReference = new AtomicReference<Set<EsRestClientNodeConfig>>();
-	
+	private AtomicReference<List<NodeInfo>> nodesReference = new AtomicReference<List<NodeInfo>>();
+	/**
+	 * 符号分解:
+	 */
+	private static final String COLON=":";
 	/**
 	 * 群集名称
 	 */
@@ -44,18 +46,26 @@ public class ElasticRestClientFactory implements PooledObjectFactory<RestHighLev
 	 */
 	private String authPass;
 	
+	/**
+	 * 构造函数.
+	 * @param restPoolConfig
+	 */
 	public ElasticRestClientFactory(EsRestClientPoolConfig restPoolConfig) {
 		this.clusterName = restPoolConfig.getClusterName();
-		this.nodesReference.set(restPoolConfig.getEsNodes());
-		this.authName = restPoolConfig.getAuthName();
-		this.authPass = restPoolConfig.getAuthPass();
+		this.nodesReference.set(restPoolConfig.getServerNodes());
+		String authLogin = restPoolConfig.getAuthLogin();
+		if (StringUtils.isNotBlank(authLogin)){
+			String[] array = authLogin.trim().split(COLON);
+			this.authName = array[0];
+			this.authPass = array[1];
+		}
 	}
 	
 	@Override
 	public PooledObject<RestHighLevelClient> makeObject() throws Exception {
 		HttpHost[] nodes = new HttpHost[nodesReference.get().size()];
 		List<HttpHost> nodeList = new ArrayList<HttpHost>();
-		for (EsRestClientNodeConfig each : nodesReference.get()) {
+		for (NodeInfo each : nodesReference.get()) {
 			nodeList.add(new HttpHost(each.getNodeHost(), each.getNodePort(), each.getNodeSchema()));
 		}
 		nodes = nodeList.toArray(nodes);

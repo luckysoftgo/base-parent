@@ -1,6 +1,7 @@
 package com.application.base.elastic.elastic.transport.factory;
 
-import com.application.base.elastic.elastic.transport.config.EsTransportNodeConfig;
+import com.application.base.elastic.elastic.transport.config.EsTransportPoolConfig;
+import com.application.base.elastic.entity.NodeInfo;
 import com.application.base.elastic.exception.ElasticException;
 import com.application.base.utils.json.JsonConvertUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Set;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -28,9 +29,10 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ElasticTransportFactory implements PooledObjectFactory<TransportClient> {
 	
 	private Logger logger = LoggerFactory.getLogger(getClass());
-	
-	private AtomicReference<Set<EsTransportNodeConfig>> nodesReference = new AtomicReference<Set<EsTransportNodeConfig>>();
-	
+	/**
+	 * 节点信息.
+	 */
+	private AtomicReference<List<NodeInfo>> nodesReference = new AtomicReference<List<NodeInfo>>();
 	/**
 	 * 设置processors检查为flase
 	 */
@@ -50,17 +52,14 @@ public class ElasticTransportFactory implements PooledObjectFactory<TransportCli
 	private String loginAuth;
 	
 	
-	public ElasticTransportFactory(String clusterName, Set<EsTransportNodeConfig> clusterNodes) {
-		logger.info("传递的连接信息集群名称是:{},连接信息是:{}",clusterName, JsonConvertUtils.toJson(clusterNodes));
-		this.clusterName = clusterName;
-		this.nodesReference.set(clusterNodes);
-	}
-	
-	public ElasticTransportFactory(String clusterName, Set<EsTransportNodeConfig> clusterNodes,String loginAuth) {
-		logger.info("传递的连接信息集群名称是:{},连接信息是:{},是否登录验证信息是:{}",clusterName, JsonConvertUtils.toJson(clusterNodes),loginAuth);
-		this.clusterName = clusterName;
-		this.nodesReference.set(clusterNodes);
-		this.loginAuth = loginAuth;
+	public ElasticTransportFactory(EsTransportPoolConfig transportPoolConfig) {
+		logger.info("传递的连接信息集群名称是:{},连接信息是:{}",clusterName, JsonConvertUtils.toJson(transportPoolConfig.getServerNodes()));
+		this.clusterName = transportPoolConfig.getClusterName();
+		this.nodesReference.set(transportPoolConfig.getServerNodes());
+		String authLogin = transportPoolConfig.getAuthLogin();
+		if (StringUtils.isNotBlank(authLogin)){
+			loginAuth = authLogin.trim();
+		}
 	}
 	
 	@Override
@@ -93,7 +92,7 @@ public class ElasticTransportFactory implements PooledObjectFactory<TransportCli
 			settingClient = new PreBuiltTransportClient(settings);
 		}
 		try {
-			for (EsTransportNodeConfig each : nodesReference.get()) {
+			for (NodeInfo each : nodesReference.get()) {
 				try {
 					settingClient.addTransportAddress(new TransportAddress(InetAddress.getByName(each.getNodeHost()), each.getNodePort()));
 				} catch (UnknownHostException e) {

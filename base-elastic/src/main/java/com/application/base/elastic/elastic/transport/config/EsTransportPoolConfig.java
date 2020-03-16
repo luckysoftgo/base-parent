@@ -1,14 +1,16 @@
 package com.application.base.elastic.elastic.transport.config;
 
+import com.application.base.elastic.entity.NodeInfo;
+import com.application.base.elastic.util.NodeExecUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 /**
  * @NAME: EsTransportPoolConfig
  * @DESC: ES连接池配置.
- * @USER: 孤狼.
+ * @author: 孤狼.
  **/
 public class EsTransportPoolConfig extends GenericObjectPoolConfig {
 	/**
@@ -23,12 +25,20 @@ public class EsTransportPoolConfig extends GenericObjectPoolConfig {
 	 * 登录认证信息.
 	 */
 	private String authLogin;
+	/**
+	 * 节点schema
+	 */
+	private String nodeSchema="http";
 	
 	/**
-	 * 节点数据
+	 * 节点配置信息
+	 * restcient.serverInfos=192.168.1.1:9300,192.168.1.2:9300,192.168.1.3:9300
 	 */
-	Set<EsTransportNodeConfig> esNodes = new HashSet<EsTransportNodeConfig>();
-	
+	private String transportServerInfos;
+	/**
+	 * 节点上的配置信息.
+	 */
+	private List<NodeInfo> serverNodes;
 	
 	public long getConnectTimeMillis() {
 		return connectTimeMillis;
@@ -44,19 +54,36 @@ public class EsTransportPoolConfig extends GenericObjectPoolConfig {
 		this.clusterName = clusterName;
 	}
 	
-	public Set<EsTransportNodeConfig> getEsNodes() {
-		return esNodes;
+	/**
+	 * 构造函数.
+	 */
+	public EsTransportPoolConfig() {
+		List<NodeInfo> nodeInfos = NodeExecUtil.getNodes(getTransportServerInfos());
+		if (nodeInfos!=null && nodeInfos.size()>0){
+			serverNodes = nodeInfos;
+		}
 	}
-	public void setEsNodes(Set<EsTransportNodeConfig> esNodes) {
-		this.esNodes = esNodes;
+	
+	/**
+	 * 构造函数.
+	 */
+	public EsTransportPoolConfig(String restcientInfos) {
+		if (StringUtils.isNotBlank(restcientInfos)){
+			transportServerInfos = restcientInfos;
+		}
+		List<NodeInfo> nodeInfos = NodeExecUtil.getNodes(restcientInfos);
+		if (nodeInfos!=null && nodeInfos.size()>0){
+			serverNodes = nodeInfos;
+		}
 	}
 	
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
+		List<NodeInfo> nodeInfos = NodeExecUtil.getNodes(transportServerInfos);
 		int i = 0;
-		for (EsTransportNodeConfig config : esNodes) {
-			buffer.append("\n集群").append(i).append(":").append(clusterName).append("初始化：\n");
+		for (NodeInfo config : nodeInfos) {
+			buffer.append("\n集群").append(i).append(":").append(clusterName).append("初始化:\n");
 			buffer.append("节点nodeName:").append(config.getNodeName()).append(",nodeHost:").append(config.getNodeHost()).append(",nodePort:").append(config.getNodePort()).append(",nodeSchema:").append(config.getNodeSchema()).append("\n");
 		}
 		buffer.append("testOnBorrow:").append(getTestOnBorrow()).append("\n")
@@ -74,5 +101,29 @@ public class EsTransportPoolConfig extends GenericObjectPoolConfig {
 	
 	public void setAuthLogin(String authLogin) {
 		this.authLogin = authLogin;
+	}
+	
+	public String getNodeSchema() {
+		return nodeSchema;
+	}
+	
+	public void setNodeSchema(String nodeSchema) {
+		this.nodeSchema = nodeSchema;
+	}
+	
+	public String getTransportServerInfos() {
+		return transportServerInfos;
+	}
+	
+	public void setTransportServerInfos(String transportServerInfos) {
+		this.transportServerInfos = transportServerInfos;
+	}
+	
+	public List<NodeInfo> getServerNodes() {
+		return serverNodes;
+	}
+	
+	public void setServerNodes(List<NodeInfo> serverNodes) {
+		this.serverNodes = serverNodes;
 	}
 }

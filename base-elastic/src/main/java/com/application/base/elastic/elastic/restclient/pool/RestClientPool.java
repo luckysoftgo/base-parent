@@ -8,7 +8,7 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 /**
  * @NAME: TransportPool
  * @DESC: 连接池接口.
- * @USER: 孤狼
+ * @author: 孤狼
  **/
 public class RestClientPool<T> implements Cloneable {
 	
