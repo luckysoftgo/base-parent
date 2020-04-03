@@ -33,9 +33,11 @@
 		<module>base-datasync</module>
 		<!--操作kylin的api-->
 		<module>base-kylin</module>
-		<!--操作hbase的api-->
+		<!--操作hive,hbase的api-->
 		<module>base-operapi</module>
-		
+		<!--操作pdf的jar-->
+		<module>base-pdf</module>
+	
 	</modules>
 	<artifactId>base-parent</artifactId>
     <!-- 模块设置. -->
@@ -90,12 +92,12 @@
 			<id>jdk8</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
-				<jdk>1.8</jdk>
+				<jdk>${java.version}</jdk>
 			</activation>
 			<properties>
-				<maven.compiler.source>1.8</maven.compiler.source>
-				<maven.compiler.target>1.8</maven.compiler.target>
-				<maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+				<maven.compiler.source>${maven.compiler.source}</maven.compiler.source>
+				<maven.compiler.target>${maven.compiler.target}</maven.compiler.target>
+				<maven.compiler.compilerVersion>${java.version}</maven.compiler.compilerVersion>
 			</properties>
 		</profile>
 	</profiles>
@@ -143,7 +145,7 @@
 					<artifactId>maven-resources-plugin</artifactId>
 					<version>3.0.0</version>
 					<configuration>
-						<encoding>UTF-8</encoding>
+						<encoding>${maven.compiler.encoding}</encoding>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -157,9 +159,9 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.7.0</version>
 					<configuration>
-						<source>1.8</source>
-						<target>1.8</target>
-						<encoding>UTF-8</encoding>
+						<source>${java.version}</source>
+						<target>${java.version}</target>
+						<encoding>${maven.compiler.encoding}</encoding>
 						<optimize>true</optimize>
 						<debug>true</debug>
 						<showDeprecation>true</showDeprecation>
