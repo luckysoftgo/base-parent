@@ -50,7 +50,10 @@ public class PdfCreateTest {
 		}catch (Exception e){
 		}
 		server.createHtmlContent(dataPath,"小猫钓鱼营销策划有限公司","pathReport.ftl","9161013aaa003296T",configuration,dataMap);
-		server.convertHtmlToPdf(dataPath+"font/SIMSUN.TTC",dataPath,"小猫钓鱼营销策划有限公司","9161013aaa003296T","A","资信云","B","C","小猫钓鱼营销策划有限公司");
+		//server.convertHtmlToPdf(dataPath+"fonts/SIMSUN.TTC",dataPath,"小猫钓鱼营销策划有限公司","9161013aaa003296T","A","资信云","B",null,null);
+		//server.convertHtmlToPdf(dataPath+"fonts/SIMSUN.TTC",dataPath,"小猫钓鱼营销策划有限公司","9161013aaa003296T","A","资信云",null,"C","小猫钓鱼营销策划有限公司");
+		//server.convertHtmlToPdf(dataPath+"fonts/SIMSUN.TTC",dataPath,"小猫钓鱼营销策划有限公司","9161013aaa003296T",null,null,"B","C","小猫钓鱼营销策划有限公司");
+		server.convertHtmlToPdf(dataPath+"fonts/SIMSUN.TTC",dataPath,"小猫钓鱼营销策划有限公司","9161013aaa003296T","A","资信云","B","C","小猫钓鱼营销策划有限公司");
 		System.out.println("完成操作");
 	}
 

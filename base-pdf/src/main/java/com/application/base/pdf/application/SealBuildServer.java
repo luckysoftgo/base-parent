@@ -28,7 +28,7 @@ public class SealBuildServer {
 			if (CommonUtils.isBlank(sealText)){
 				sealText="小猫钓鱼有限公司";
 			}
-			imagePath = filePath+sealText+"-official-small.png";
+			imagePath = filePath+CommonUtils.getSplit()+sealText+"-official-small.png";
 			BasicSeal.builder()
 					.size(size)
 					.borderCircle(SealCircle.builder().line(4).width(95).height(95).build())
@@ -61,7 +61,7 @@ public class SealBuildServer {
 			if (CommonUtils.isBlank(sealText)){
 				sealText="小猫钓鱼有限公司";
 			}
-			imagePath = filePath+sealText+"-official-big.png";
+			imagePath = filePath+CommonUtils.getSplit()+sealText+"-official-big.png";
 			BasicSeal.builder()
 					.size(size)
 					.borderCircle(SealCircle.builder().line(5).width(140).height(140).build())
@@ -96,7 +96,7 @@ public class SealBuildServer {
 			if (CommonUtils.isBlank(sealText)){
 				sealText="小猫钓鱼有限公司";
 			}
-			imagePath = filePath+sealText+"-contract-small.png";
+			imagePath = filePath+CommonUtils.getSplit()+sealText+"-contract-small.png";
 			BasicSeal.builder()
 					.size(size)
 					.borderCircle(SealCircle.builder().line(3).width(106).height(70).build())
@@ -132,7 +132,7 @@ public class SealBuildServer {
 			if (CommonUtils.isBlank(sealText)){
 				sealText="小猫钓鱼有限公司";
 			}
-			imagePath = filePath+sealText+"-contract-big.png";
+			imagePath = filePath+CommonUtils.getSplit()+sealText+"-contract-big.png";
 			BasicSeal.builder()
 					.size(size)
 					.borderCircle(SealCircle.builder().line(4).width(144).height(100).build())
@@ -158,7 +158,7 @@ public class SealBuildServer {
 	 */
 	public String privateSealSmall(String filePath,String personName){
 		CommonUtils.createDir(filePath);
-		String imagePath = filePath+personName+"-private-small.png";
+		String imagePath = filePath+CommonUtils.getSplit()+personName+"-private-small.png";
 		try {
 			BasicSeal.builder()
 					.size(200)
@@ -182,7 +182,7 @@ public class SealBuildServer {
 	 */
 	public String privateSealBig(String filePath,String personName){
 		CommonUtils.createDir(filePath);
-		String imagePath = filePath+personName+"-private-big.png";
+		String imagePath = filePath+CommonUtils.getSplit()+personName+"-private-big.png";
 		try {
 			BasicSeal.builder()
 					.size(300)
