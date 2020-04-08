@@ -16,19 +16,27 @@ import java.util.Set;
 public class NettyRpcServerHandler extends ChannelHandlerAdapter {
 	
 	@Override
-	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+	public void channelRead(ChannelHandlerContext context, Object msg) throws Exception {
 		//获取调用信息，寻找服务实现类
 		NettyRpcInfo rpcInfo = (NettyRpcInfo) msg;
 		String implName = getImplClassName(rpcInfo.getClassName());
 		Class<?> clazz = Class.forName(implName);
 		Method method = clazz.getMethod(rpcInfo.getMethodName(), rpcInfo.getParamTypes());
 		Object result = method.invoke(clazz.newInstance(), rpcInfo.getParams());
-		ctx.writeAndFlush(result);
+		context.writeAndFlush(result);
 	}
 	
 	private String getImplClassName(String interfaceName) throws ClassNotFoundException {
+		String servicePath = "com.application.base.rpc.service";
+		return getExecClassName(interfaceName,servicePath);
+	}
+	
+	private String getImplClassName(String interfaceName,String servicePath) throws ClassNotFoundException {
+		return getExecClassName(interfaceName,servicePath);
+	}
+	
+	private String getExecClassName(String interfaceName,String servicePath) throws ClassNotFoundException {
 		Class interClass = Class.forName(interfaceName);
-		String servicePath = "com.application.base.rpc.server";
 		Reflections reflections = new Reflections(servicePath);
 		Set<Class> implClasses = reflections.getSubTypesOf(interClass);
 		if (implClasses.isEmpty()) {

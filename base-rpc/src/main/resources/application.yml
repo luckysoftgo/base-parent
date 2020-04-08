@@ -1,3 +1,4 @@
+
 management :
   endpoints:
     web:
@@ -6,3 +7,8 @@ management :
     jmx:
       exposure:
         include: "*"
+
+server:
+  servlet:
+    context-path: /
+  port: 8888

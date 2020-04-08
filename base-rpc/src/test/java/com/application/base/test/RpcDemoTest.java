@@ -23,6 +23,6 @@ public class RpcDemoTest {
 	@Test
 	public void rpcCall(){
 		String msg = rpcDemoService.rpcCall("use netty build rpc server!");
-		System.out.println(msg);
+		System.out.println("调用服务得到的结果是:"+msg);
 	}
 }

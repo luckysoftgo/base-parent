@@ -11,7 +11,7 @@ public class RpcDemoServiceImpl implements RpcDemoService {
 	
 	@Override
 	public String rpcCall(String param) {
-		System.out.println("prc 接收的参数是:"+param);
+		System.out.println("rpc 接收的参数是:"+param);
 		return "seccess";
 	}
 }

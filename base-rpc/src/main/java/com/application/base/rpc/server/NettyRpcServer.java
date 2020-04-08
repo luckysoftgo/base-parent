@@ -31,11 +31,12 @@ public class NettyRpcServer {
 						protected void initChannel(SocketChannel ch) throws Exception {
 							ch.pipeline().addLast(new ObjectEncoder());
 							ch.pipeline().addLast(new ObjectDecoder(1024 * 64, ClassResolvers.cacheDisabled(null)));
+							//服务的处理类
 							ch.pipeline().addLast(new NettyRpcServerHandler());
 						}
 					});
 			//bind初始化端口是异步的，但调用sync则会同步阻塞等待端口绑定成功
-			ChannelFuture future = bootstrap.bind(80).sync();
+			ChannelFuture future = bootstrap.bind("127.0.0.1",80).sync();
 			future.channel().closeFuture().sync();
 		} catch (Exception e) {
 			e.printStackTrace();
