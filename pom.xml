@@ -37,6 +37,8 @@
 		<module>base-operapi</module>
 		<!--操作pdf的jar-->
 		<module>base-pdf</module>
+		<!--操作rpc服务的jar-->
+		<module>base-rpc</module>
 	
 	</modules>
 	<artifactId>base-parent</artifactId>
