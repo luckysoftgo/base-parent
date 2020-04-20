@@ -1,26 +1,22 @@
 package com.application.base.utils.common;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.Random;
+import com.sun.image.codec.jpeg.ImageFormatException;
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.sun.image.codec.jpeg.ImageFormatException;
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
-
 import java.awt.*;
-import java.io.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Random;
 
 /**
  * @desc 图片生成的工具类
@@ -245,7 +241,7 @@ public class VerifyImageUtil {
 		response.setHeader("Cache-Control", "no-cache");
 		response.setDateHeader("Expires", 0);
 		response.setContentType("image/jpeg");
-
+		response.setCharacterEncoding("UTF-8");
 		//clear
 		gd.dispose();
 		
@@ -302,6 +298,7 @@ public class VerifyImageUtil {
         request.getSession(true).setAttribute("AutoCode", random);
         //8.设置响应头通知浏览器以图片的形式打开
         response.setContentType("image/jpeg");
+		response.setCharacterEncoding("UTF-8");
         //9.设置响应头控制浏览器不要缓存
         response.setDateHeader("expries", -1);
         response.setHeader("Cache-Control", "no-cache");
