@@ -235,7 +235,6 @@ public class VerifyImageUtil {
 		//save zk
 		HttpSession session = request.getSession(true);
 		session.setAttribute("AutoCode", randomCode.toString());
-
 		//no cache
 		response.setHeader("Pragma", "no-cache");
 		response.setHeader("Cache-Control", "no-cache");
@@ -244,7 +243,6 @@ public class VerifyImageUtil {
 		response.setCharacterEncoding("UTF-8");
 		//clear
 		gd.dispose();
-		
 		// 将图像输出到Servlet输出流中。
 		ServletOutputStream sos = response.getOutputStream();
 		ImageIO.write(buffImg, "jpeg", sos);
@@ -394,14 +392,11 @@ public class VerifyImageUtil {
 			// 开始读取文件并进行压缩
 			Image src = javax.imageio.ImageIO.read(srcfile);
 			BufferedImage tag = new BufferedImage((int) widthdist,(int) heightdist, BufferedImage.TYPE_INT_RGB);
-			
 			tag.getGraphics().drawImage(src.getScaledInstance(widthdist, heightdist,Image.SCALE_SMOOTH), 0, 0, null);
-			
 			FileOutputStream out = new FileOutputStream(imgdist);
 			JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
 			encoder.encode(tag);
 			out.close();
-			
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
