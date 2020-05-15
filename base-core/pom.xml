@@ -31,7 +31,7 @@
 		<morphia.version>1.0.1</morphia.version>
 		<jstl.version>1.2</jstl.version>
 		
-        <jackson.version>2.9.9</jackson.version>
+        <jackson.version>2.11.0</jackson.version>
         <dom4j.version>1.6.1</dom4j.version>
         
         <!-- 下载需要的 jar  -->
