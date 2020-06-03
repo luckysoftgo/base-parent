@@ -1,18 +1,28 @@
 package com.application.base.utils.file;
 
 
-import java.io.*;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPClientConfig;
+import org.apache.commons.net.ftp.FTPFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
-
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPClientConfig;
-import org.apache.commons.net.ftp.FTPFile;
-import org.apache.commons.net.ftp.FTPReply;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @desc FTP 文件上传的操作
@@ -28,7 +38,7 @@ public class FtpFileUtils {
 	/**
 	 * ftp服务器地址
 	 */
-	private static String remoteAddress = "192.168.1.150";
+	private static String remoteAddress = "192.168.10.218";
 	/**
 	 * ftp服务器端口号默认为 21
 	 */
@@ -36,11 +46,11 @@ public class FtpFileUtils {
 	/**
 	 * ftp登录账号
 	 */
-	private static String loginName = "ftp";
+	private static String loginName = "ftpuser";
 	/**
 	 * ftp登录密码
 	 */
-	private static String loginPass = "123456";
+	private static String loginPass = "ftp159com";
 	/**
 	 * ftp客户端文件编码
 	 */
@@ -61,7 +71,7 @@ public class FtpFileUtils {
 	 */
 	public static void main(String[] args) {
 		//单个文件上传. ok
-		//FtpFileUtils.uploadFile("/var/ftp/data", "test.docx", "E://test.docx");
+		FtpFileUtils.uploadFile("/home/imgs/kibana/", "1000.png", "E:\\网利宝\\1000.png");
 		
 		//单个文件下载. ok
 		//FtpFileUtils.downloadFile("/var/ftp/data/", "test.docx", "E:\\data");
@@ -111,6 +121,7 @@ public class FtpFileUtils {
 			ftpClient.setBufferSize(1024 * 10);
 			//时间.
 			ftpClient.setDataTimeout(60 * 1000);
+			/*
 			// 是否成功登录服务器
 			int replyCode = ftpClient.getReplyCode();
 			if (!FTPReply.isPositiveCompletion(replyCode)) {
@@ -121,6 +132,8 @@ public class FtpFileUtils {
 				logger.info("login...ftp服务器:success!");
 				return true;
 			}
+			*/
+			return true;
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -195,7 +208,8 @@ public class FtpFileUtils {
 			createDirecroty(ftpLocalPath);
 			ftpClient.makeDirectory(ftpLocalPath);
 			ftpClient.changeWorkingDirectory(ftpLocalPath);
-			ftpClient.storeFile(fileName, inputStream);
+			resultFlag = ftpClient.storeFile(fileName, inputStream);
+			System.out.println("resultFlag="+resultFlag);
 			ftpClient.logout();
 			resultFlag = true;
 			logger.info("上传文件成功");
