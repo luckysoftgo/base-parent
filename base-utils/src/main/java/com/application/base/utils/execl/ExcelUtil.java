@@ -90,12 +90,12 @@ public class ExcelUtil<T>{
     /**
      * 导入导出数据列表
      */
-    private List<T> list;
+    private LinkedList<T> list;
 
     /**
      * 注解列表
      */
-    private List<Object[]> fields;
+    private LinkedList<Object[]> fields;
 
     /**
      * 实体对象
@@ -107,11 +107,11 @@ public class ExcelUtil<T>{
         this.clazz = clazz;
     }
 
-    public void init(List<T> list, String sheetName, OperateType type)
+    public void init(LinkedList<T> list, String sheetName, OperateType type)
     {
         if (list == null)
         {
-            list = new ArrayList<T>();
+            list = new LinkedList<>();
         }
         this.list = list;
         this.sheetName = sheetName;
@@ -126,7 +126,7 @@ public class ExcelUtil<T>{
      * @param input 输入流
      * @return 转换后集合
      */
-    public List<T> importExcel(InputStream input) throws Exception
+    public LinkedList<T> importExcel(InputStream input) throws Exception
     {
         return importExcel(BaseStringUtil.EMPTY, input);
     }
@@ -138,7 +138,7 @@ public class ExcelUtil<T>{
      * @param input 输入流
      * @return 转换后集合
      */
-    public List<T> importExcel(String sheetName, InputStream input) throws Exception
+    public LinkedList<T> importExcel(String sheetName, InputStream input) throws Exception
     {
         this.type = OperateType.IMPORT;
         this.wb = WorkbookFactory.create(input);
@@ -280,7 +280,7 @@ public class ExcelUtil<T>{
      * @param sheetName 工作表的名称
      * @return 结果
      */
-    public AjaxResult exportExcel(List<T> list, String sheetName,String path)
+    public AjaxResult exportExcel(LinkedList<T> list, String sheetName,String path)
     {
         this.init(list, sheetName, OperateType.EXPORT);
         return exportExcel(path);
@@ -727,7 +727,7 @@ public class ExcelUtil<T>{
      */
     private void createExcelField()
     {
-        this.fields = new ArrayList<Object[]>();
+        this.fields = new LinkedList<Object[]>();
         List<Field> tempFields = new ArrayList<>();
         tempFields.addAll(Arrays.asList(clazz.getSuperclass().getDeclaredFields()));
         tempFields.addAll(Arrays.asList(clazz.getDeclaredFields()));
