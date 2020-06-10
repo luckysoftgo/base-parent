@@ -1,5 +1,7 @@
 package com.application.base.utils.common;
 
+import com.application.base.utils.json.JsonConvertUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,11 +13,25 @@ import java.util.List;
 public class ThrowableUtil {
 	
 	/**
+	 * 测试.
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		try {
+		  int a	=1/0;
+		}catch (Exception e){
+			List<ThrowableInfo> list = getThrowInfos(e);
+			System.out.println(JsonConvertUtils.toJson(list));
+		}
+	}
+	
+	
+	/**
 	 * 获得异常信息.
 	 * @param throwable
 	 * @return
 	 */
-	public List<ThrowableInfo> getThrowInfos(Throwable throwable){
+	public static List<ThrowableInfo> getThrowInfos(Throwable throwable){
 		List<ThrowableInfo> infoList = new ArrayList<>();
 		if (throwable!=null){
 			StackTraceElement[] elements = throwable.getStackTrace();
