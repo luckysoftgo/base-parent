@@ -154,14 +154,11 @@ public class ExcelUtil<T>{
             // 如果传入的sheet名不存在则默认指向第1个sheet.
             sheet = wb.getSheetAt(0);
         }
-
         if (sheet == null)
         {
             throw new IOException("文件sheet不存在");
         }
-
         int rows = sheet.getPhysicalNumberOfRows();
-
         if (rows > 0)
         {
             // 定义一个map用于存放excel列的序号和field.
