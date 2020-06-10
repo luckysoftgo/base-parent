@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -141,7 +142,7 @@ public class ExcelUtil<T>{
     {
         this.type = OperateType.IMPORT;
         this.wb = WorkbookFactory.create(input);
-        List<T> list = new ArrayList<T>();
+        LinkedList<T> list = new LinkedList<T>();
         Sheet sheet = null;
         if (BaseStringUtil.isNotEmpty(sheetName))
         {
@@ -801,13 +802,16 @@ public class ExcelUtil<T>{
      * @param column 获取单元格列号
      * @return 单元格值
      */
-    public Object getCellValue(Row row, int column)
+    public Object getCellValue(Row row, Integer column)
     {
+	    Object val = "";
         if (row == null)
         {
             return row;
         }
-        Object val = "";
+	    if (column==null){
+		    return val;
+	    }
         try
         {
             Cell cell = row.getCell(column);
