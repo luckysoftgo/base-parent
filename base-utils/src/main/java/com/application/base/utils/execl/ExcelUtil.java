@@ -173,13 +173,13 @@ public class ExcelUtil<T>{
                 {
                     String value = this.getCellValue(heard, i).toString();
                     if (StringUtils.isNotEmpty(value)){
+	                    //去掉\r\n的设置.
+	                    value = value.replaceAll("\r|\n", "").trim();
 	                    cellMap.put(value.trim(), i);
                     }else{
 	                    cellMap.put(null, i);
                     }
-                }
-                else
-                {
+                }else{
                     cellMap.put(null, i);
                 }
             }
@@ -859,6 +859,7 @@ public class ExcelUtil<T>{
         {
             return val;
         }
+	    
         return val;
     }
 }

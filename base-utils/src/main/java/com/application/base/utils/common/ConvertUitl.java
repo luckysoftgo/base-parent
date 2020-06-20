@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.text.NumberFormat;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -32,7 +33,10 @@ public class ConvertUitl{
         {
             return (String) value;
         }
-        return value.toString();
+	    String result = Objects.toString(value);
+	    //去掉\r\n的设置.
+	    result = result.replaceAll("\r|\n", "").trim();
+        return result;
     }
 
     /**
@@ -67,7 +71,6 @@ public class ConvertUitl{
         {
             return (Character) value;
         }
-
         final String valueStr = toStr(value, null);
         return BaseStringUtil.isEmpty(valueStr) ? defaultValue : valueStr.charAt(0);
     }
