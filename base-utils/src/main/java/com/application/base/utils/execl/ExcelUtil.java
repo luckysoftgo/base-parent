@@ -223,9 +223,7 @@ public class ExcelUtil<T>{
                         if (BaseStringUtil.endsWith(s, ".0"))
                         {
                             val = BaseStringUtil.substringBefore(s, ".0");
-                        }
-                        else
-                        {
+                        }else{
                             val = ConvertUitl.toStr(val);
                         }
                     }
