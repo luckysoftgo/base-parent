@@ -6,6 +6,7 @@ import com.application.base.utils.common.ConvertUitl;
 import com.application.base.utils.common.ReflectHelper;
 import com.application.base.utils.date.DateUtils;
 import com.application.base.utils.exception.BusinessException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
@@ -171,7 +172,11 @@ public class ExcelUtil<T>{
                 if (BaseStringUtil.isNotNull(cell != null))
                 {
                     String value = this.getCellValue(heard, i).toString();
-                    cellMap.put(value, i);
+                    if (StringUtils.isNotEmpty(value)){
+	                    cellMap.put(value.trim(), i);
+                    }else{
+	                    cellMap.put(null, i);
+                    }
                 }
                 else
                 {
@@ -190,8 +195,11 @@ public class ExcelUtil<T>{
                 {
                     // 设置类的私有字段属性可访问.
                     field.setAccessible(true);
-                    Integer column = cellMap.get(attr.name());
-                    fieldsMap.put(column, field);
+                    String key = attr.name();
+                    if (StringUtils.isNotEmpty(key)){
+	                    Integer column = cellMap.get(key.trim());
+	                    fieldsMap.put(column, field);
+                    }
                 }
             }
             for (int i = 1; i < rows; i++)
