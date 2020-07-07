@@ -843,6 +843,7 @@ public class ExcelUtil<T>{
                 else if (cell.getCellTypeEnum() == CellType.STRING)
                 {
                     val = cell.getStringCellValue();
+                    val = val.toString().trim();
                 }
                 else if (cell.getCellTypeEnum() == CellType.BOOLEAN)
                 {
