@@ -27,3 +27,5 @@ https://www.echartsjs.com/examples/zh/editor.html?c=line-simple
 7.水印处理.
 https://www.cnblogs.com/qlqwjy/p/9326468.html
 
+spire.pdf 操作pdf的下载地址:
+http://repo.e-iceblue.com/nexus/content/groups/public/
