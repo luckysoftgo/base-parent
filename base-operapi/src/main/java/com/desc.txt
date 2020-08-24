@@ -53,3 +53,8 @@ Caused by: java.lang.RuntimeException: org.apache.hadoop.hive.ql.parse.SemanticE
 
 解決方案:
     将文件放入到 hadoop 上,再使用文件系统 hdfs 上,在使用命令去执行 !
+
+
+可以借鉴的 hbase 的复杂查询方法实现:
+https://gitee.com/lshyunjin/publicProject/tree/master/hbase-eclient
+
