@@ -16,7 +16,7 @@
 		<velocity.version>1.7</velocity.version>
 		<velocity-tools.version>2.0</velocity-tools.version>
 		<velocity-dvsl.version>0.45</velocity-dvsl.version>
-		<junit.version>4.12</junit.version>
+		<junit.version>4.13.1</junit.version>
 		<dom4j.version>1.6.1</dom4j.version>
 		
 		<mongo-java-driver.version>3.3.0</mongo-java-driver.version>
