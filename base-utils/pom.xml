@@ -50,7 +50,7 @@
         <logback.version>1.1.11</logback.version>
         
         <!-- junit test -->
-       	<junit.version>4.12</junit.version>
+       	<junit.version>4.13.1</junit.version>
 		<jsoup.version>1.10.1</jsoup.version>
 		<poix.version>3.17</poix.version>
 		<itextpdf.version>5.5.1</itextpdf.version>
