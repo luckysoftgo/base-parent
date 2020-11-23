@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="
+         http://www.springframework.org/schema/beans 
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+   		http://www.springframework.org/schema/context 
+   		http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- phoenix 基础信息配置 (公共使用) -->
+	<bean id="phoenixConfig" class="com.application.base.operapi.api.phoenix.config.PhoenixConfig">
+		<property name="maxTotal" value="${phoenix.pool.maxTotal}"/>
+		<property name="maxIdle" value="${phoenix.pool.maxIdle}"/>
+		<property name="minIdle" value="${phoenix.pool.minIdle}"/>
+		<property name="maxWaitMillis" value="${phoenix.pool.maxWaitMillis}"/>
+		<property name="testOnBorrow" value="${phoenix.pool.testOnBorrow}"/>
+		<property name="testOnReturn" value="${phoenix.pool.testOnReturn}"/>
+		<property name="testWhileIdle" value="${phoenix.pool.testWhileIdle}"/>
+		<property name="timeBetweenEvictionRunsMillis" value="${phoenix.pool.timeBetweenEvictionRunsMillis}"/>
+		<property name="numTestsPerEvictionRun" value="${phoenix.pool.numTestsPerEvictionRun}"/>
+		<property name="phoenixDriver" value="${phoenix.phoenixDriver}"/>
+		<property name="phoenixUrl" value="${phoenix.phoenixUrl}"/>
+		<property name="userName" value="${phoenix.userName}"/>
+		<property name="userPass" value="${phoenix.userPass}"/>
+	</bean>
+
+	<!-- 1. phoenix 单点服务器,只存在一个 phoenix 的服务器 -->
+	<bean id="phoenixOperPool" class="com.application.base.operapi.api.phoenix.pool.PhoenixOperPool">
+		<constructor-arg name="phoenixConfig" ref="phoenixConfig"/>
+	</bean>
+
+	<bean id="phoenixOperFactory" class="com.application.base.operapi.api.phoenix.factory.PhoenixOperSessionFactory">
+		<property name="phoenixOperPool" ref="phoenixOperPool"/>
+	</bean>
+
+</beans>
+
