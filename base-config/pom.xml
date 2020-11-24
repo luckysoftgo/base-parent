@@ -18,7 +18,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<curator.version>4.0.1</curator.version>
-		<zookeeper.version>3.4.11</zookeeper.version>
+		<zookeeper.version>3.4.14</zookeeper.version>
 		<zkclient.version>0.11</zkclient.version>
 		<pool2.version>2.6.2</pool2.version>
 		<lang3.version>3.6</lang3.version>
