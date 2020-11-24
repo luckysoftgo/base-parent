@@ -75,4 +75,12 @@ public class PhoenixConfig extends GenericObjectPoolConfig {
 	public void setPhoenixUrl(String phoenixUrl) {
 		this.phoenixUrl = phoenixUrl;
 	}
+	
+	public Properties getProperties() {
+		return properties;
+	}
+	
+	public void setProperties(Properties properties) {
+		this.properties = properties;
+	}
 }

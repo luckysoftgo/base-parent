@@ -61,14 +61,22 @@ public class PhoenixClient {
 			}
 			synchronized (HiveJdbcClient.class) {
 				Class.forName(phoenixDriver);
-				Connection connn = DriverManager.getConnection(phoenixConfig.getPhoenixUrl(), phoenixConfig.getUserName(), phoenixConfig.getUserPass());
-				connections.put(connn);
-				return connn;
+				Connection connn = null;
+				if (StringUtils.isNotBlank(phoenixConfig.getUserName()) && StringUtils.isNotBlank(phoenixConfig.getUserPass())) {
+					if (null != phoenixConfig.getProperties()) {
+						connn = DriverManager.getConnection(phoenixConfig.getPhoenixUrl(), phoenixConfig.getProperties());
+					} else {
+						connn = DriverManager.getConnection(phoenixConfig.getPhoenixUrl(), phoenixConfig.getUserName(), phoenixConfig.getUserPass());
+					}
+					connections.put(connn);
+					return connn;
+				}
 			}
 		} catch (Exception e) {
 			logger.error("初始化连接异常了,异常信息是:{}", e.getMessage());
 			throw new HiveException("hive获得连接异常了,异常信息是:{" + e.getMessage() + "}");
 		}
+		return null;
 	}
 	
 	/**
