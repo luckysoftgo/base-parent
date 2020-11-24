@@ -6,8 +6,8 @@ import com.application.base.elastic.elastic.restclient.pool.ElasticRestClientPoo
 import com.application.base.elastic.entity.ElasticData;
 import com.application.base.elastic.entity.NodeInfo;
 import com.application.base.elastic.util.jest.EsJestClientBuilder;
+import com.application.base.utils.DbCommandUtil;
 import com.application.base.utils.json.JsonConvertUtils;
-import com.application.test.excel.data.DbCommandUtil;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.GetIndexRequest;
