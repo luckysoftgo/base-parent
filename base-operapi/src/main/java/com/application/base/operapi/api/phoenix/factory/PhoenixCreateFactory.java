@@ -17,8 +17,8 @@ public class PhoenixCreateFactory extends BasePooledObjectFactory<PhoenixClient>
 	
 	private AtomicReference<PhoenixConfig> nodesReference = new AtomicReference<PhoenixConfig>();
 	
-	public PhoenixCreateFactory(PhoenixConfig hbaseConfig) {
-		this.nodesReference.set(hbaseConfig);
+	public PhoenixCreateFactory(PhoenixConfig phoenixConfig) {
+		this.nodesReference.set(phoenixConfig);
 	}
 	
 	@Override

@@ -1,9 +1,8 @@
 package com.application.base.operapi.api.phoenix.core;
 
 
-import com.application.base.operapi.api.hive.core.HiveJdbcClient;
-import com.application.base.operapi.api.hive.exception.HiveException;
 import com.application.base.operapi.api.phoenix.config.PhoenixConfig;
+import com.application.base.operapi.api.phoenix.exception.PhoenixException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +58,7 @@ public class PhoenixClient {
 			if (StringUtils.isNotBlank(phoenixConfig.getPhoenixDriver())) {
 				phoenixDriver = phoenixConfig.getPhoenixDriver();
 			}
-			synchronized (HiveJdbcClient.class) {
+			synchronized (PhoenixClient.class) {
 				Class.forName(phoenixDriver);
 				Connection connn = null;
 				if (StringUtils.isNotBlank(phoenixConfig.getUserName()) && StringUtils.isNotBlank(phoenixConfig.getUserPass())) {
@@ -68,15 +67,21 @@ public class PhoenixClient {
 					} else {
 						connn = DriverManager.getConnection(phoenixConfig.getPhoenixUrl(), phoenixConfig.getUserName(), phoenixConfig.getUserPass());
 					}
-					connections.put(connn);
-					return connn;
+				} else {
+					if (null != phoenixConfig.getProperties()) {
+						connn = DriverManager.getConnection(phoenixConfig.getPhoenixUrl(), phoenixConfig.getProperties());
+					} else {
+						connn = DriverManager.getConnection(phoenixConfig.getPhoenixUrl());
+					}
 				}
+				connections.put(connn);
+				return connn;
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error("初始化连接异常了,异常信息是:{}", e.getMessage());
-			throw new HiveException("hive获得连接异常了,异常信息是:{" + e.getMessage() + "}");
+			throw new PhoenixException("phoenix获得连接异常了,异常信息是:{" + e.getMessage() + "}");
 		}
-		return null;
 	}
 	
 	/**
