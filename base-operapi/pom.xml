@@ -24,7 +24,7 @@
 		<hive.version>2.1.1</hive.version>
 		<common-pool.version>2.6.2</common-pool.version>
 		<ssh2.version>build210</ssh2.version>
-		<mysql.version>5.1.48</mysql.version>
+		<mysql.version>8.0.16</mysql.version>
 
 		<phoenix.version>5.0.0-HBase-2.0</phoenix.version>
 		<hadoop.version>2.7.3</hadoop.version>
