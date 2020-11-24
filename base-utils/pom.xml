@@ -33,7 +33,7 @@
 		<xmlbeans.version>2.6.0</xmlbeans.version>
 		
 		<!-- 公共设置 -->
-		<commons-beanutils.version>1.9.2</commons-beanutils.version>
+		<commons-beanutils.version>1.9.4</commons-beanutils.version>
 		<commons-codec.version>1.10</commons-codec.version>
 		<commons-collections.version>3.2.1</commons-collections.version>
 		<commons-discovery.version>0.5</commons-discovery.version>
