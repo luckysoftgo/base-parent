@@ -6,7 +6,7 @@ import com.application.base.utils.execl.ExcelUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -29,14 +29,14 @@ public class ExcelTest {
 	/**
 	 * 导入 excel 的信息到对象中来
 	 */
-	private static void exportExcel(){
-		List<TaskCompanyLesscredit> list = new ArrayList<>();
-		TaskCompanyLesscredit lesscredit1=TaskCompanyLesscredit.getInstance(TaskCompanyLesscredit.class);
+	private static void exportExcel() {
+		LinkedList<TaskCompanyLesscredit> list = new LinkedList<>();
+		TaskCompanyLesscredit lesscredit1 = TaskCompanyLesscredit.getInstance(TaskCompanyLesscredit.class);
 		lesscredit1.setCaseCode("11111");
 		lesscredit1.setSocialCreditCode("11111");
 		lesscredit1.setCompanyName("11111");
 		list.add(lesscredit1);
-		TaskCompanyLesscredit lesscredit2=TaskCompanyLesscredit.getInstance(TaskCompanyLesscredit.class);
+		TaskCompanyLesscredit lesscredit2 = TaskCompanyLesscredit.getInstance(TaskCompanyLesscredit.class);
 		lesscredit2.setCaseCode("22222");
 		lesscredit2.setSocialCreditCode("22222");
 		lesscredit2.setCompanyName("22222");
