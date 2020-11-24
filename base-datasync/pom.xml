@@ -17,7 +17,7 @@
 		<poi.version>3.8</poi.version>
 		<json-path.version>2.4.0</json-path.version>
 		<slf4j.version>1.7.25</slf4j.version>
-		<mysql.version>5.1.48</mysql.version>
+		<mysql.version>8.0.16</mysql.version>
 		<!-- 下载需要的 jar  -->
 		<downloadSources>true</downloadSources>
 	</properties>
