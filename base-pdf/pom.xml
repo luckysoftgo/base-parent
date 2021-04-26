@@ -28,7 +28,7 @@
 		<commonscodec.version>1.12</commonscodec.version>
 		<renderer.version>R8</renderer.version>
 		<itextpdf.version>5.5.12</itextpdf.version>
-		<commonio.version>2.5</commonio.version>
+		<commonio.version>2.7</commonio.version>
 		<lowagie.version>2.0.8</lowagie.version>
 		<downloadSources>true</downloadSources>
 	</properties>
