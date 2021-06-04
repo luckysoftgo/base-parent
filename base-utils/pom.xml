@@ -22,7 +22,7 @@
 		<core.version>3.3.0</core.version>
 		
 		<!-- apache http -->
-		<httpclient.version>4.5</httpclient.version>
+		<httpclient.version>4.5.13</httpclient.version>
 		<httpmime.version>4.3.6</httpmime.version>
 		<httpcore.version>4.4.4</httpcore.version>
 		
