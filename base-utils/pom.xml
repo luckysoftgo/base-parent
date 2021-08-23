@@ -51,7 +51,7 @@
         
         <!-- junit test -->
        	<junit.version>4.12</junit.version>
-		<jsoup.version>1.10.1</jsoup.version>
+		<jsoup.version>1.14.2</jsoup.version>
 		<poix.version>3.17</poix.version>
 		<itextpdf.version>5.5.1</itextpdf.version>
 		
