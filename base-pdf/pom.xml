@@ -22,7 +22,7 @@
 		
 		<lombok.version>1.18.8</lombok.version>
 		<freemarker.version>2.3.30</freemarker.version>
-		<fastjson.version>1.2.60</fastjson.version>
+		<fastjson.version>1.2.83</fastjson.version>
 		<jdk15on.version>1.62</jdk15on.version>
 		<itext.version>5.2.0</itext.version>
 		<commonscodec.version>1.12</commonscodec.version>
