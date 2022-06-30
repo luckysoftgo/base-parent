@@ -53,7 +53,7 @@
        	<junit.version>4.12</junit.version>
 		<jsoup.version>1.10.1</jsoup.version>
 		<poix.version>3.17</poix.version>
-		<itextpdf.version>5.5.1</itextpdf.version>
+		<itextpdf.version>5.5.12</itextpdf.version>
 		
 		<docx4j.version>3.2.2</docx4j.version>
 		<stringtemplate.version>3.2.1</stringtemplate.version>
